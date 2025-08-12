@@ -9,13 +9,50 @@ import {
   primaryKey,
   foreignKey,
   boolean,
+  index,
+  unique,
 } from 'drizzle-orm/pg-core';
 
 export const user = pgTable('User', {
+  // Existing fields (keep unchanged)
   id: uuid('id').primaryKey().notNull().defaultRandom(),
-  email: varchar('email', { length: 64 }).notNull(),
+  email: varchar('email', { length: 64 }).notNull().unique(),
   password: varchar('password', { length: 64 }),
-});
+  
+  // Common new fields
+  name: varchar('name', { length: 100 }),
+  lastname: varchar('lastname', { length: 100 }),
+  role: varchar('role', { enum: ['user', 'lawyer', 'admin'] }).notNull().default('user'),
+  is_guest: boolean('is_guest').notNull().default(false),
+  
+  // Lawyer-specific fields (optional)
+  lawyer_credential_number: varchar('lawyer_credential_number', { length: 50 }),
+  national_id: varchar('national_id', { length: 20 }),
+  phone: varchar('phone', { length: 20 }),
+  
+  // Location fields (optional)
+  country_id: uuid('country_id').references(() => country.id),
+  depto_state_id: uuid('depto_state_id').references(() => deptoState.id),
+  city_municipality_id: uuid('city_municipality_id').references(() => cityMunicipality.id),
+  
+  // Timestamps
+  createdAt: timestamp('createdAt').notNull().defaultNow(),
+  updatedAt: timestamp('updatedAt'),
+  deleted_at: timestamp('deleted_at'),
+}, (table) => ({
+  // Indexes for performance
+  emailIdx: index('user_email_idx').on(table.email),
+  roleIdx: index('user_role_idx').on(table.role),
+  lawyerCredentialIdx: index('user_lawyer_credential_idx').on(table.lawyer_credential_number),
+  nationalIdIdx: index('user_national_id_idx').on(table.national_id),
+  countryIdx: index('user_country_idx').on(table.country_id),
+  deptoStateIdx: index('user_depto_state_idx').on(table.depto_state_id),
+  cityMunicipalityIdx: index('user_city_municipality_idx').on(table.city_municipality_id),
+  
+  // Unique constraints
+  lawyerCredentialUnique: unique('user_lawyer_credential_unique').on(table.lawyer_credential_number),
+  nationalIdUnique: unique('user_national_id_unique').on(table.national_id),
+}));
 
 export type User = InferSelectModel<typeof user>;
 
@@ -168,3 +205,52 @@ export const stream = pgTable(
 );
 
 export type Stream = InferSelectModel<typeof stream>;
+
+export const passwordResetToken = pgTable('PasswordResetToken', {
+  id: uuid('id').primaryKey().notNull().defaultRandom(),
+  email: varchar('email', { length: 64 }).notNull(),
+  token: varchar('token', { length: 8 }).notNull(),
+  attempts: varchar('attempts', { length: 1 }).notNull().default('0'),
+  expiresAt: timestamp('expiresAt').notNull(),
+  createdAt: timestamp('createdAt').notNull().defaultNow(),
+});
+
+export type PasswordResetToken = InferSelectModel<typeof passwordResetToken>;
+
+export const country = pgTable('Country', {
+  id: uuid('id').primaryKey().notNull().defaultRandom(),
+  name: varchar('name', { length: 100 }).notNull(),
+  iso2_code: varchar('iso2_code', { length: 2 }).notNull(),
+  iso3_code: varchar('iso3_code', { length: 3 }).notNull(),
+  area_code: varchar('area_code', { length: 5 }).notNull(),
+  demonym: varchar('demonym', { length: 50 }).notNull(),
+  createdAt: timestamp('createdAt').notNull().defaultNow(),
+});
+
+export type Country = InferSelectModel<typeof country>;
+
+export const deptoState = pgTable('DeptoState', {
+  id: uuid('id').primaryKey().notNull().defaultRandom(),
+  country_id: uuid('country_id')
+    .notNull()
+    .references(() => country.id),
+  name: varchar('name', { length: 100 }).notNull(),
+  zip_code: varchar('zip_code', { length: 10 }),
+  createdAt: timestamp('createdAt').notNull().defaultNow(),
+});
+
+export type DeptoState = InferSelectModel<typeof deptoState>;
+
+export const cityMunicipality = pgTable('CityMunicipality', {
+  id: uuid('id').primaryKey().notNull().defaultRandom(),
+  country_id: uuid('country_id')
+    .notNull()
+    .references(() => country.id),
+  depto_state_id: uuid('depto_state_id')
+    .notNull()
+    .references(() => deptoState.id),
+  name: varchar('name', { length: 100 }).notNull(),
+  createdAt: timestamp('createdAt').notNull().defaultNow(),
+});
+
+export type CityMunicipality = InferSelectModel<typeof cityMunicipality>;

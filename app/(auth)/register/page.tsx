@@ -1,21 +1,33 @@
 'use client';
-
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useRouter } from 'next/navigation';
-import { useActionState, useEffect, useState } from 'react';
+import { useActionState, useEffect, useState, useRef } from 'react';
+import UserForm from "@/components/user-form";
+import LawyerForm from "@/components/lawyer-form";
 
-import { AuthForm } from '@/components/auth-form';
+import {
+  createRegisterSchema,
+  type RegisterFormData,
+} from '@/lib/validations/auth';
+import { zodResolver } from '@hookform/resolvers/zod';
+
 import { SubmitButton } from '@/components/submit-button';
 
 import { register, type RegisterActionState } from '../actions';
 import { toast } from '@/components/toast';
 import { useSession } from 'next-auth/react';
+import { MoveRight } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 export default function Page() {
   const router = useRouter();
 
   const [email, setEmail] = useState('');
-  const [isSuccessful, setIsSuccessful] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const hasRedirected = useRef(false);
 
   const [state, formAction] = useActionState<RegisterActionState, FormData>(
     register,
@@ -25,6 +37,17 @@ export default function Page() {
   );
 
   const { update: updateSession } = useSession();
+
+  const form = useForm<RegisterFormData>({
+    resolver: zodResolver(createRegisterSchema()),
+    defaultValues: {
+      name: '',
+      lastname: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+  });
 
   useEffect(() => {
     if (state.status === 'user_exists') {
@@ -36,42 +59,57 @@ export default function Page() {
         type: 'error',
         description: 'Failed validating your submission!',
       });
-    } else if (state.status === 'success') {
+    } else if (state.status === 'success' && !hasRedirected.current) {
+      hasRedirected.current = true;
       toast({ type: 'success', description: 'Account created successfully!' });
 
-      setIsSuccessful(true);
-      updateSession();
-      router.refresh();
+      // Update session and then redirect
+      updateSession().then(() => {
+        router.push('/login');
+      }).catch(() => {
+        // if the session update fails, we still want to redirect
+        router.push('/login');
+      });
     }
-  }, [state]);
+  }, [state.status, router]);
 
-  const handleSubmit = (formData: FormData) => {
-    setEmail(formData.get('email') as string);
-    formAction(formData);
+  const onSubmit = (data: RegisterFormData) => {
+    console.log(data);
   };
 
   return (
-    <div className="flex h-dvh w-screen items-start pt-12 md:pt-0 md:items-center justify-center bg-background">
-      <div className="w-full max-w-md overflow-hidden rounded-2xl gap-12 flex flex-col">
-        <div className="flex flex-col items-center justify-center gap-2 px-4 text-center sm:px-16">
-          <h3 className="text-xl font-semibold dark:text-zinc-50">Sign Up</h3>
-          <p className="text-sm text-gray-500 dark:text-zinc-400">
-            Create an account with your email and password
-          </p>
-        </div>
-        <AuthForm action={handleSubmit} defaultEmail={email}>
-          <SubmitButton isSuccessful={isSuccessful}>Sign Up</SubmitButton>
-          <p className="text-center text-sm text-gray-600 mt-4 dark:text-zinc-400">
-            {'Already have an account? '}
-            <Link
-              href="/login"
-              className="font-semibold text-gray-800 hover:underline dark:text-zinc-200"
-            >
-              Sign in
-            </Link>
-            {' instead.'}
-          </p>
-        </AuthForm>
+    <div className="h-screen w-full flex flex-col">
+      <div className="h-10 w-full flex flex-row justify-end p-4">
+        <Link href={'/login'} className="text-primary rounded-full">
+          <Button variant="link" className="text-primary rounded-full">
+            Login
+            <MoveRight className="size-4" />
+          </Button>
+        </Link>
+      </div>
+      <div className="size-full flex items-center justify-center px-5">
+        <Tabs defaultValue="user" className="w-[400px]">
+          <TabsList>
+            <TabsTrigger value="user">User</TabsTrigger>
+            <TabsTrigger value="lawyer">Lawyer</TabsTrigger>
+          </TabsList>
+          <TabsContent value="user">
+            <div className="text-center text-2xl font-bold">User</div>
+              <UserForm
+                  form={form}
+                  isLoading={isLoading}
+                  callback={onSubmit}
+              />
+          </TabsContent>
+          <TabsContent value="lawyer">
+            <div className="text-center text-2xl font-bold">lawyer</div>
+            <LawyerForm
+                form={form}
+                isLoading={isLoading}
+                callback={onSubmit}
+            />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );

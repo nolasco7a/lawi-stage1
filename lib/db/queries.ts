@@ -27,6 +27,14 @@ import {
   type DBMessage,
   type Chat,
   stream,
+  passwordResetToken,
+  type PasswordResetToken,
+  country,
+  deptoState,
+  cityMunicipality,
+  type Country,
+  type DeptoState,
+  type CityMunicipality,
 } from './schema';
 import type { ArtifactKind } from '@/components/artifact';
 import { generateUUID } from '../utils';
@@ -57,9 +65,46 @@ export async function createUser(email: string, password: string) {
   const hashedPassword = generateHashedPassword(password);
 
   try {
-    return await db.insert(user).values({ email, password: hashedPassword });
+    return await db.insert(user).values({ 
+      email, 
+      password: hashedPassword,
+      role: 'user',
+      is_guest: false 
+    });
   } catch (error) {
     throw new ChatSDKError('bad_request:database', 'Failed to create user');
+  }
+}
+
+export async function createUserWithDetails(userData: {
+  email: string;
+  password: string;
+  name?: string;
+  lastname?: string;
+  role: 'user' | 'lawyer' | 'admin';
+  lawyer_credential_number?: string;
+  national_id?: string;
+  phone?: string;
+  country_id?: string;
+  depto_state_id?: string;
+  city_municipality_id?: string;
+}) {
+  const hashedPassword = generateHashedPassword(userData.password);
+
+  try {
+    return await db.insert(user).values({
+      ...userData,
+      password: hashedPassword,
+      is_guest: false,
+    }).returning({
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      lastname: user.lastname,
+      role: user.role,
+    });
+  } catch (error) {
+    throw new ChatSDKError('bad_request:database', 'Failed to create user with details');
   }
 }
 
@@ -68,7 +113,12 @@ export async function createGuestUser() {
   const password = generateHashedPassword(generateUUID());
 
   try {
-    return await db.insert(user).values({ email, password }).returning({
+    return await db.insert(user).values({ 
+      email, 
+      password,
+      role: 'user',
+      is_guest: true 
+    }).returning({
       id: user.id,
       email: user.email,
     });
@@ -536,3 +586,193 @@ export async function getStreamIdsByChatId({ chatId }: { chatId: string }) {
     );
   }
 }
+
+export async function createPasswordResetToken({
+  email,
+  token,
+}: {
+  email: string;
+  token: string;
+}) {
+  try {
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes from now
+    
+    // Delete any existing tokens for this email
+    await db.delete(passwordResetToken).where(eq(passwordResetToken.email, email));
+    
+    return await db
+      .insert(passwordResetToken)
+      .values({
+        email,
+        token,
+        expiresAt,
+        attempts: '0',
+      })
+      .returning();
+  } catch (error) {
+    throw new ChatSDKError(
+      'bad_request:database',
+      'Failed to create password reset token',
+    );
+  }
+}
+
+export async function getPasswordResetToken({
+  email,
+  token,
+}: {
+  email: string;
+  token: string;
+}): Promise<PasswordResetToken | null> {
+  try {
+    const [resetToken] = await db
+      .select()
+      .from(passwordResetToken)
+      .where(
+        and(
+          eq(passwordResetToken.email, email),
+          eq(passwordResetToken.token, token),
+          gt(passwordResetToken.expiresAt, new Date()),
+        ),
+      );
+
+    return resetToken || null;
+  } catch (error) {
+    throw new ChatSDKError(
+      'bad_request:database',
+      'Failed to get password reset token',
+    );
+  }
+}
+
+export async function incrementPasswordResetAttempts({
+  email,
+  token,
+}: {
+  email: string;
+  token: string;
+}) {
+  try {
+    return await db
+      .update(passwordResetToken)
+      .set({
+        attempts: String(Number((await getPasswordResetTokenByEmailAndToken(email, token))?.attempts || '0') + 1),
+      })
+      .where(
+        and(
+          eq(passwordResetToken.email, email),
+          eq(passwordResetToken.token, token),
+        ),
+      );
+  } catch (error) {
+    throw new ChatSDKError(
+      'bad_request:database',
+      'Failed to increment password reset attempts',
+    );
+  }
+}
+
+async function getPasswordResetTokenByEmailAndToken(
+  email: string,
+  token: string,
+): Promise<PasswordResetToken | null> {
+  try {
+    const [resetToken] = await db
+      .select()
+      .from(passwordResetToken)
+      .where(
+        and(
+          eq(passwordResetToken.email, email),
+          eq(passwordResetToken.token, token),
+        ),
+      );
+
+    return resetToken || null;
+  } catch (error) {
+    throw new ChatSDKError(
+      'bad_request:database',
+      'Failed to get password reset token by email and token',
+    );
+  }
+}
+
+export async function deletePasswordResetToken({
+  email,
+  token,
+}: {
+  email: string;
+  token: string;
+}) {
+  try {
+    return await db
+      .delete(passwordResetToken)
+      .where(
+        and(
+          eq(passwordResetToken.email, email),
+          eq(passwordResetToken.token, token),
+        ),
+      );
+  } catch (error) {
+    throw new ChatSDKError(
+      'bad_request:database',
+      'Failed to delete password reset token',
+    );
+  }
+}
+
+export async function updateUserPassword({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}) {
+  try {
+    const hashedPassword = generateHashedPassword(password);
+    return await db
+      .update(user)
+      .set({ password: hashedPassword })
+      .where(eq(user.email, email));
+  } catch (error) {
+    throw new ChatSDKError(
+      'bad_request:database',
+      'Failed to update user password',
+    );
+  }
+}
+
+export async function getAllCountries(): Promise<Country[]> {
+  try {
+    return await db.select().from(country);
+  } catch (error) {
+    throw new ChatSDKError(
+      'bad_request:database',
+      'Failed to get all countries',
+    );
+  }
+}
+
+export async function getDeptoStatesByCountryId(country_id: string): Promise<DeptoState[]> {
+    try {
+        return await db.select().from(deptoState).where(eq(deptoState.country_id, country_id));
+    } catch (error) {
+        throw new ChatSDKError(
+            'bad_request:database',
+            'Failed to get states/departments by country id',
+        );
+    }
+}
+
+export async function getCityMunicipalitiesByCountryId(country_id: string): Promise<CityMunicipality[]> {
+    try {
+        return await db.select().from(cityMunicipality).where(eq(cityMunicipality.country_id, country_id));
+    } catch (error) {
+        throw new ChatSDKError(
+            'bad_request:database',
+            'Failed to get cities/municipalities by state/department id',
+        );
+    }
+}
+
+
+

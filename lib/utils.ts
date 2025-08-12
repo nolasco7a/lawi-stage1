@@ -114,3 +114,30 @@ export function getTextFromMessage(message: ChatMessage): string {
     .map((part) => part.text)
     .join('');
 }
+
+export function setToLocalStorage(key: string, value: unknown) {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem(key, JSON.stringify(value));
+    }
+}
+
+
+export function removeFromLocalStorage(key: string) {
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem(key);
+  }
+}
+
+export function getFromLocalStorage<T>(key: string): T | null {
+  if (typeof window !== 'undefined') {
+    const item = localStorage.getItem(key);
+    return item ? (JSON.parse(item) as T) : null;
+  }
+  return null;
+}
+
+export function clearLocalStorage() {
+    if (typeof window !== 'undefined') {
+        localStorage.clear();
+    }
+}

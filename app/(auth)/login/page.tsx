@@ -2,20 +2,33 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useActionState, useEffect, useState } from 'react';
+import { useActionState, useEffect, useState, useRef } from 'react';
 import { toast } from '@/components/toast';
+import { Form } from '@/components/form';
+import { FormInput } from '@/components/form-input';
+import { createLoginSchema, type LoginFormData } from '@/lib/validations/auth';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
 
-import { AuthForm } from '@/components/auth-form';
 import { SubmitButton } from '@/components/submit-button';
 
 import { login, type LoginActionState } from '../actions';
 import { useSession } from 'next-auth/react';
+import { Button } from '@/components/ui/button';
+import { MoveRight } from 'lucide-react';
 
 export default function Page() {
   const router = useRouter();
 
-  const [email, setEmail] = useState('');
-  const [isSuccessful, setIsSuccessful] = useState(false);
+  const form = useForm<LoginFormData>({
+    resolver: zodResolver(createLoginSchema()),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
+  });
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const [state, formAction] = useActionState<LoginActionState, FormData>(
     login,
@@ -38,39 +51,77 @@ export default function Page() {
         description: 'Failed validating your submission!',
       });
     } else if (state.status === 'success') {
-      setIsSuccessful(true);
-      updateSession();
-      router.refresh();
+      updateSession()
+        .then(() => {
+            console.log("Session updated!");
+            toast({
+              type: 'success',
+              description: 'Successfully logged in!',
+            });
+            router.push('/chat');
+          })
+          .catch(error => {
+              console.log(error);
+              setIsLoading(false);
+          })
     }
-  }, [state.status]);
+  }, [state.status, router]);
 
-  const handleSubmit = (formData: FormData) => {
-    setEmail(formData.get('email') as string);
+  const onSubmit = (data: LoginFormData) => {
+    const formData = new FormData();
+    formData.append('email', data.email);
+    formData.append('password', data.password);
     formAction(formData);
   };
 
   return (
-    <div className="flex h-dvh w-screen items-start pt-12 md:pt-0 md:items-center justify-center bg-background">
-      <div className="w-full max-w-md overflow-hidden rounded-2xl flex flex-col gap-12">
-        <div className="flex flex-col items-center justify-center gap-2 px-4 text-center sm:px-16">
-          <h3 className="text-xl font-semibold dark:text-zinc-50">Sign In</h3>
-          <p className="text-sm text-gray-500 dark:text-zinc-400">
-            Use your email and password to sign in
-          </p>
+    <div className="w-full h-screen flex flex-col">
+      <div className="h-10 w-full flex flex-row justify-end p-4">
+        <Link href={'/register'} className="text-primary rounded-full">
+          <Button variant="link" className="text-primary rounded-full">
+            Register
+            <MoveRight className="size-4" />
+          </Button>
+        </Link>
+      </div>
+      <div className="h-full flex items-center justify-center px-4">
+        <div className="w-full max-w-md overflow-hidden rounded-2xl flex flex-col gap-12">
+          <div className="flex flex-col items-center justify-center gap-2 px-4 text-center sm:px-16">
+            <h3 className="text-xl font-semibold dark:text-zinc-50">Sign In</h3>
+            <p className="text-sm text-gray-500 dark:text-zinc-400">
+              Use your email and password to sign in
+            </p>
+          </div>
+          <Form
+            onSubmit={form.handleSubmit(onSubmit)}
+            isLoading={isLoading}
+            form={form}
+            buttonText="Sign in"
+          >
+            <FormInput
+              form={form}
+              name="email"
+              label="Email"
+              type="email"
+              placeholder="Email"
+            />
+            <FormInput
+              form={form}
+              name="password"
+              label="Password"
+              type="password"
+              placeholder="Password"
+            />
+            <div className="text-right">
+              <Link
+                href="/forgot-password"
+                className="text-sm text-primary hover:underline"
+              >
+                Forgot your password?
+              </Link>
+            </div>
+          </Form>
         </div>
-        <AuthForm action={handleSubmit} defaultEmail={email}>
-          <SubmitButton isSuccessful={isSuccessful}>Sign in</SubmitButton>
-          <p className="text-center text-sm text-gray-600 mt-4 dark:text-zinc-400">
-            {"Don't have an account? "}
-            <Link
-              href="/register"
-              className="font-semibold text-gray-800 hover:underline dark:text-zinc-200"
-            >
-              Sign up
-            </Link>
-            {' for free.'}
-          </p>
-        </AuthForm>
       </div>
     </div>
   );
