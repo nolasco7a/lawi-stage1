@@ -12,6 +12,15 @@ import {
   deletePasswordResetToken,
   updateUserPassword
 } from '@/lib/db/queries';
+import {
+  createRegisterUserSchema,
+  createRegisterLawyerSchema,
+  createResetPasswordSchema,
+  createVerifyEmailSchema,
+  createVerifyOtpSchema,
+  type RegisterUserFormData,
+  type RegisterLawyerFormData
+} from '@/lib/validations/auth';
 import emailProvider from '@/lib/email/provider';
 
 import { signIn } from './auth';
@@ -94,34 +103,6 @@ export const register = async (
 
 };
 
-// New registration actions for detailed user registration
-const userRegisterSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8),
-  name: z.string().min(2),
-  lastname: z.string().min(2),
-  confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: 'Passwords do not match',
-  path: ['confirmPassword'],
-});
-
-const lawyerRegisterSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8),
-  name: z.string().min(2),
-  lastname: z.string().min(2),
-  confirmPassword: z.string(),
-  lawyer_credential_number: z.string().optional(),
-  national_id: z.string().min(1),
-  phone: z.string().min(8),
-  country_id: z.string().uuid(),
-  depto_state_id: z.string().uuid(),
-  city_municipality_id: z.string().uuid(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: 'Passwords do not match',
-  path: ['confirmPassword'],
-});
 
 export interface UserRegisterActionState {
   status:
@@ -138,13 +119,22 @@ export const registerUser = async (
   formData: FormData,
 ): Promise<UserRegisterActionState> => {
   try {
-    const validatedData = userRegisterSchema.parse({
+    const formDataObj = {
       email: formData.get('email'),
       password: formData.get('password'),
       name: formData.get('name'),
       lastname: formData.get('lastname'),
       confirmPassword: formData.get('confirmPassword'),
-    });
+      phone: formData.get('phone'),
+      country_id: formData.get('country_id'),
+      depto_state_id: formData.get('depto_state_id'),
+      city_municipality_id: formData.get('city_municipality_id'),
+      role: 'user' as const,
+    };
+    
+    console.log('registerUser - Form data received:', formDataObj);
+    
+    const validatedData = createRegisterUserSchema().parse(formDataObj);
 
     const [existingUser] = await getUser(validatedData.email);
 
@@ -152,13 +142,21 @@ export const registerUser = async (
       return { status: 'user_exists' };
     }
 
+    console.log('registerUser - Creating user with validated data:', validatedData);
+    
     await createUserWithDetails({
       email: validatedData.email,
       password: validatedData.password,
       name: validatedData.name,
       lastname: validatedData.lastname,
-      role: 'user',
+      role: validatedData.role,
+      phone: validatedData.phone,
+      country_id: validatedData.country_id,
+      depto_state_id: validatedData.depto_state_id,
+      city_municipality_id: validatedData.city_municipality_id,
     });
+
+    console.log('registerUser - User created successfully, now signing in...');
 
     await signIn('credentials', {
       email: validatedData.email,
@@ -166,12 +164,16 @@ export const registerUser = async (
       redirect: false,
     });
 
+    console.log('registerUser - Sign in successful');
     return { status: 'success' };
   } catch (error) {
+    console.log('registerUser - Error occurred:', error);
     if (error instanceof z.ZodError) {
+      console.log('registerUser - Validation errors:', error.errors);
       return { status: 'invalid_data' };
     }
 
+    console.log('registerUser - Unknown error:', error);
     return { status: 'failed' };
   }
 };
@@ -193,7 +195,7 @@ export const registerLawyer = async (
   formData: FormData,
 ): Promise<LawyerRegisterActionState> => {
   try {
-    const validatedData = lawyerRegisterSchema.parse({
+    const formDataObj = {
       email: formData.get('email'),
       password: formData.get('password'),
       name: formData.get('name'),
@@ -205,7 +207,12 @@ export const registerLawyer = async (
       country_id: formData.get('country_id'),
       depto_state_id: formData.get('depto_state_id'),
       city_municipality_id: formData.get('city_municipality_id'),
-    });
+      role: 'lawyer' as const,
+    };
+    
+    console.log('registerLawyer - Form data received:', formDataObj);
+    
+    const validatedData = createRegisterLawyerSchema().parse(formDataObj);
 
     const [existingUser] = await getUser(validatedData.email);
 
@@ -218,7 +225,7 @@ export const registerLawyer = async (
       password: validatedData.password,
       name: validatedData.name,
       lastname: validatedData.lastname,
-      role: 'lawyer',
+      role: validatedData.role,
       lawyer_credential_number: validatedData.lawyer_credential_number,
       national_id: validatedData.national_id,
       phone: validatedData.phone,
@@ -253,25 +260,6 @@ export const registerLawyer = async (
   }
 };
 
-// Password Reset Actions
-const forgotPasswordSchema = z.object({
-  email: z.string().email(),
-});
-
-const verifyOtpSchema = z.object({
-  email: z.string().email(),
-  code: z.string().length(8),
-});
-
-const resetPasswordSchema = z.object({
-  email: z.string().email(),
-  code: z.string().length(8),
-  password: z.string().min(8),
-  confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: 'Passwords do not match',
-  path: ['confirmPassword'],
-});
 
 function generateOTP(): string {
   return Math.floor(10000000 + Math.random() * 90000000).toString();
@@ -286,7 +274,7 @@ export const forgotPassword = async (
   formData: FormData,
 ): Promise<ForgotPasswordActionState> => {
   try {
-    const validatedData = forgotPasswordSchema.parse({
+    const validatedData = createVerifyEmailSchema().parse({
       email: formData.get('email'),
     });
 
@@ -327,7 +315,7 @@ export const verifyOtp = async (
   formData: FormData,
 ): Promise<VerifyOtpActionState> => {
   try {
-    const validatedData = verifyOtpSchema.parse({
+    const validatedData = createVerifyOtpSchema().parse({
       email: formData.get('email'),
       code: formData.get('code'),
     });
@@ -383,7 +371,7 @@ export const resetPassword = async (
   formData: FormData,
 ): Promise<ResetPasswordActionState> => {
   try {
-    const validatedData = resetPasswordSchema.parse({
+    const validatedData = createResetPasswordSchema().parse({
       email: formData.get('email'),
       code: formData.get('code'),
       password: formData.get('password'),

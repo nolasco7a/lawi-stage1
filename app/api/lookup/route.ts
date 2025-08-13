@@ -5,7 +5,6 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const type = searchParams.get('type');
   const countryId = searchParams.get('countryId');
-  const deptoStateId = searchParams.get('deptoStateId');
 
   try {
     switch (type) {
@@ -18,13 +17,14 @@ export async function GET(request: Request) {
           return NextResponse.json({ error: 'Country ID required' }, { status: 400 });
         }
         const departments = await getDeptoStatesByCountryId(countryId);
+        console.log(departments);
         return NextResponse.json(departments);
         
       case 'cities':
-        if (!deptoStateId) {
+        if (!countryId) {
           return NextResponse.json({ error: 'Department ID required' }, { status: 400 });
         }
-        const cities = await getCityMunicipalitiesByCountryId(deptoStateId);
+        const cities = await getCityMunicipalitiesByCountryId(countryId);
         return NextResponse.json(cities);
         
       default:

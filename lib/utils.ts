@@ -141,3 +141,16 @@ export function clearLocalStorage() {
         localStorage.clear();
     }
 }
+
+export const getCountriesOptions = (countries) => {
+    return countries.map(country => ({label: country.name, value: country.id}));
+}
+
+export const getDeptoStatesOptions = (states) => {
+    return states.map(state => ({label: state.name, value: state.id}));
+}
+
+export const getCityMunicipalitiesOptions = (cities, deptoStateId) => {
+    const citiesByState = cities.filter(city => city.depto_state_id === deptoStateId)
+    return citiesByState.map(city => ({label: city.name, value: city.id}));
+}

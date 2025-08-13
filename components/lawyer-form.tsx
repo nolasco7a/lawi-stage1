@@ -1,13 +1,25 @@
-import {FormInput} from "@/components/form-input";
+import {FormInput, FormInputPhone, FormInputSelect} from "@/components/form-input";
 import {Form} from "@/components/form";
-import {RegisterFormData} from "@/lib/validations/auth";
+import {RegisterLawyerFormData} from "@/lib/validations/auth";
+import { getCountriesOptions, getDeptoStatesOptions, getCityMunicipalitiesOptions} from "@/lib/utils";
+import {useCountryStateCitySelection} from "@/lib/hooks/useCountryStateCitySelection";
 
-type UserFormProps = {
+type LawyerFormProps = {
     form: any;
-    callback: (data: RegisterFormData) => void;
+    callback: (data: RegisterLawyerFormData) => void;
     isLoading: boolean;
 }
-export default function UserForm({form, callback, isLoading}: UserFormProps) {
+export default function LawyerForm({form, callback, isLoading}: LawyerFormProps) {
+    console.log('LawyerForm - Current form values:', form.getValues());
+    const {
+        onCountryChange,
+        onStateChange,
+        deptoStateId,
+        countries,
+        deptoStates,
+        cityMunicipalities,
+    } = useCountryStateCitySelection();
+
     return (
         <Form
             onSubmit={form.handleSubmit(callback)}
@@ -18,37 +30,85 @@ export default function UserForm({form, callback, isLoading}: UserFormProps) {
             <FormInput
                 form={form}
                 name="name"
-                label="Name"
+                label="Nombre"
                 type="text"
-                placeholder="Name"
+                placeholder="Nombre"
             />
             <FormInput
                 form={form}
                 name="lastname"
-                label="Lastname"
+                label="Apellido"
                 type="text"
-                placeholder="Lastname"
+                placeholder="Apellido"
             />
             <FormInput
                 form={form}
                 name="email"
-                label="Email"
+                label="Correo electronico"
                 type="email"
-                placeholder="Email"
+                placeholder="Correo electronico"
+            />
+            <FormInputPhone
+                form={form}
+                name="phone"
+                label="Número de Teléfono"
+                placeholder="Phone"
+                disabled={false}
+                defaultCountry={'HN'}
+            />
+            <FormInput
+                form={form}
+                name="lawyer_credential_number"
+                label="Credencial de Abogado"
+                type="text"
+                placeholder="Credencial de Abogado"
+            />
+            <FormInput
+                form={form}
+                name="national_id"
+                label="Número de Identificación"
+                type="text"
+                placeholder="Número de Identificación"
+            />
+            <FormInputSelect
+                form={form}
+                name="country_id"
+                label="País"
+                options={getCountriesOptions(countries)}
+                callback={(value: string) => {
+                    onCountryChange(value);
+                }}
+            />
+            <FormInputSelect
+                form={form}
+                name="depto_state_id"
+                label="Departamento"
+                options={getDeptoStatesOptions(deptoStates)}
+                disabled={deptoStates.length === 0}
+                callback={(value: string) => {
+                    onStateChange(value);
+                }}
+            />
+            <FormInputSelect
+                form={form}
+                name="city_municipality_id"
+                label="Ciudad ó Municipio"
+                options={getCityMunicipalitiesOptions(cityMunicipalities, deptoStateId)}
+                disabled={cityMunicipalities.length === 0}
             />
             <FormInput
                 form={form}
                 name="password"
-                label="Password"
+                label="Contraseña"
                 type="password"
-                placeholder="Password"
+                placeholder="Contraseña"
             />
             <FormInput
                 form={form}
                 name="confirmPassword"
-                label="Confirm Password"
+                label="Confirmar Contraseña"
                 type="password"
-                placeholder="Confirm Password"
+                placeholder="Confirmar Contraseña"
             />
         </Form>
     )

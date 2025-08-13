@@ -89,12 +89,24 @@ export async function createUserWithDetails(userData: {
   depto_state_id?: string;
   city_municipality_id?: string;
 }) {
+    console.log("user Data received for createUserWithDetails:", { ...userData, password: '[HIDDEN]' });
   const hashedPassword = generateHashedPassword(userData.password);
 
   try {
+    console.log('createUserWithDetails - Creating user with data:', { ...userData, password: '[HIDDEN]' });
+    
     return await db.insert(user).values({
-      ...userData,
+      email: userData.email,
       password: hashedPassword,
+      name: userData.name,
+      lastname: userData.lastname,
+      role: userData.role,
+      phone: userData.phone,
+      country_id: userData.country_id,
+      depto_state_id: userData.depto_state_id,
+      city_municipality_id: userData.city_municipality_id,
+      lawyer_credential_number: userData.lawyer_credential_number,
+      national_id: userData.national_id,
       is_guest: false,
     }).returning({
       id: user.id,

@@ -8,29 +8,35 @@ import UserForm from "@/components/user-form";
 import LawyerForm from "@/components/lawyer-form";
 
 import {
-  createRegisterSchema,
-  type RegisterFormData,
+  createRegisterUserSchema,
+  createRegisterLawyerSchema,
+  type RegisterUserFormData,
+  type RegisterLawyerFormData,
 } from '@/lib/validations/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { SubmitButton } from '@/components/submit-button';
 
-import { register, type RegisterActionState } from '../actions';
+import { registerUser, registerLawyer, type UserRegisterActionState, type LawyerRegisterActionState } from '../actions';
 import { toast } from '@/components/toast';
 import { useSession } from 'next-auth/react';
 import { MoveRight } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 
 export default function Page() {
   const router = useRouter();
 
-  const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const hasRedirected = useRef(false);
 
-  const [state, formAction] = useActionState<RegisterActionState, FormData>(
-    register,
+  const [userState, userFormAction] = useActionState<UserRegisterActionState, FormData>(
+    registerUser,
+    {
+      status: 'idle',
+    },
+  );
+
+  const [lawyerState, lawyerFormAction] = useActionState<LawyerRegisterActionState, FormData>(
+    registerLawyer,
     {
       status: 'idle',
     },
@@ -38,43 +44,110 @@ export default function Page() {
 
   const { update: updateSession } = useSession();
 
-  const form = useForm<RegisterFormData>({
-    resolver: zodResolver(createRegisterSchema()),
+  const userForm = useForm({
+    resolver: zodResolver(createRegisterUserSchema()),
     defaultValues: {
       name: '',
       lastname: '',
       email: '',
       password: '',
       confirmPassword: '',
+      phone: '',
+      country_id: '',
+      depto_state_id: '',
+      city_municipality_id: '',
+      role: 'user' as const,
     },
   });
 
+  const lawyerForm = useForm({
+    resolver: zodResolver(createRegisterLawyerSchema()),
+    defaultValues: {
+      name: '',
+      lastname: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+      phone: '',
+      country_id: '',
+      depto_state_id: '',
+      city_municipality_id: '',
+      lawyer_credential_number: '',
+      national_id: '',
+      role: 'lawyer' as const,
+    },
+  });
+
+  // Handle user registration state
   useEffect(() => {
-    if (state.status === 'user_exists') {
+    if (userState.status === 'user_exists') {
       toast({ type: 'error', description: 'Account already exists!' });
-    } else if (state.status === 'failed') {
+    } else if (userState.status === 'failed') {
       toast({ type: 'error', description: 'Failed to create account!' });
-    } else if (state.status === 'invalid_data') {
+    } else if (userState.status === 'invalid_data') {
       toast({
         type: 'error',
         description: 'Failed validating your submission!',
       });
-    } else if (state.status === 'success' && !hasRedirected.current) {
+    } else if (userState.status === 'success' && !hasRedirected.current) {
       hasRedirected.current = true;
-      toast({ type: 'success', description: 'Account created successfully!' });
-
-      // Update session and then redirect
+      toast({ type: 'success', description: 'User account created successfully!' });
       updateSession().then(() => {
         router.push('/login');
       }).catch(() => {
-        // if the session update fails, we still want to redirect
         router.push('/login');
       });
     }
-  }, [state.status, router]);
+  }, [userState.status, router, updateSession]);
 
-  const onSubmit = (data: RegisterFormData) => {
-    console.log(data);
+  // Handle lawyer registration state
+  useEffect(() => {
+    if (lawyerState.status === 'user_exists') {
+      toast({ type: 'error', description: 'Account already exists!' });
+    } else if (lawyerState.status === 'failed') {
+      toast({ type: 'error', description: 'Failed to create lawyer account!' });
+    } else if (lawyerState.status === 'invalid_data') {
+      toast({
+        type: 'error',
+        description: 'Failed validating your submission!',
+      });
+    } else if (lawyerState.status === 'credential_exists') {
+      toast({ type: 'error', description: 'Lawyer credential already exists!' });
+    } else if (lawyerState.status === 'national_id_exists') {
+      toast({ type: 'error', description: 'National ID already exists!' });
+    } else if (lawyerState.status === 'success' && !hasRedirected.current) {
+      hasRedirected.current = true;
+      toast({ type: 'success', description: 'Lawyer account created successfully!' });
+      updateSession().then(() => {
+        router.push('/login');
+      }).catch(() => {
+        router.push('/login');
+      });
+    }
+  }, [lawyerState.status, router, updateSession]);
+
+  const onUserSubmit = (data: RegisterUserFormData) => {
+    console.log('User registration data:', data);
+    setIsLoading(true);
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      formData.append(key, value as string);
+    });
+    userFormAction(formData);
+    setIsLoading(false);
+  };
+
+  const onLawyerSubmit = (data: RegisterLawyerFormData) => {
+    console.log('Lawyer registration data:', data);
+    setIsLoading(true);
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        formData.append(key, value as string);
+      }
+    });
+    lawyerFormAction(formData);
+    setIsLoading(false);
   };
 
   return (
@@ -96,17 +169,17 @@ export default function Page() {
           <TabsContent value="user">
             <div className="text-center text-2xl font-bold">User</div>
               <UserForm
-                  form={form}
+                  form={userForm}
                   isLoading={isLoading}
-                  callback={onSubmit}
+                  callback={onUserSubmit}
               />
           </TabsContent>
           <TabsContent value="lawyer">
             <div className="text-center text-2xl font-bold">lawyer</div>
             <LawyerForm
-                form={form}
+                form={lawyerForm}
                 isLoading={isLoading}
-                callback={onSubmit}
+                callback={onLawyerSubmit}
             />
           </TabsContent>
         </Tabs>

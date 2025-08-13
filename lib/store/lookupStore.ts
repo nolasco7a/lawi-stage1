@@ -14,6 +14,8 @@ interface LookupState {
   fetchCityMunicipalities: (deptoStateId: string) => Promise<void>;
   
   setSelectedCountry: (countryId: string | null) => void;
+    cleanDeptoStates: () => void;
+    cleanCityMunicipalities: () => void;
 }
 
 export const useLookupStore = create<LookupState>()((set) => ({
@@ -42,7 +44,7 @@ export const useLookupStore = create<LookupState>()((set) => ({
     }
   },
   
-  fetchCityMunicipalities: async (deptoStateId: string) => {
+  fetchCityMunicipalities: async (countryId: string) => {
     try {
       const response = await fetch(`/api/lookup?type=cities&countryId=${countryId}`);
       const cityMunicipalities = await response.json();
@@ -55,4 +57,7 @@ export const useLookupStore = create<LookupState>()((set) => ({
   setSelectedCountry: (countryId: string | null) => {
     set({ selectedCountry: countryId });
   },
+
+    cleanDeptoStates: () => set({ deptoStates: [] }),
+    cleanCityMunicipalities: () => set({ cityMunicipalities: []})
 }));

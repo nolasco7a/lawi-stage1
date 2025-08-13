@@ -1,14 +1,25 @@
-import React from 'react';
 import { Form } from './form';
 import { FormInput, FormInputPhone, FormInputSelect } from './form-input';
-import {RegisterFormData} from "@/lib/validations/auth";
+import {RegisterUserFormData} from "@/lib/validations/auth";
+import {getCityMunicipalitiesOptions, getCountriesOptions, getDeptoStatesOptions} from "@/lib/utils";
+import {useCountryStateCitySelection} from "@/lib/hooks/useCountryStateCitySelection";
 
-type userFormProps = {
+type UserFormProps = {
     form: any
     isLoading: boolean
-    callback: (data: RegisterFormData) => void
+    callback: (data: RegisterUserFormData) => void
 }
-export default function UserForm({form, isLoading, callback}: userFormProps) {
+export default function UserForm({form, isLoading, callback}: UserFormProps) {
+    console.log('UserForm - Current form values:', form.getValues());
+    const {
+        onCountryChange,
+        onStateChange,
+        deptoStateId,
+        countries,
+        deptoStates,
+        cityMunicipalities,
+    } = useCountryStateCitySelection();
+
     return(
         <Form
             onSubmit={form.handleSubmit(callback)}
@@ -19,77 +30,71 @@ export default function UserForm({form, isLoading, callback}: userFormProps) {
             <FormInput
                 form={form}
                 name="name"
-                label="Name"
+                label="Nombre"
                 type="text"
                 placeholder="Name"
             />
             <FormInput
                 form={form}
                 name="lastname"
-                label="Lastname"
+                label="Apellido"
                 type="text"
-                placeholder="Lastname"
+                placeholder="Apellido"
             />
             <FormInput
                 form={form}
                 name="email"
-                label="Email"
+                label="Correo electronico"
                 type="email"
-                placeholder="Email"
+                placeholder="Correo electronico"
             />
             <FormInputPhone
                 form={form}
-                name={""}
-                label="Phone"
-                defaultValue="+504"
+                name="phone"
+                label="Número de Teléfono"
                 placeholder="Phone"
                 disabled={false}
+                defaultCountry={'HN'}
             />
-
             <FormInputSelect
                 form={form}
-                name="City"
-                label="City"
-                options={[{label: 'New York', value: 'new_york'}, {label: 'Los Angeles', value: 'los_angeles'}, {label: 'Chicago', value: 'chicago'}]}
-            /><FormInputSelect
-            form={form}
-            name="City"
-            label="City"
-            options={[{label: 'New York', value: 'new_york'}, {label: 'Los Angeles', value: 'los_angeles'}, {label: 'Chicago', value: 'chicago'}]}
-        /><FormInputSelect
-            form={form}
-            name="City"
-            label="City"
-            options={[{label: 'New York', value: 'new_york'}, {label: 'Los Angeles', value: 'los_angeles'}, {label: 'Chicago', value: 'chicago'}]}
-        /> <FormInputSelect
-            form={form}
-            name="City"
-            label="City"
-            options={[{label: 'New York', value: 'new_york'}, {label: 'Los Angeles', value: 'los_angeles'}, {label: 'Chicago', value: 'chicago'}]}
-        /><FormInputSelect
-            form={form}
-            name="City"
-            label="City"
-            options={[{label: 'New York', value: 'new_york'}, {label: 'Los Angeles', value: 'los_angeles'}, {label: 'Chicago', value: 'chicago'}]}
-        /><FormInputSelect
-            form={form}
-            name="City"
-            label="City"
-            options={[{label: 'New York', value: 'new_york'}, {label: 'Los Angeles', value: 'los_angeles'}, {label: 'Chicago', value: 'chicago'}]}
-        />
+                name="country_id"
+                label="País"
+                options={getCountriesOptions(countries)}
+                callback={(value: string) => {
+                    onCountryChange(value);
+                }}
+            />
+            <FormInputSelect
+                form={form}
+                name="depto_state_id"
+                label="Departamento"
+                options={getDeptoStatesOptions(deptoStates)}
+                disabled={deptoStates.length === 0}
+                callback={(value: string) => {
+                    onStateChange(value);
+                }}
+            />
+            <FormInputSelect
+                form={form}
+                name="city_municipality_id"
+                label="Ciudad ó Municipio"
+                options={getCityMunicipalitiesOptions(cityMunicipalities, deptoStateId)}
+                disabled={cityMunicipalities.length === 0}
+            />
             <FormInput
                 form={form}
                 name="password"
                 label="Password"
                 type="password"
-                placeholder="Password"
+                placeholder="Contraseña"
             />
             <FormInput
                 form={form}
                 name="confirmPassword"
-                label="Confirm Password"
+                label="Confirmar Contraseña"
                 type="password"
-                placeholder="Confirm Password"
+                placeholder="Confirmar Contraseña"
             />
         </Form>
     )

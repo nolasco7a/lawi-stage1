@@ -20,7 +20,8 @@ export default function Home() {
     return (
         <div className="h-screen w-screen">
           <Navbar />
-            <DialogCountry open={openDialogCountry}/>
+            {/*TODO: habilitar en expansion*/}
+            {/*<DialogCountry open={openDialogCountry}/>*/}
         </div>
       );
 }
