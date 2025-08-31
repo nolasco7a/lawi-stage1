@@ -80,3 +80,71 @@ The application uses a versioned message system with deprecated schemas for back
 - `app/(auth)/auth.ts` - Authentication configuration
 - `lib/ai/models.ts` - AI model definitions
 - `components/ui/` - Base component library
+- `lib/stripe/webhook-handlers.ts` - Stripe webhook event processing
+- `lib/db/subscription-helpers.ts` - Subscription management utilities
+
+## Subscription Management & Webhooks
+
+The application implements a comprehensive subscription system using Stripe. The `is_active` field is critical for managing user access and ensuring only one active subscription per user.
+
+### Webhook Flow & is_active Field Management
+
+**Webhook Processing Order:**
+1. `customer.subscription.created` - Creates subscription record, `is_active` set based on initial status
+2. `customer.subscription.updated` - Updates status and activates subscription when status becomes 'active'
+3. `payment_intent.succeeded` - Logs successful payments 
+4. `invoice.payment_succeeded` - Records invoice payment details
+
+**is_active Field Logic:**
+- **Creation:** `is_active = true` only if subscription status is 'active' initially
+- **Update:** When status changes to 'active', `setActiveSubscription()` is called to:
+  - Deactivate all existing subscriptions for the user
+  - Set the new subscription as active (`is_active = true`)
+- **Deletion:** `is_active = false` when subscription is canceled
+
+### Key Functions (`lib/db/subscription-helpers.ts`):
+
+```typescript
+// Primary function to manage active subscriptions
+setActiveSubscription(userId, subscriptionId) // Deactivates old, activates new
+
+// Utility functions for subscription management
+getActiveSubscription(userId) // Gets current active subscription
+validateAndFixActiveSubscriptions(userId) // Repairs inconsistent states
+deactivateInvalidSubscriptions(userId) // Cleans up invalid active subscriptions
+getUserSubscriptionHistory(userId) // Audit trail of all subscriptions
+```
+
+### Webhook Handlers (`lib/stripe/webhook-handlers.ts`):
+
+- **handleSubscriptionCreated:** Initial subscription creation with proper is_active logic
+- **handleSubscriptionUpdated:** Status updates with activation when status becomes 'active'
+- **handleSubscriptionDeleted:** Deactivation on cancellation
+- **handleInvoicePaymentSucceeded/Failed:** Invoice tracking for billing history
+
+### Common Issues & Solutions:
+
+1. **is_active stays false:** Usually happens when subscription starts as 'incomplete' and becomes 'active' via update webhook
+2. **Multiple active subscriptions:** Resolved by `validateAndFixActiveSubscriptions()` function
+3. **Race conditions:** Handled with 500ms delay in update handler and transaction management
+
+### Database Schema:
+
+```sql
+-- Subscription table with is_active field for access control
+CREATE TABLE "Subscription" (
+  is_active BOOLEAN NOT NULL DEFAULT false, -- Only one per user should be true
+  status VARCHAR CHECK (status IN ('active', 'canceled', 'past_due', 'unpaid', 'incomplete', 'incomplete_expired', 'trialing', 'paused')),
+  -- Partial unique index ensures only one active subscription per user
+);
+```
+
+### Troubleshooting Commands:
+
+```bash
+# Check subscription status for a user
+psql -c "SELECT * FROM \"Subscription\" WHERE user_id = 'USER_ID' ORDER BY created_at DESC;"
+
+# Fix inconsistent subscription states
+# Call validateAndFixActiveSubscriptions(userId) from the application
+```

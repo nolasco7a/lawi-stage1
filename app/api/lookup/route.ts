@@ -8,24 +8,27 @@ export async function GET(request: Request) {
 
   try {
     switch (type) {
-      case 'countries':
+      case 'countries': {
         const countries = await getAllCountries();
         return NextResponse.json(countries);
+      }
         
-      case 'departments':
+      case 'departments': {
         if (!countryId) {
           return NextResponse.json({ error: 'Country ID required' }, { status: 400 });
         }
         const departments = await getDeptoStatesByCountryId(countryId);
         console.log(departments);
         return NextResponse.json(departments);
+      }
         
-      case 'cities':
+      case 'cities': {
         if (!countryId) {
           return NextResponse.json({ error: 'Department ID required' }, { status: 400 });
         }
         const cities = await getCityMunicipalitiesByCountryId(countryId);
         return NextResponse.json(cities);
+      }
         
       default:
         return NextResponse.json({ error: 'Type parameter required' }, { status: 400 });

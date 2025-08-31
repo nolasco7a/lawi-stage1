@@ -2,8 +2,7 @@
 
 import type { User } from 'next-auth';
 import { useRouter } from 'next/navigation';
-
-import { PlusIcon } from '@/components/icons';
+import { MessageCirclePlus, Settings, LayoutDashboard, UserRound, FolderKanban, File, MessageCircleMore} from "lucide-react";
 import { SidebarHistory } from '@/components/sidebar-history';
 import { SidebarUserNav } from '@/components/sidebar-user-nav';
 import { Button } from '@/components/ui/button';
@@ -14,6 +13,11 @@ import {
   SidebarHeader,
   SidebarMenu,
   useSidebar,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
 } from '@/components/ui/sidebar';
 import Link from 'next/link';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
@@ -34,8 +38,8 @@ export function AppSidebar({ user }: { user: User | undefined }) {
               }}
               className="flex flex-row gap-3 items-center"
             >
-              <span className="text-lg font-semibold px-2 hover:bg-muted rounded-md cursor-pointer">
-                Chatbot
+              <span className="text-lg font-black px-2 hover:bg-muted rounded-md cursor-pointer">
+                LAWI
               </span>
             </Link>
             <Tooltip>
@@ -46,11 +50,11 @@ export function AppSidebar({ user }: { user: User | undefined }) {
                   className="p-2 h-fit"
                   onClick={() => {
                     setOpenMobile(false);
-                    router.push('/');
+                    router.push('/chat');
                     router.refresh();
                   }}
                 >
-                  <PlusIcon />
+                  <MessageCirclePlus />
                 </Button>
               </TooltipTrigger>
               <TooltipContent align="end">New Chat</TooltipContent>
@@ -59,9 +63,58 @@ export function AppSidebar({ user }: { user: User | undefined }) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <SidebarHistory user={user} />
+          <SidebarGroup>
+            <SidebarGroupContent>
+              <SidebarGroupLabel>Menu de navegación</SidebarGroupLabel>
+              <SidebarMenu>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild>
+                      <Link href="/dashboard" className="flex items-center gap-2">
+                        <LayoutDashboard/>
+                        Dashboard
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild>
+                      <Link href="/chats" className="flex items-center gap-2">
+                        <MessageCircleMore/>
+                        Historial
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link href="/files" className="flex items-center gap-2">
+                      <File/>
+                      Archivos
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link href="/projects" className="flex items-center gap-2">
+                      <FolderKanban/>
+                      Proyectos
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild>
+                      <Link href="/settings" className="flex items-center gap-2">
+                        <Settings/>
+                        Settings
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+          <SidebarHistory user={user} />
       </SidebarContent>
-      <SidebarFooter>{user && <SidebarUserNav user={user} />}</SidebarFooter>
+      <SidebarFooter>
+        {user && <SidebarUserNav user={user} />}
+      </SidebarFooter>
     </Sidebar>
   );
 }

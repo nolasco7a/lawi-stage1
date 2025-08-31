@@ -11,6 +11,8 @@ import {
   boolean,
   index,
   unique,
+  integer,
+  jsonb,
 } from 'drizzle-orm/pg-core';
 
 export const user = pgTable('User', {
@@ -35,6 +37,9 @@ export const user = pgTable('User', {
   depto_state_id: uuid('depto_state_id').references(() => deptoState.id),
   city_municipality_id: uuid('city_municipality_id').references(() => cityMunicipality.id),
   
+  // Stripe integration
+  customer_id: varchar('customer_id', { length: 100 }),
+  
   // Timestamps
   createdAt: timestamp('createdAt').notNull().defaultNow(),
   updatedAt: timestamp('updatedAt'),
@@ -48,6 +53,7 @@ export const user = pgTable('User', {
   countryIdx: index('user_country_idx').on(table.country_id),
   deptoStateIdx: index('user_depto_state_idx').on(table.depto_state_id),
   cityMunicipalityIdx: index('user_city_municipality_idx').on(table.city_municipality_id),
+  customerIdIdx: index('user_customer_id_idx').on(table.customer_id),
   
   // Unique constraints
   lawyerCredentialUnique: unique('user_lawyer_credential_unique').on(table.lawyer_credential_number),
@@ -254,3 +260,74 @@ export const cityMunicipality = pgTable('CityMunicipality', {
 });
 
 export type CityMunicipality = InferSelectModel<typeof cityMunicipality>;
+
+// Subscription management tables
+export const subscription = pgTable('Subscription', {
+  id: uuid('id').primaryKey().notNull().defaultRandom(),
+  user_id: uuid('user_id')
+    .notNull()
+    .references(() => user.id),
+  subscription_id: varchar('subscription_id', { length: 100 }).notNull().unique(),
+  customer_id: varchar('customer_id', { length: 100 }).notNull(),
+  status: varchar('status', { 
+    enum: ['active', 'canceled', 'past_due', 'unpaid', 'incomplete', 'incomplete_expired', 'trialing', 'paused'] 
+  }).notNull(),
+  plan_type: varchar('plan_type', { enum: ['basic', 'pro'] }).notNull(),
+  current_period_start: timestamp('current_period_start').notNull(),
+  current_period_end: timestamp('current_period_end').notNull(),
+  cancel_at_period_end: boolean('cancel_at_period_end').notNull().default(false),
+  canceled_at: timestamp('canceled_at'),
+  created_at: timestamp('created_at').notNull().defaultNow(),
+  updated_at: timestamp('updated_at').notNull().defaultNow(),
+}, (table) => ({
+  userIdx: index('subscription_user_idx').on(table.user_id),
+  statusIdx: index('subscription_status_idx').on(table.status),
+  subscriptionIdIdx: index('subscription_subscription_id_idx').on(table.subscription_id),
+  customerIdIdx: index('subscription_customer_id_idx').on(table.customer_id),
+}));
+
+export type Subscription = InferSelectModel<typeof subscription>;
+
+export const subscriptionEvent = pgTable('SubscriptionEvent', {
+  id: uuid('id').primaryKey().notNull().defaultRandom(),
+  subscription_id: uuid('subscription_id')
+    .notNull()
+    .references(() => subscription.id),
+  event_id: varchar('event_id', { length: 100 }).notNull().unique(),
+  event_type: varchar('event_type', { length: 100 }).notNull(),
+  event_data: jsonb('event_data').notNull(),
+  processed_at: timestamp('processed_at').notNull().defaultNow(),
+  created_at: timestamp('created_at').notNull().defaultNow(),
+}, (table) => ({
+  subscriptionIdx: index('subscription_event_subscription_idx').on(table.subscription_id),
+  eventTypeIdx: index('subscription_event_type_idx').on(table.event_type),
+  eventIdIdx: index('subscription_event_event_id_idx').on(table.event_id),
+}));
+
+export type SubscriptionEvent = InferSelectModel<typeof subscriptionEvent>;
+
+export const invoice = pgTable('Invoice', {
+  id: uuid('id').primaryKey().notNull().defaultRandom(),
+  subscription_id: uuid('subscription_id')
+    .notNull()
+    .references(() => subscription.id),
+  invoice_id: varchar('invoice_id', { length: 100 }).notNull().unique(),
+  amount_paid: integer('amount_paid').notNull(), // in cents
+  currency: varchar('currency', { length: 3 }).notNull().default('usd'),
+  status: varchar('status', { 
+    enum: ['paid', 'open', 'void', 'draft', 'uncollectible'] 
+  }).notNull(),
+  invoice_pdf: varchar('invoice_pdf', { length: 500 }),
+  period_start: timestamp('period_start').notNull(),
+  period_end: timestamp('period_end').notNull(),
+  due_date: timestamp('due_date'),
+  paid_at: timestamp('paid_at'),
+  created_at: timestamp('created_at').notNull().defaultNow(),
+}, (table) => ({
+  subscriptionIdx: index('invoice_subscription_idx').on(table.subscription_id),
+  statusIdx: index('invoice_status_idx').on(table.status),
+  invoiceIdIdx: index('invoice_invoice_id_idx').on(table.invoice_id),
+  paidAtIdx: index('invoice_paid_at_idx').on(table.paid_at),
+}));
+
+export type Invoice = InferSelectModel<typeof invoice>;

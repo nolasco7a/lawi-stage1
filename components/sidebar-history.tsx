@@ -3,30 +3,23 @@
 import { isToday, isYesterday, subMonths, subWeeks } from 'date-fns';
 import { useParams, useRouter } from 'next/navigation';
 import type { User } from 'next-auth';
+import Link from 'next/link'
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarMenu,
-  useSidebar,
+  useSidebar
 } from '@/components/ui/sidebar';
 import type { Chat } from '@/lib/db/schema';
 import { fetcher } from '@/lib/utils';
 import { ChatItem } from './sidebar-history-item';
 import useSWRInfinite from 'swr/infinite';
 import { LoaderIcon } from './icons';
+import ActionDialog from "@/components/action-dialog";
+
 
 type GroupedChats = {
   today: Chat[];
@@ -96,6 +89,8 @@ export function getChatHistoryPaginationKey(
 export function SidebarHistory({ user }: { user: User | undefined }) {
   const { setOpenMobile } = useSidebar();
   const { id } = useParams();
+
+  console.log("datos de udaurio", user)
 
   const {
     data: paginatedChatHistories,
@@ -193,6 +188,7 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
     return (
       <SidebarGroup>
         <SidebarGroupContent>
+
           <div className="px-2 text-zinc-500 w-full flex flex-row justify-center items-center text-sm gap-2">
             Your conversations will appear here once you start chatting!
           </div>
@@ -343,23 +339,14 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
         </SidebarGroupContent>
       </SidebarGroup>
 
-      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete your
-              chat and remove it from our servers.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDelete}>
-              Continue
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <ActionDialog
+        openModal={showDeleteDialog}
+        setOpenModal={setShowDeleteDialog}
+        title={"Estas seguro?"}
+        description={"Esta acción no se puede deshacer. Esto eliminará permanentemente tu chat y lo removerá de nuestros servidores."}
+        action={handleDelete}
+        actionText={"Borrar"}
+        cancelText={"Cancelar"}/>
     </>
   );
 }

@@ -1,6 +1,6 @@
 import { Form } from './form';
 import { FormInput, FormInputPhone, FormInputSelect } from './form-input';
-import {RegisterUserFormData} from "@/lib/validations/auth";
+import type {RegisterUserFormData} from "@/lib/validations/auth";
 import {getCityMunicipalitiesOptions, getCountriesOptions, getDeptoStatesOptions} from "@/lib/utils";
 import {useCountryStateCitySelection} from "@/lib/hooks/useCountryStateCitySelection";
 

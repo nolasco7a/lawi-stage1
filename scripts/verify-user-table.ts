@@ -75,7 +75,7 @@ const verifyUserTable = async () => {
     console.log(`\n👥 Total users in database: ${userCount[0].count}`);
 
     // Check roles distribution if users exist
-    if (parseInt(userCount[0].count) > 0) {
+    if (Number.parseInt(userCount[0].count) > 0) {
       const roleCount = await db.execute(sql`
         SELECT role, COUNT(*) as count 
         FROM "User" 

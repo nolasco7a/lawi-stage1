@@ -1,6 +1,6 @@
 import {FormInput, FormInputPhone, FormInputSelect} from "@/components/form-input";
 import {Form} from "@/components/form";
-import {RegisterLawyerFormData} from "@/lib/validations/auth";
+import type {RegisterLawyerFormData} from "@/lib/validations/auth";
 import { getCountriesOptions, getDeptoStatesOptions, getCityMunicipalitiesOptions} from "@/lib/utils";
 import {useCountryStateCitySelection} from "@/lib/hooks/useCountryStateCitySelection";
 

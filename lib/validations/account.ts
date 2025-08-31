@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { TranslateFunction } from "../types/common";
+import type { TranslateFunction } from "../types/common";
 
 export const createAccountSchema = (t: TranslateFunction) => z.object({
     name: z.string().min(1, t("validation.name.min")),

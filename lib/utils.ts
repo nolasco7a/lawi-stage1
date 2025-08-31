@@ -142,6 +142,50 @@ export function clearLocalStorage() {
     }
 }
 
+export function capitalizeWords(str: string): string {
+  if(!str) return null
+  return str
+    .split(' ')
+    .map(word =>
+      word.length > 0
+        ? word[0].toUpperCase() + word.slice(1).toLowerCase()
+        : ''
+    )
+    .join(' ');
+}
+
+export const getInitialsFromName = (name: string = "", lastname: string = ""): string => {
+    const nameWords = name.trim().split(' ');
+    const lastnameWord = lastname.trim().split(' ');
+    if (nameWords.length >= 1 && lastnameWord.length >= 1) {
+        return `${nameWords[0].charAt(0).toUpperCase()} ${lastnameWord[0].charAt(0).toUpperCase()}`;
+    } else {
+        return "NA";
+    }
+}
+
+export const copyToClipboard = async (text: string, toast: any, successMessage = 'Texto copiado al portapapeles') => {
+  try {
+    if (text.trim() === '') {
+      throw new Error('El texto no puede estar vacío');
+    }
+
+    if (!navigator.clipboard) {
+      throw new Error('Clipboard API no está disponible');
+    }
+
+    await navigator.clipboard.writeText(text);
+    toast.success(successMessage);
+
+    return true;
+  } catch (error) {
+    console.error('Error al copiar al portapapeles:', error);
+    toast.error('Error al copiar al portapapeles');
+    return false;
+  }
+};
+
+
 export const getCountriesOptions = (countries) => {
     return countries.map(country => ({label: country.name, value: country.id}));
 }

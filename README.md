@@ -60,3 +60,45 @@ pnpm dev
 ```
 
 Your app template should now be running on [localhost:3000](http://localhost:3000).
+
+## Subscription Management & Stripe Integration
+
+This application includes a comprehensive subscription system integrated with Stripe. The system manages user subscriptions with robust webhook handling.
+
+### Key Components
+
+- **Subscription Tables**: PostgreSQL tables for tracking subscriptions, events, and invoices
+- **Webhook Handlers**: Process Stripe events to maintain subscription state
+- **is_active Field**: Critical field controlling user access (only one active subscription per user)
+
+### Webhook Events Handled
+
+1. `customer.subscription.created` - Creates initial subscription record
+2. `customer.subscription.updated` - Updates subscription status and activates when status becomes 'active'  
+3. `customer.subscription.deleted` - Deactivates canceled subscriptions
+4. `invoice.payment_succeeded/failed` - Tracks billing history
+
+### Common Issues & Solutions
+
+**Problem**: `is_active` field remains false after successful payment
+- **Cause**: Subscription starts as 'incomplete' and becomes 'active' later via update webhook
+- **Solution**: Update webhook now properly calls `setActiveSubscription()` when status becomes 'active'
+
+**Problem**: Multiple active subscriptions for one user
+- **Solution**: Use `validateAndFixActiveSubscriptions(userId)` helper function
+
+### Important Files
+
+- `lib/stripe/webhook-handlers.ts` - Webhook event processing logic
+- `lib/db/subscription-helpers.ts` - Utility functions for subscription management
+- `lib/db/schema.ts` - Database schema including Subscription table
+
+### Environment Variables Required
+
+```bash
+STRIPE_SECRET_KEY=sk_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_...
+```
+
+See [CLAUDE.md](CLAUDE.md) for detailed webhook flow documentation and troubleshooting commands.

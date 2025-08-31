@@ -1,16 +1,14 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useActionState, useEffect, useState, useRef } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useActionState, useEffect, useState, } from 'react';
 import { toast } from '@/components/toast';
 import { Form } from '@/components/form';
 import { FormInput } from '@/components/form-input';
 import { createLoginSchema, type LoginFormData } from '@/lib/validations/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-
-import { SubmitButton } from '@/components/submit-button';
 
 import { login, type LoginActionState } from '../actions';
 import { useSession } from 'next-auth/react';
@@ -19,6 +17,7 @@ import { MoveRight } from 'lucide-react';
 
 export default function Page() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(createLoginSchema()),
@@ -58,7 +57,14 @@ export default function Page() {
               type: 'success',
               description: 'Successfully logged in!',
             });
-            router.push('/chat');
+            
+            // Check if there's a return URL for checkout flow
+            const returnUrl = searchParams.get('returnUrl');
+            if (returnUrl && returnUrl.startsWith('/checkout')) {
+              router.push(returnUrl);
+            } else {
+              router.push('/chat');
+            }
           })
           .catch(error => {
               console.log(error);

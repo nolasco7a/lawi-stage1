@@ -5,6 +5,7 @@ import Image from 'next/image';
 import type { User } from 'next-auth';
 import { signOut, useSession } from 'next-auth/react';
 import { useTheme } from 'next-themes';
+import { getInitialsFromName} from "@/lib/utils";
 
 import {
   DropdownMenu,
@@ -22,13 +23,33 @@ import { useRouter } from 'next/navigation';
 import { toast } from './toast';
 import { LoaderIcon } from './icons';
 import { guestRegex } from '@/lib/constants';
+import PrivacyDialog from "@/components/PrivacyDialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export function SidebarUserNav({ user }: { user: User }) {
   const router = useRouter();
   const { data, status } = useSession();
   const { setTheme, resolvedTheme } = useTheme();
-
+console.log("session data", data)
   const isGuest = guestRegex.test(data?.user?.email ?? '');
+
+const handleLogout = async () => {
+  if (status === 'loading') {
+    toast({
+      type: 'error',
+      description: 'Checking authentication status, please try again!',
+    });
+    return;
+  }
+
+  if (isGuest) {
+    router.push('/login');
+  } else {
+    await signOut({
+      redirectTo: '/',
+    });
+  }
+}
 
   return (
     <SidebarMenu>
@@ -74,34 +95,46 @@ export function SidebarUserNav({ user }: { user: User }) {
             <DropdownMenuItem
               data-testid="user-nav-item-theme"
               className="cursor-pointer"
+            >
+              <div className={"flex flex-drection-col gap-2"}>
+                <div>nolasco7a@gmail.com</div>
+                <div>
+                  <Avatar>
+                    <AvatarImage src="" />
+                    <AvatarFallback>{getInitialsFromName(data?.user?.name, data?.user?.lastname)}</AvatarFallback>
+                  </Avatar>
+                  informacion
+                </div>
+              </div>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              data-testid="user-nav-item-theme"
+              className="cursor-pointer"
               onSelect={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
             >
               {`Toggle ${resolvedTheme === 'light' ? 'dark' : 'light'} mode`}
             </DropdownMenuItem>
+            <DropdownMenuItem
+              data-testid="user-nav-item-theme"
+              className="cursor-pointer"
+              onSelect={() => router.push('https://billing.stripe.com/p/login/test_aFaaEQ1IYemrafCg7zdwc00')}
+            >
+              Active subscription
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              data-testid="user-nav-item-theme"
+              className="cursor-pointer"
+            >
+              Configuración
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
+            <PrivacyDialog />
             <DropdownMenuItem asChild data-testid="user-nav-item-auth">
               <button
                 type="button"
                 className="w-full cursor-pointer"
-                onClick={() => {
-                  if (status === 'loading') {
-                    toast({
-                      type: 'error',
-                      description:
-                        'Checking authentication status, please try again!',
-                    });
-
-                    return;
-                  }
-
-                  if (isGuest) {
-                    router.push('/login');
-                  } else {
-                    signOut({
-                      redirectTo: '/',
-                    });
-                  }
-                }}
+                onClick={handleLogout}
               >
                 {isGuest ? 'Login to your account' : 'Sign out'}
               </button>

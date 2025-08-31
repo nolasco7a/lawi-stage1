@@ -18,8 +18,6 @@ import {
   createResetPasswordSchema,
   createVerifyEmailSchema,
   createVerifyOtpSchema,
-  type RegisterUserFormData,
-  type RegisterLawyerFormData
 } from '@/lib/validations/auth';
 import emailProvider from '@/lib/email/provider';
 

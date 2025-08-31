@@ -11,3 +11,6 @@ export const isTestEnvironment = Boolean(
 export const guestRegex = /^guest-\d+$/;
 
 export const DUMMY_PASSWORD = generateDummyPassword();
+
+export const CHAT_PAGE_SIZE = 50;
+export const SEARCH_DEBOUNCE_DELAY = 500;

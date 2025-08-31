@@ -9,6 +9,7 @@ import {
   gt,
   gte,
   inArray,
+  like,
   lt,
   type SQL,
 } from 'drizzle-orm';
@@ -753,6 +754,35 @@ export async function updateUserPassword({
   }
 }
 
+export async function updateUserCustomerId({
+  userId,
+  customerId,
+}: {
+  userId: string;
+  customerId: string;
+}) {
+  try {
+    return await db
+      .update(user)
+      .set({ customer_id: customerId })
+      .where(eq(user.id, userId));
+  } catch (error) {
+    throw new ChatSDKError(
+      'bad_request:database',
+      'Failed to update user customer ID',
+    );
+  }
+}
+
+export async function getUserById({ id }: { id: string }) {
+  try {
+    const [selectedUser] = await db.select().from(user).where(eq(user.id, id));
+    return selectedUser;
+  } catch (error) {
+    throw new ChatSDKError('bad_request:database', 'Failed to get user by id');
+  }
+}
+
 export async function getAllCountries(): Promise<Country[]> {
   try {
     return await db.select().from(country);
@@ -784,6 +814,87 @@ export async function getCityMunicipalitiesByCountryId(country_id: string): Prom
             'Failed to get cities/municipalities by state/department id',
         );
     }
+}
+
+export async function searchChatsByUserId({
+  userId,
+  query,
+  limit,
+  offset,
+}: {
+  userId: string;
+  query?: string;
+  limit: number;
+  offset: number;
+}) {
+  try {
+    const whereConditions = [eq(chat.userId, userId)];
+    
+    if (query && query.trim()) {
+      whereConditions.push(like(chat.title, `%${query.trim()}%`));
+    }
+
+    const chats = await db
+      .select()
+      .from(chat)
+      .where(and(...whereConditions))
+      .orderBy(desc(chat.createdAt))
+      .limit(limit + 1)
+      .offset(offset);
+
+    const hasMore = chats.length > limit;
+
+    return {
+      chats: hasMore ? chats.slice(0, limit) : chats,
+      hasMore,
+    };
+  } catch (error) {
+    throw new ChatSDKError(
+      'bad_request:database',
+      'Failed to search chats by user id',
+    );
+  }
+}
+
+export async function updateChatTitle({
+  chatId,
+  title,
+}: {
+  chatId: string;
+  title: string;
+}) {
+  try {
+    return await db
+      .update(chat)
+      .set({ title })
+      .where(eq(chat.id, chatId))
+      .returning();
+  } catch (error) {
+    throw new ChatSDKError(
+      'bad_request:database',
+      'Failed to update chat title',
+    );
+  }
+}
+
+export async function getTotalChatsByUserId({
+  userId,
+}: {
+  userId: string;
+}) {
+  try {
+    const [result] = await db
+      .select({ count: count(chat.id) })
+      .from(chat)
+      .where(eq(chat.userId, userId));
+
+    return result?.count ?? 0;
+  } catch (error) {
+    throw new ChatSDKError(
+      'bad_request:database',
+      'Failed to get total chats count',
+    );
+  }
 }
 
 
