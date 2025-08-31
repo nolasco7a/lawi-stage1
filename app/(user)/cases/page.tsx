@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -18,15 +18,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import ActionDialog from '@/components/action-dialog';
-import { CHAT_PAGE_SIZE } from '@/lib/constants';
+import { useCaseStore } from '@/lib/store/cases';
 import type { Case } from '@/lib/db/schema';
 
-interface CasesResponse {
-  cases: Case[];
-  hasMore: boolean;
-  currentPage: number;
-  totalCases: number;
-}
 
 function CaseCard({ 
   caseItem, 
@@ -111,9 +105,17 @@ function CaseCard({
 
 export default function CasesPage() {
   const { data: session } = useSession();
-  const [cases, setCases] = useState<Case[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [totalCases, setTotalCases] = useState(0);
+  const router = useRouter();
+  const {
+    cases,
+    loading,
+    totalCases,
+    fetchCases,
+    createCase,
+    updateCase,
+    deleteCase,
+  } = useCaseStore();
+  
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [newCaseTitle, setNewCaseTitle] = useState('');
   const [newCaseDescription, setNewCaseDescription] = useState('');
@@ -124,27 +126,11 @@ export default function CasesPage() {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-  const fetchCases = useCallback(async () => {
-    if (!session?.user?.id) return;
-
-    setLoading(true);
-    try {
-      const response = await fetch('/api/cases');
-      const data: CasesResponse = await response.json();
-
-      setCases(data.cases);
-      setTotalCases(data.totalCases);
-    } catch (error) {
-      toast.error('Error al cargar los casos');
-      console.error('Error fetching cases:', error);
-    } finally {
-      setLoading(false);
-    }
-  }, [session?.user?.id]);
-
   useEffect(() => {
-    void fetchCases();
-  }, [fetchCases]);
+    if (session?.user?.id) {
+      void fetchCases();
+    }
+  }, [session?.user?.id, fetchCases]);
 
   const handleCreateCase = async () => {
     if (!newCaseTitle.trim()) {
@@ -152,34 +138,15 @@ export default function CasesPage() {
       return;
     }
 
-    try {
-      const response = await fetch('/api/cases', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title: newCaseTitle.trim(),
-          description: newCaseDescription.trim() || undefined,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        toast.success('Caso creado exitosamente');
-        setShowCreateDialog(false);
-        setNewCaseTitle('');
-        setNewCaseDescription('');
-        
-        // Navigate to the new case
-        window.location.href = `/cases/${data.case.id}`;
-      } else {
-        toast.error('Error al crear el caso');
-      }
-    } catch (error) {
-      toast.error('Error al crear el caso');
-      console.error('Error creating case:', error);
+    const caseId = await createCase(newCaseTitle, newCaseDescription);
+    
+    if (caseId) {
+      setShowCreateDialog(false);
+      setNewCaseTitle('');
+      setNewCaseDescription('');
+      
+      // Navigate to the new case
+      router.push(`/cases/${caseId}`);
     }
   };
 
@@ -196,54 +163,21 @@ export default function CasesPage() {
       return;
     }
 
-    try {
-      const response = await fetch(`/api/cases/${editingCase.id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title: editCaseTitle.trim(),
-          description: editCaseDescription.trim() || undefined,
-        }),
-      });
-
-      if (response.ok) {
-        toast.success('Caso actualizado exitosamente');
-        setShowEditDialog(false);
-        setEditingCase(null);
-        setEditCaseTitle('');
-        setEditCaseDescription('');
-        void fetchCases();
-      } else {
-        toast.error('Error al actualizar el caso');
-      }
-    } catch (error) {
-      toast.error('Error al actualizar el caso');
-      console.error('Error updating case:', error);
-    }
+    await updateCase(editingCase.id, editCaseTitle, editCaseDescription);
+    
+    setShowEditDialog(false);
+    setEditingCase(null);
+    setEditCaseTitle('');
+    setEditCaseDescription('');
   };
 
   const handleDeleteCase = async () => {
     if (!deleteId) return;
 
-    try {
-      const response = await fetch(`/api/cases/${deleteId}`, {
-        method: 'DELETE',
-      });
-
-      if (response.ok) {
-        toast.success('Caso eliminado exitosamente');
-        setShowDeleteDialog(false);
-        setDeleteId(null);
-        void fetchCases();
-      } else {
-        toast.error('Error al eliminar el caso');
-      }
-    } catch (error) {
-      toast.error('Error al eliminar el caso');
-      console.error('Error deleting case:', error);
-    }
+    await deleteCase(deleteId);
+    
+    setShowDeleteDialog(false);
+    setDeleteId(null);
   };
 
   const openDeleteDialog = (caseId: string) => {

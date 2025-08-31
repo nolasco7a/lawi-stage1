@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useParams, useRouter } from 'next/navigation';
 import { toast } from 'sonner';
@@ -16,53 +16,24 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { FileUpload } from '@/components/file-upload';
 import { FileList } from '@/components/file-list';
 import ChatCard from '@/components/chat-card';
+import { useCaseStore } from '@/lib/store/cases';
 import type { Case, Chat, CaseFile } from '@/lib/db/schema';
 
-interface CaseDetailsResponse {
-  case: Case;
-  chats: Chat[];
-  files: CaseFile[];
-}
 
 
 export default function CaseDetailsPage() {
   const { data: session } = useSession();
   const { id } = useParams();
   const router = useRouter();
-  const [caseData, setCaseData] = useState<Case | null>(null);
-  const [chats, setChats] = useState<Chat[]>([]);
-  const [files, setFiles] = useState<CaseFile[]>([]);
-  const [loading, setLoading] = useState(true);
+  const {
+    currentCase: caseData,
+    currentChats: chats,
+    currentFiles: files,
+    caseLoading: loading,
+    fetchCaseDetails,
+    refreshCaseDetails,
+  } = useCaseStore();
   const [creatingChat, setCreatingChat] = useState(false);
-
-  const fetchCaseDetails = useCallback(async () => {
-    if (!session?.user?.id || !id) return;
-
-    setLoading(true);
-    try {
-      const response = await fetch(`/api/cases/${id}`);
-      
-      if (response.status === 404) {
-        toast.error('Caso no encontrado');
-        router.push('/cases');
-        return;
-      }
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch case details');
-      }
-
-      const data: CaseDetailsResponse = await response.json();
-      setCaseData(data.case);
-      setChats(data.chats);
-      setFiles(data.files);
-    } catch (error) {
-      toast.error('Error al cargar el caso');
-      console.error('Error fetching case details:', error);
-    } finally {
-      setLoading(false);
-    }
-  }, [session?.user?.id, id, router]);
 
   const handleCreateChat = async () => {
     if (!caseData?.id) return;
@@ -97,8 +68,10 @@ export default function CaseDetailsPage() {
   };
 
   useEffect(() => {
-    void fetchCaseDetails();
-  }, [fetchCaseDetails]);
+    if (session?.user?.id && id) {
+      void fetchCaseDetails(id as string);
+    }
+  }, [session?.user?.id, id, fetchCaseDetails]);
 
   if (!session?.user) {
     return (
@@ -213,14 +186,14 @@ export default function CaseDetailsPage() {
 
             <FileUpload 
               caseId={id as string}
-              onFileUploaded={fetchCaseDetails}
+              onFileUploaded={refreshCaseDetails}
               className="mb-4"
             />
 
             <FileList 
               files={files}
               caseId={id as string}
-              onFileDeleted={fetchCaseDetails}
+              onFileDeleted={refreshCaseDetails}
             />
           </div>
         </div>

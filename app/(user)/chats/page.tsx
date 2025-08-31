@@ -28,7 +28,7 @@ export default function ChatsPage() {
     if (session?.user?.id) {
       refreshChats();
     }
-  }, [session?.user?.id, refreshChats]);
+  }, [session?.user?.id, refreshChats, chats.length]);
 
   // Infinite scroll handler
   const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
