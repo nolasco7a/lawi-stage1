@@ -93,9 +93,9 @@ export function AppSidebar({ user }: { user: User | undefined }) {
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
-                    <Link href="/projects" className="flex items-center gap-2">
+                    <Link href="/cases" className="flex items-center gap-2">
                       <FolderKanban/>
-                      Proyectos
+                      Casos
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

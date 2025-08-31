@@ -62,6 +62,24 @@ export const user = pgTable('User', {
 
 export type User = InferSelectModel<typeof user>;
 
+export const caseTable = pgTable('Case', {
+  id: uuid('id').primaryKey().notNull().defaultRandom(),
+  title: varchar('title', { length: 255 }).notNull(),
+  description: text('description'),
+  userId: uuid('userId')
+    .notNull()
+    .references(() => user.id),
+  active: boolean('active').notNull().default(true),
+  createdAt: timestamp('createdAt').notNull().defaultNow(),
+  updatedAt: timestamp('updatedAt').notNull().defaultNow(),
+  deletedAt: timestamp('deletedAt'),
+}, (table) => ({
+  userIdIdx: index('case_user_id_idx').on(table.userId),
+  activeIdx: index('case_active_idx').on(table.active),
+}));
+
+export type Case = InferSelectModel<typeof caseTable>;
+
 export const chat = pgTable('Chat', {
   id: uuid('id').primaryKey().notNull().defaultRandom(),
   createdAt: timestamp('createdAt').notNull(),
@@ -69,12 +87,33 @@ export const chat = pgTable('Chat', {
   userId: uuid('userId')
     .notNull()
     .references(() => user.id),
+  caseId: uuid('caseId').references(() => caseTable.id),
   visibility: varchar('visibility', { enum: ['public', 'private'] })
     .notNull()
     .default('private'),
-});
+}, (table) => ({
+  caseIdIdx: index('chat_case_id_idx').on(table.caseId),
+}));
 
 export type Chat = InferSelectModel<typeof chat>;
+
+export const caseFile = pgTable('CaseFile', {
+  id: uuid('id').primaryKey().notNull().defaultRandom(),
+  caseId: uuid('caseId')
+    .notNull()
+    .references(() => caseTable.id),
+  filename: varchar('filename', { length: 255 }).notNull(),
+  originalName: varchar('originalName', { length: 255 }).notNull(),
+  mimeType: varchar('mimeType', { length: 100 }).notNull(),
+  size: integer('size').notNull(),
+  vectorData: jsonb('vectorData'),
+  createdAt: timestamp('createdAt').notNull().defaultNow(),
+  updatedAt: timestamp('updatedAt').notNull().defaultNow(),
+}, (table) => ({
+  caseIdIdx: index('case_file_case_id_idx').on(table.caseId),
+}));
+
+export type CaseFile = InferSelectModel<typeof caseFile>;
 
 // DEPRECATED: The following schema is deprecated and will be removed in the future.
 // Read the migration guide at https://chat-sdk.dev/docs/migration-guides/message-parts

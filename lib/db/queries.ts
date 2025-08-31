@@ -36,6 +36,10 @@ import {
   type Country,
   type DeptoState,
   type CityMunicipality,
+  caseTable,
+  type Case,
+  caseFile,
+  type CaseFile,
 } from './schema';
 import type { ArtifactKind } from '@/components/artifact';
 import { generateUUID } from '../utils';
@@ -164,6 +168,33 @@ export async function saveChat({
     });
   } catch (error) {
     throw new ChatSDKError('bad_request:database', 'Failed to save chat');
+  }
+}
+
+export async function saveChatWithCase({
+  id,
+  userId,
+  title,
+  visibility,
+  caseId,
+}: {
+  id: string;
+  userId: string;
+  title: string;
+  visibility: VisibilityType;
+  caseId: string;
+}) {
+  try {
+    return await db.insert(chat).values({
+      id,
+      createdAt: new Date(),
+      userId,
+      title,
+      visibility,
+      caseId,
+    });
+  } catch (error) {
+    throw new ChatSDKError('bad_request:database', 'Failed to save chat with case');
   }
 }
 
@@ -893,6 +924,356 @@ export async function getTotalChatsByUserId({
     throw new ChatSDKError(
       'bad_request:database',
       'Failed to get total chats count',
+    );
+  }
+}
+
+// Case management functions
+export async function createCase({
+  title,
+  description,
+  userId,
+}: {
+  title: string;
+  description?: string;
+  userId: string;
+}) {
+  try {
+    return await db
+      .insert(caseTable)
+      .values({
+        title,
+        description,
+        userId,
+      })
+      .returning();
+  } catch (error) {
+    throw new ChatSDKError(
+      'bad_request:database',
+      'Failed to create case',
+    );
+  }
+}
+
+export async function getCasesByUserId({
+  userId,
+  limit,
+  offset,
+}: {
+  userId: string;
+  limit: number;
+  offset: number;
+}) {
+  try {
+    const cases = await db
+      .select()
+      .from(caseTable)
+      .where(and(eq(caseTable.userId, userId), eq(caseTable.active, true)))
+      .orderBy(desc(caseTable.createdAt))
+      .limit(limit + 1)
+      .offset(offset);
+
+    const hasMore = cases.length > limit;
+
+    return {
+      cases: hasMore ? cases.slice(0, limit) : cases,
+      hasMore,
+    };
+  } catch (error) {
+    throw new ChatSDKError(
+      'bad_request:database',
+      'Failed to get cases by user id',
+    );
+  }
+}
+
+export async function getCaseById({
+  id,
+  userId,
+}: {
+  id: string;
+  userId: string;
+}) {
+  try {
+    const [selectedCase] = await db
+      .select()
+      .from(caseTable)
+      .where(
+        and(
+          eq(caseTable.id, id),
+          eq(caseTable.userId, userId),
+          eq(caseTable.active, true),
+        ),
+      );
+    
+    return selectedCase;
+  } catch (error) {
+    throw new ChatSDKError(
+      'bad_request:database',
+      'Failed to get case by id',
+    );
+  }
+}
+
+export async function updateCase({
+  id,
+  userId,
+  title,
+  description,
+}: {
+  id: string;
+  userId: string;
+  title?: string;
+  description?: string;
+}) {
+  try {
+    return await db
+      .update(caseTable)
+      .set({
+        ...(title && { title }),
+        ...(description !== undefined && { description }),
+        updatedAt: new Date(),
+      })
+      .where(
+        and(
+          eq(caseTable.id, id),
+          eq(caseTable.userId, userId),
+          eq(caseTable.active, true),
+        ),
+      )
+      .returning();
+  } catch (error) {
+    throw new ChatSDKError(
+      'bad_request:database',
+      'Failed to update case',
+    );
+  }
+}
+
+export async function deleteCaseById({
+  id,
+  userId,
+}: {
+  id: string;
+  userId: string;
+}) {
+  try {
+    return await db
+      .update(caseTable)
+      .set({
+        active: false,
+        deletedAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .where(
+        and(
+          eq(caseTable.id, id),
+          eq(caseTable.userId, userId),
+          eq(caseTable.active, true),
+        ),
+      )
+      .returning();
+  } catch (error) {
+    throw new ChatSDKError(
+      'bad_request:database',
+      'Failed to delete case',
+    );
+  }
+}
+
+export async function getChatsByCaseId({
+  caseId,
+  userId,
+}: {
+  caseId: string;
+  userId: string;
+}) {
+  try {
+    return await db
+      .select()
+      .from(chat)
+      .where(
+        and(
+          eq(chat.caseId, caseId),
+          eq(chat.userId, userId),
+        ),
+      )
+      .orderBy(desc(chat.createdAt));
+  } catch (error) {
+    throw new ChatSDKError(
+      'bad_request:database',
+      'Failed to get chats by case id',
+    );
+  }
+}
+
+export async function getTotalCasesByUserId({
+  userId,
+}: {
+  userId: string;
+}) {
+  try {
+    const [result] = await db
+      .select({ count: count(caseTable.id) })
+      .from(caseTable)
+      .where(and(eq(caseTable.userId, userId), eq(caseTable.active, true)));
+
+    return result?.count ?? 0;
+  } catch (error) {
+    throw new ChatSDKError(
+      'bad_request:database',
+      'Failed to get total cases count',
+    );
+  }
+}
+
+export async function getCasesWithChatCount({
+  userId,
+  limit,
+  offset,
+}: {
+  userId: string;
+  limit: number;
+  offset: number;
+}) {
+  try {
+    const cases = await db
+      .select({
+        id: caseTable.id,
+        title: caseTable.title,
+        description: caseTable.description,
+        userId: caseTable.userId,
+        active: caseTable.active,
+        createdAt: caseTable.createdAt,
+        updatedAt: caseTable.updatedAt,
+        deletedAt: caseTable.deletedAt,
+        chatCount: count(chat.id),
+      })
+      .from(caseTable)
+      .leftJoin(chat, eq(chat.caseId, caseTable.id))
+      .where(and(eq(caseTable.userId, userId), eq(caseTable.active, true)))
+      .groupBy(caseTable.id)
+      .orderBy(desc(caseTable.createdAt))
+      .limit(limit + 1)
+      .offset(offset);
+
+    const hasMore = cases.length > limit;
+
+    return {
+      cases: hasMore ? cases.slice(0, limit) : cases,
+      hasMore,
+    };
+  } catch (error) {
+    throw new ChatSDKError(
+      'bad_request:database',
+      'Failed to get cases with chat count',
+    );
+  }
+}
+
+// CaseFile management functions
+export async function createCaseFile({
+  caseId,
+  filename,
+  originalName,
+  mimeType,
+  size,
+  vectorData,
+}: {
+  caseId: string;
+  filename: string;
+  originalName: string;
+  mimeType: string;
+  size: number;
+  vectorData?: any;
+}) {
+  try {
+    return await db
+      .insert(caseFile)
+      .values({
+        caseId,
+        filename,
+        originalName,
+        mimeType,
+        size,
+        vectorData,
+      })
+      .returning();
+  } catch (error) {
+    throw new ChatSDKError(
+      'bad_request:database',
+      'Failed to create case file',
+    );
+  }
+}
+
+export async function getCaseFilesByCaseId({
+  caseId,
+}: {
+  caseId: string;
+}) {
+  try {
+    return await db
+      .select()
+      .from(caseFile)
+      .where(eq(caseFile.caseId, caseId))
+      .orderBy(desc(caseFile.createdAt));
+  } catch (error) {
+    throw new ChatSDKError(
+      'bad_request:database',
+      'Failed to get case files',
+    );
+  }
+}
+
+export async function deleteCaseFileById({
+  id,
+  caseId,
+}: {
+  id: string;
+  caseId: string;
+}) {
+  try {
+    return await db
+      .delete(caseFile)
+      .where(
+        and(
+          eq(caseFile.id, id),
+          eq(caseFile.caseId, caseId),
+        ),
+      )
+      .returning();
+  } catch (error) {
+    throw new ChatSDKError(
+      'bad_request:database',
+      'Failed to delete case file',
+    );
+  }
+}
+
+export async function getCaseFileById({
+  id,
+  caseId,
+}: {
+  id: string;
+  caseId: string;
+}) {
+  try {
+    const [file] = await db
+      .select()
+      .from(caseFile)
+      .where(
+        and(
+          eq(caseFile.id, id),
+          eq(caseFile.caseId, caseId),
+        ),
+      );
+    
+    return file;
+  } catch (error) {
+    throw new ChatSDKError(
+      'bad_request:database',
+      'Failed to get case file by id',
     );
   }
 }
