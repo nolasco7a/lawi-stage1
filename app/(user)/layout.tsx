@@ -2,7 +2,7 @@ import {auth} from "@/app/(auth)/auth";
 import {cookies} from "next/headers";
 import Script from "next/script";
 import {DataStreamProvider} from "@/components/data-stream-provider";
-import {SidebarInset, SidebarProvider} from "@/components/ui/sidebar";
+import {SidebarInset, SidebarProvider, SidebarTrigger} from "@/components/ui/sidebar";
 import {AppSidebar} from "@/components/app-sidebar";
 
 export const experimental_ppr = true;

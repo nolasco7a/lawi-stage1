@@ -143,7 +143,7 @@ export function clearLocalStorage() {
 }
 
 export function capitalizeWords(str: string): string {
-  if(!str) return null
+  if(!str) return "";
   return str
     .split(' ')
     .map(word =>
@@ -154,7 +154,7 @@ export function capitalizeWords(str: string): string {
     .join(' ');
 }
 
-export const getInitialsFromName = (name: string = "", lastname: string = ""): string => {
+export const getInitialsFromName = (name: string | null = "", lastname: string | null = ""): string => {
     const nameWords = name.trim().split(' ');
     const lastnameWord = lastname.trim().split(' ');
     if (nameWords.length >= 1 && lastnameWord.length >= 1) {
@@ -186,15 +186,15 @@ export const copyToClipboard = async (text: string, toast: any, successMessage =
 };
 
 
-export const getCountriesOptions = (countries) => {
+export const getCountriesOptions = (countries: any[]) => {
     return countries.map(country => ({label: country.name, value: country.id}));
 }
 
-export const getDeptoStatesOptions = (states) => {
+export const getDeptoStatesOptions = (states: any[]) => {
     return states.map(state => ({label: state.name, value: state.id}));
 }
 
-export const getCityMunicipalitiesOptions = (cities, deptoStateId) => {
+export const getCityMunicipalitiesOptions = (cities: any[], deptoStateId: any[]) => {
     const citiesByState = cities.filter(city => city.depto_state_id === deptoStateId)
     return citiesByState.map(city => ({label: city.name, value: city.id}));
 }
