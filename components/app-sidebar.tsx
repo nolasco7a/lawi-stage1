@@ -21,44 +21,49 @@ import {
 } from '@/components/ui/sidebar';
 import Link from 'next/link';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
+import React from "react";
+import {state} from "@auth/core/lib/actions/callback/oauth/checks";
+
+const AppSidebarMenuItem = ({ path = '/', title, icon, customClass }: { path: string; title: string, icon: React.ReactNode, customClass?: string }) => {
+  const {state: appSidebarState} = useSidebar();
+  return (
+    <SidebarMenuItem>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <SidebarMenuButton asChild>
+            <Link href={`/${path}`} className={`flex items-center gap-2 ${customClass}`}>
+              {icon} {title}
+            </Link>
+          </SidebarMenuButton>
+        </TooltipTrigger>
+        {
+          appSidebarState === "collapsed" && (
+            <TooltipContent align="end">{title}</TooltipContent>
+          )
+        }
+      </Tooltip>
+    </SidebarMenuItem>
+  )
+}
 
 export function AppSidebar({ user }: { user: User | undefined }) {
   const router = useRouter();
-  const { setOpenMobile } = useSidebar();
+  const { setOpenMobile, state: appSidebarState } = useSidebar();
+  // console.log(user);
 
   return (
-    <Sidebar className="group-data-[side=left]:border-r-0">
+    <Sidebar
+      variant="sidebar"
+      collapsible="icon"
+      className="group-data-[side=left]:border-r w-[var(--sidebar-width)]">
       <SidebarHeader>
         <SidebarMenu>
           <div className="flex flex-row justify-between items-center">
-            <Link
-              href="/"
-              onClick={() => {
-                setOpenMobile(false);
-              }}
-              className="flex flex-row gap-3 items-center"
-            >
-              <span className="text-lg font-black px-2 hover:bg-muted rounded-md cursor-pointer">
+            <Link href="/" className="flex flex-row gap-3 items-center">
+              <span className={`${appSidebarState === "collapsed" ? "text-[8px] font-bold" : "text-xl font-black"} px-2 hover:bg-muted rounded-md cursor-pointer`}>
                 LAWI
               </span>
             </Link>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  type="button"
-                  className="p-2 h-fit"
-                  onClick={() => {
-                    setOpenMobile(false);
-                    router.push('/chat');
-                    router.refresh();
-                  }}
-                >
-                  <MessageCirclePlus />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent align="end">New Chat</TooltipContent>
-            </Tooltip>
           </div>
         </SidebarMenu>
       </SidebarHeader>
@@ -67,46 +72,17 @@ export function AppSidebar({ user }: { user: User | undefined }) {
             <SidebarGroupContent>
               <SidebarGroupLabel>Menu de navegación</SidebarGroupLabel>
               <SidebarMenu>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
-                      <Link href="/dashboard" className="flex items-center gap-2">
-                        <LayoutDashboard/>
-                        Dashboard
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
-                      <Link href="/chats" className="flex items-center gap-2">
-                        <MessageCircleMore/>
-                        Historial
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <Link href="/files" className="flex items-center gap-2">
-                      <File/>
-                      Archivos
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <Link href="/cases" className="flex items-center gap-2">
-                      <FolderKanban/>
-                      Casos
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
-                      <Link href="/settings" className="flex items-center gap-2">
-                        <Settings/>
-                        Settings
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
+                  {/*{appSidebarState === "collapsed" && (*/}
+                  {/*)}*/}
+                  <AppSidebarMenuItem
+                    path="chat" title="Nuevo chat"
+                    icon={<MessageCirclePlus />}
+                    customClass={"text-red-600 hover:text-red-500"}/>
+                  <AppSidebarMenuItem path="dashboard" title="Dashboard" icon={<LayoutDashboard/>} />
+                  <AppSidebarMenuItem path="chats" title="Historial" icon={<MessageCircleMore/>} />
+                  <AppSidebarMenuItem path="files" title="Archivos" icon={<File/>} />
+                  <AppSidebarMenuItem path="cases" title="Casos" icon={<FolderKanban/>} />
+                  <AppSidebarMenuItem path="settings" title="Configuración" icon={<Settings/>} />
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
