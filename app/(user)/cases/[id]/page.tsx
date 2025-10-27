@@ -1,25 +1,18 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
-import { useParams, useRouter } from 'next/navigation';
-import { toast } from 'sonner';
-import { 
-  ArrowLeft, 
-  MessageCircle,
-  FileText,
-  Plus,
-} from 'lucide-react';
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { useParams, useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { ArrowLeft, MessageCircle, FileText, Plus } from "lucide-react";
 
-import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { FileUpload } from '@/components/file-upload';
-import { FileList } from '@/components/file-list';
-import ChatCard from '@/components/chat-card';
-import { useCaseStore } from '@/lib/store/cases';
-import type { Case, Chat, CaseFile } from '@/lib/db/schema';
-
-
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { FileUpload } from "@/components/file-upload";
+import { FileList } from "@/components/file-list";
+import ChatCard from "@/components/chat-card";
+import { useCaseStore } from "@/lib/store/cases";
+import type { Case, Chat, CaseFile } from "@/lib/db/schema";
 
 export default function CaseDetailsPage() {
   const { data: session } = useSession();
@@ -41,9 +34,9 @@ export default function CaseDetailsPage() {
     setCreatingChat(true);
     try {
       const response = await fetch(`/api/cases/${caseData.id}/chats`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           title: `Chat - ${caseData.title}`,
@@ -53,15 +46,15 @@ export default function CaseDetailsPage() {
       const data = await response.json();
 
       if (response.ok) {
-        toast.success('Chat creado exitosamente');
+        toast.success("Chat creado exitosamente");
         // Navigate to the new chat
         router.push(data.redirectUrl);
       } else {
-        toast.error('Error al crear el chat');
+        toast.error("Error al crear el chat");
       }
     } catch (error) {
-      toast.error('Error al crear el chat');
-      console.error('Error creating chat:', error);
+      toast.error("Error al crear el chat");
+      console.error("Error creating chat:", error);
     } finally {
       setCreatingChat(false);
     }
@@ -96,11 +89,7 @@ export default function CaseDetailsPage() {
       <div className="w-7/12 self-center p-4 md:p-6">
         <div className="text-center py-8">
           <p className="text-muted-foreground">Caso no encontrado</p>
-          <Button 
-            variant="outline" 
-            onClick={() => router.push('/cases')}
-            className="mt-4"
-          >
+          <Button variant="outline" onClick={() => router.push("/cases")} className="mt-4">
             Volver a casos
           </Button>
         </div>
@@ -112,11 +101,7 @@ export default function CaseDetailsPage() {
     <div className="w-7/12 self-center p-4 md:p-6 space-y-4 md:space-y-6">
       {/* Header with back button */}
       <div className="flex items-center gap-4">
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          onClick={() => router.push('/cases')}
-        >
+        <Button variant="ghost" size="sm" onClick={() => router.push("/cases")}>
           <ArrowLeft size={16} />
           Volver
         </Button>
@@ -142,27 +127,23 @@ export default function CaseDetailsPage() {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <MessageCircle size={20} />
-                <h3 className="font-semibold">
-                  Chats del caso ({chats.length})
-                </h3>
+                <h3 className="font-semibold">Chats del caso ({chats.length})</h3>
               </div>
-              <Button 
-                size="sm" 
-                variant="outline" 
+              <Button
+                size="sm"
+                variant="outline"
                 onClick={handleCreateChat}
                 disabled={creatingChat}
               >
                 <Plus size={16} />
-                {creatingChat ? 'Creando...' : 'Nuevo chat'}
+                {creatingChat ? "Creando..." : "Nuevo chat"}
               </Button>
             </div>
 
             {chats.length === 0 ? (
               <div className="text-center py-8">
                 <MessageCircle size={32} className="mx-auto text-muted-foreground mb-2" />
-                <p className="text-sm text-muted-foreground">
-                  No hay chats en este caso aún
-                </p>
+                <p className="text-sm text-muted-foreground">No hay chats en este caso aún</p>
               </div>
             ) : (
               <ScrollArea className="h-[300px]">
@@ -184,17 +165,13 @@ export default function CaseDetailsPage() {
               <h3 className="font-semibold">Archivos del caso</h3>
             </div>
 
-            <FileUpload 
+            <FileUpload
               caseId={id as string}
               onFileUploaded={refreshCaseDetails}
               className="mb-4"
             />
 
-            <FileList 
-              files={files}
-              caseId={id as string}
-              onFileDeleted={refreshCaseDetails}
-            />
+            <FileList files={files} caseId={id as string} onFileDeleted={refreshCaseDetails} />
           </div>
         </div>
       </div>

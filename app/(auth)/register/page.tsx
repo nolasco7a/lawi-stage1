@@ -1,26 +1,30 @@
-'use client';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useRouter } from 'next/navigation';
-import { useActionState, useEffect, useState, useRef } from 'react';
-import UserForm from "@/components/user-form";
+"use client";
 import LawyerForm from "@/components/lawyer-form";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import UserForm from "@/components/user-form";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useActionState, useEffect, useRef, useState } from "react";
 
 import {
-  createRegisterUserSchema,
-  createRegisterLawyerSchema,
-  type RegisterUserFormData,
   type RegisterLawyerFormData,
-} from '@/lib/validations/auth';
-import { zodResolver } from '@hookform/resolvers/zod';
+  type RegisterUserFormData,
+  createRegisterLawyerSchema,
+  createRegisterUserSchema,
+} from "@/lib/validations/auth";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-
-import { registerUser, registerLawyer, type UserRegisterActionState, type LawyerRegisterActionState } from '../actions';
-import { toast } from '@/components/toast';
-import { useSession } from 'next-auth/react';
-import { MoveRight } from 'lucide-react';
-import { useForm } from 'react-hook-form';
+import { toast } from "@/components/toast";
+import { MoveRight } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useForm } from "react-hook-form";
+import {
+  type LawyerRegisterActionState,
+  type UserRegisterActionState,
+  registerLawyer,
+  registerUser,
+} from "../actions";
 
 export default function Page() {
   const router = useRouter();
@@ -31,14 +35,14 @@ export default function Page() {
   const [userState, userFormAction] = useActionState<UserRegisterActionState, FormData>(
     registerUser,
     {
-      status: 'idle',
+      status: "idle",
     },
   );
 
   const [lawyerState, lawyerFormAction] = useActionState<LawyerRegisterActionState, FormData>(
     registerLawyer,
     {
-      status: 'idle',
+      status: "idle",
     },
   );
 
@@ -47,87 +51,99 @@ export default function Page() {
   const userForm = useForm({
     resolver: zodResolver(createRegisterUserSchema()),
     defaultValues: {
-      name: '',
-      lastname: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-      phone: '',
-      country_id: '',
-      depto_state_id: '',
-      city_municipality_id: '',
-      role: 'user' as const,
+      name: "",
+      lastname: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      phone: "",
+      country_id: "",
+      depto_state_id: "",
+      city_municipality_id: "",
+      role: "user" as const,
     },
   });
 
   const lawyerForm = useForm({
     resolver: zodResolver(createRegisterLawyerSchema()),
     defaultValues: {
-      name: '',
-      lastname: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-      phone: '',
-      country_id: '',
-      depto_state_id: '',
-      city_municipality_id: '',
-      lawyer_credential_number: '',
-      national_id: '',
-      role: 'lawyer' as const,
+      name: "",
+      lastname: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      phone: "",
+      country_id: "",
+      depto_state_id: "",
+      city_municipality_id: "",
+      lawyer_credential_number: "",
+      national_id: "",
+      role: "lawyer" as const,
     },
   });
 
   // Handle user registration state
   useEffect(() => {
-    if (userState.status === 'user_exists') {
-      toast({ type: 'error', description: 'Account already exists!' });
-    } else if (userState.status === 'failed') {
-      toast({ type: 'error', description: 'Failed to create account!' });
-    } else if (userState.status === 'invalid_data') {
+    if (userState.status === "user_exists") {
+      toast({ type: "error", description: "Account already exists!" });
+    } else if (userState.status === "failed") {
+      toast({ type: "error", description: "Failed to create account!" });
+    } else if (userState.status === "invalid_data") {
       toast({
-        type: 'error',
-        description: 'Failed validating your submission!',
+        type: "error",
+        description: "Failed validating your submission!",
       });
-    } else if (userState.status === 'success' && !hasRedirected.current) {
+    } else if (userState.status === "success" && !hasRedirected.current) {
       hasRedirected.current = true;
-      toast({ type: 'success', description: 'User account created successfully!' });
-      updateSession().then(() => {
-        router.push('/login');
-      }).catch(() => {
-        router.push('/login');
+      toast({
+        type: "success",
+        description: "User account created successfully!",
       });
+      updateSession()
+        .then(() => {
+          router.push("/login");
+        })
+        .catch(() => {
+          router.push("/login");
+        });
     }
   }, [userState.status, router, updateSession]);
 
   // Handle lawyer registration state
   useEffect(() => {
-    if (lawyerState.status === 'user_exists') {
-      toast({ type: 'error', description: 'Account already exists!' });
-    } else if (lawyerState.status === 'failed') {
-      toast({ type: 'error', description: 'Failed to create lawyer account!' });
-    } else if (lawyerState.status === 'invalid_data') {
+    if (lawyerState.status === "user_exists") {
+      toast({ type: "error", description: "Account already exists!" });
+    } else if (lawyerState.status === "failed") {
+      toast({ type: "error", description: "Failed to create lawyer account!" });
+    } else if (lawyerState.status === "invalid_data") {
       toast({
-        type: 'error',
-        description: 'Failed validating your submission!',
+        type: "error",
+        description: "Failed validating your submission!",
       });
-    } else if (lawyerState.status === 'credential_exists') {
-      toast({ type: 'error', description: 'Lawyer credential already exists!' });
-    } else if (lawyerState.status === 'national_id_exists') {
-      toast({ type: 'error', description: 'National ID already exists!' });
-    } else if (lawyerState.status === 'success' && !hasRedirected.current) {
+    } else if (lawyerState.status === "credential_exists") {
+      toast({
+        type: "error",
+        description: "Lawyer credential already exists!",
+      });
+    } else if (lawyerState.status === "national_id_exists") {
+      toast({ type: "error", description: "National ID already exists!" });
+    } else if (lawyerState.status === "success" && !hasRedirected.current) {
       hasRedirected.current = true;
-      toast({ type: 'success', description: 'Lawyer account created successfully!' });
-      updateSession().then(() => {
-        router.push('/login');
-      }).catch(() => {
-        router.push('/login');
+      toast({
+        type: "success",
+        description: "Lawyer account created successfully!",
       });
+      updateSession()
+        .then(() => {
+          router.push("/login");
+        })
+        .catch(() => {
+          router.push("/login");
+        });
     }
   }, [lawyerState.status, router, updateSession]);
 
   const onUserSubmit = (data: RegisterUserFormData) => {
-    console.log('User registration data:', data);
     setIsLoading(true);
     const formData = new FormData();
     Object.entries(data).forEach(([key, value]) => {
@@ -138,7 +154,6 @@ export default function Page() {
   };
 
   const onLawyerSubmit = (data: RegisterLawyerFormData) => {
-    console.log('Lawyer registration data:', data);
     setIsLoading(true);
     const formData = new FormData();
     Object.entries(data).forEach(([key, value]) => {
@@ -153,7 +168,7 @@ export default function Page() {
   return (
     <div className="h-screen w-full flex flex-col">
       <div className="h-10 w-full flex flex-row justify-end p-4">
-        <Link href={'/login'} className="text-primary rounded-full">
+        <Link href={"/login"} className="text-primary rounded-full">
           <Button variant="link" className="text-primary rounded-full">
             Login
             <MoveRight className="size-4" />
@@ -168,19 +183,11 @@ export default function Page() {
           </TabsList>
           <TabsContent value="user">
             <div className="text-center text-2xl font-bold">User</div>
-              <UserForm
-                  form={userForm}
-                  isLoading={isLoading}
-                  callback={onUserSubmit}
-              />
+            <UserForm form={userForm} isLoading={isLoading} callback={onUserSubmit} />
           </TabsContent>
           <TabsContent value="lawyer">
             <div className="text-center text-2xl font-bold">lawyer</div>
-            <LawyerForm
-                form={lawyerForm}
-                isLoading={isLoading}
-                callback={onLawyerSubmit}
-            />
+            <LawyerForm form={lawyerForm} isLoading={isLoading} callback={onLawyerSubmit} />
           </TabsContent>
         </Tabs>
       </div>

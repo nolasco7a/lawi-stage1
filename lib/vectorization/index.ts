@@ -22,28 +22,28 @@ export interface VectorChunk {
 
 // Xenova/Transformers provider implementation
 class XenovaProvider implements VectorProvider {
-  name = 'xenova';
+  name = "xenova";
 
   async vectorize(text: string): Promise<number[]> {
     // TODO: Implement xenova/transformers vectorization
     // For now, return placeholder
-    console.log('Vectorizing text with Xenova:', text.substring(0, 100));
+    console.log("Vectorizing text with Xenova:", text.substring(0, 100));
     return new Array(384).fill(0).map(() => Math.random());
   }
 
   async extractText(file: File): Promise<string> {
     const supportedTypes = [
-      'text/plain',
-      'application/pdf',
-      'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      "text/plain",
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     ];
 
     if (!supportedTypes.includes(file.type)) {
       throw new Error(`Unsupported file type: ${file.type}`);
     }
 
-    if (file.type === 'text/plain') {
+    if (file.type === "text/plain") {
       return await file.text();
     }
 
@@ -61,12 +61,12 @@ export async function vectorizeDocument(file: File): Promise<VectorizedDocument>
   try {
     const text = await defaultProvider.extractText(file);
     const chunks = chunkText(text);
-    
+
     const vectorizedChunks = await Promise.all(
       chunks.map(async (chunk) => ({
         ...chunk,
         vector: await defaultProvider.vectorize(chunk.text),
-      }))
+      })),
     );
 
     const fullVector = await defaultProvider.vectorize(text);
@@ -77,14 +77,14 @@ export async function vectorizeDocument(file: File): Promise<VectorizedDocument>
       chunks: vectorizedChunks,
     };
   } catch (error) {
-    console.error('Error vectorizing document:', error);
-    throw new Error('Failed to vectorize document');
+    console.error("Error vectorizing document:", error);
+    throw new Error("Failed to vectorize document");
   }
 }
 
 // Text chunking utility
-function chunkText(text: string, chunkSize = 1000, overlap = 200): Omit<VectorChunk, 'vector'>[] {
-  const chunks: Omit<VectorChunk, 'vector'>[] = [];
+function chunkText(text: string, chunkSize = 1000, overlap = 200): Omit<VectorChunk, "vector">[] {
+  const chunks: Omit<VectorChunk, "vector">[] = [];
   let startIndex = 0;
 
   while (startIndex < text.length) {
@@ -107,12 +107,12 @@ function chunkText(text: string, chunkSize = 1000, overlap = 200): Omit<VectorCh
 // Utility to validate file types
 export function validateFileType(file: File): boolean {
   const allowedTypes = [
-    'text/plain',
-    'application/pdf',
-    'application/msword',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    'text/markdown',
-    'text/csv',
+    "text/plain",
+    "application/pdf",
+    "application/msword",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "text/markdown",
+    "text/csv",
   ];
 
   return allowedTypes.includes(file.type);

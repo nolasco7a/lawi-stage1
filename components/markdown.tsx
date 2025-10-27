@@ -1,8 +1,8 @@
-import Link from 'next/link';
-import React, { memo } from 'react';
-import ReactMarkdown, { type Components } from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import { CodeBlock } from './code-block';
+import Link from "next/link";
+import React, { memo } from "react";
+import ReactMarkdown, { type Components } from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { CodeBlock } from "./code-block";
 
 const components: Partial<Components> = {
   // @ts-expect-error
@@ -39,12 +39,7 @@ const components: Partial<Components> = {
   a: ({ node, children, ...props }) => {
     return (
       // @ts-expect-error
-      <Link
-        className="text-blue-500 hover:underline"
-        target="_blank"
-        rel="noreferrer"
-        {...props}
-      >
+      <Link className="text-blue-500 hover:underline" target="_blank" rel="noreferrer" {...props}>
         {children}
       </Link>
     );

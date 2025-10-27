@@ -1,11 +1,6 @@
-'use client';
-import cx from 'classnames';
-import {
-  AnimatePresence,
-  motion,
-  useMotionValue,
-  useTransform,
-} from 'framer-motion';
+"use client";
+import cx from "classnames";
+import { AnimatePresence, motion, useMotionValue, useTransform } from "framer-motion";
 import {
   type Dispatch,
   memo,
@@ -14,21 +9,16 @@ import {
   useEffect,
   useRef,
   useState,
-} from 'react';
-import { useOnClickOutside } from 'usehooks-ts';
-import { nanoid } from 'nanoid';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+} from "react";
+import { useOnClickOutside } from "usehooks-ts";
+import { nanoid } from "nanoid";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
-import { ArrowUpIcon, StopIcon, SummarizeIcon } from './icons';
-import { artifactDefinitions, type ArtifactKind } from './artifact';
-import type { ArtifactToolbarItem } from './create-artifact';
-import type { UseChatHelpers } from '@ai-sdk/react';
-import type { ChatMessage } from '@/lib/types';
+import { ArrowUpIcon, StopIcon, SummarizeIcon } from "./icons";
+import { artifactDefinitions, type ArtifactKind } from "./artifact";
+import type { ArtifactToolbarItem } from "./create-artifact";
+import type { UseChatHelpers } from "@ai-sdk/react";
+import type { ChatMessage } from "@/lib/types";
 
 type ToolProps = {
   description: string;
@@ -38,11 +28,11 @@ type ToolProps = {
   isToolbarVisible?: boolean;
   setIsToolbarVisible?: Dispatch<SetStateAction<boolean>>;
   isAnimating: boolean;
-  sendMessage: UseChatHelpers<ChatMessage>['sendMessage'];
+  sendMessage: UseChatHelpers<ChatMessage>["sendMessage"];
   onClick: ({
     sendMessage,
   }: {
-    sendMessage: UseChatHelpers<ChatMessage>['sendMessage'];
+    sendMessage: UseChatHelpers<ChatMessage>["sendMessage"];
   }) => void;
 };
 
@@ -89,8 +79,8 @@ const Tool = ({
     <Tooltip open={isHovered && !isAnimating}>
       <TooltipTrigger asChild>
         <motion.div
-          className={cx('p-3 rounded-full', {
-            'bg-primary !text-primary-foreground': selectedTool === description,
+          className={cx("p-3 rounded-full", {
+            "bg-primary !text-primary-foreground": selectedTool === description,
           })}
           onHoverStart={() => {
             setIsHovered(true);
@@ -99,7 +89,7 @@ const Tool = ({
             if (selectedTool !== description) setIsHovered(false);
           }}
           onKeyDown={(event) => {
-            if (event.key === 'Enter') {
+            if (event.key === "Enter") {
               handleSelect();
             }
           }}
@@ -139,15 +129,15 @@ const ReadingLevelSelector = ({
 }: {
   setSelectedTool: Dispatch<SetStateAction<string | null>>;
   isAnimating: boolean;
-  sendMessage: UseChatHelpers<ChatMessage>['sendMessage'];
+  sendMessage: UseChatHelpers<ChatMessage>["sendMessage"];
 }) => {
   const LEVELS = [
-    'Elementary',
-    'Middle School',
-    'Keep current level',
-    'High School',
-    'College',
-    'Graduate',
+    "Elementary",
+    "Middle School",
+    "Keep current level",
+    "High School",
+    "College",
+    "Graduate",
   ];
 
   const y = useMotionValue(-40 * 2);
@@ -155,11 +145,10 @@ const ReadingLevelSelector = ({
   const yToLevel = useTransform(y, [0, -dragConstraints], [0, 5]);
 
   const [currentLevel, setCurrentLevel] = useState(2);
-  const [hasUserSelectedLevel, setHasUserSelectedLevel] =
-    useState<boolean>(false);
+  const [hasUserSelectedLevel, setHasUserSelectedLevel] = useState<boolean>(false);
 
   useEffect(() => {
-    const unsubscribe = yToLevel.on('change', (latest) => {
+    const unsubscribe = yToLevel.on("change", (latest) => {
       const level = Math.min(5, Math.max(0, Math.round(Math.abs(latest))));
       setCurrentLevel(level);
     });
@@ -187,10 +176,10 @@ const ReadingLevelSelector = ({
           <TooltipTrigger asChild>
             <motion.div
               className={cx(
-                'absolute bg-background p-3 border rounded-full flex flex-row items-center',
+                "absolute bg-background p-3 border rounded-full flex flex-row items-center",
                 {
-                  'bg-primary text-primary-foreground': currentLevel !== 2,
-                  'bg-background text-foreground': currentLevel === 2,
+                  "bg-primary text-primary-foreground": currentLevel !== 2,
+                  "bg-background text-foreground": currentLevel === 2,
                 },
               )}
               style={{ y }}
@@ -214,10 +203,10 @@ const ReadingLevelSelector = ({
               onClick={() => {
                 if (currentLevel !== 2 && hasUserSelectedLevel) {
                   sendMessage({
-                    role: 'user',
+                    role: "user",
                     parts: [
                       {
-                        type: 'text',
+                        type: "text",
                         text: `Please adjust the reading level to ${LEVELS[currentLevel]} level.`,
                       },
                     ],
@@ -255,7 +244,7 @@ export const Tools = ({
   isToolbarVisible: boolean;
   selectedTool: string | null;
   setSelectedTool: Dispatch<SetStateAction<string | null>>;
-  sendMessage: UseChatHelpers<ChatMessage>['sendMessage'];
+  sendMessage: UseChatHelpers<ChatMessage>["sendMessage"];
   isAnimating: boolean;
   setIsToolbarVisible: Dispatch<SetStateAction<boolean>>;
   tools: Array<ArtifactToolbarItem>;
@@ -311,10 +300,10 @@ const PureToolbar = ({
 }: {
   isToolbarVisible: boolean;
   setIsToolbarVisible: Dispatch<SetStateAction<boolean>>;
-  status: UseChatHelpers<ChatMessage>['status'];
-  sendMessage: UseChatHelpers<ChatMessage>['sendMessage'];
-  stop: UseChatHelpers<ChatMessage>['stop'];
-  setMessages: UseChatHelpers<ChatMessage>['setMessages'];
+  status: UseChatHelpers<ChatMessage>["status"];
+  sendMessage: UseChatHelpers<ChatMessage>["sendMessage"];
+  stop: UseChatHelpers<ChatMessage>["stop"];
+  setMessages: UseChatHelpers<ChatMessage>["setMessages"];
   artifactKind: ArtifactKind;
 }) => {
   const toolbarRef = useRef<HTMLDivElement>(null);
@@ -354,7 +343,7 @@ const PureToolbar = ({
   }, []);
 
   useEffect(() => {
-    if (status === 'streaming') {
+    if (status === "streaming") {
       setIsToolbarVisible(false);
     }
   }, [status, setIsToolbarVisible]);
@@ -364,7 +353,7 @@ const PureToolbar = ({
   );
 
   if (!artifactDefinition) {
-    throw new Error('Artifact definition not found!');
+    throw new Error("Artifact definition not found!");
   }
 
   const toolsByArtifactKind = artifactDefinition.toolbar;
@@ -380,7 +369,7 @@ const PureToolbar = ({
         initial={{ opacity: 0, y: -20, scale: 1 }}
         animate={
           isToolbarVisible
-            ? selectedTool === 'adjust-reading-level'
+            ? selectedTool === "adjust-reading-level"
               ? {
                   opacity: 1,
                   y: 0,
@@ -398,15 +387,15 @@ const PureToolbar = ({
             : { opacity: 1, y: 0, height: 54, transition: { delay: 0 } }
         }
         exit={{ opacity: 0, y: -20, transition: { duration: 0.1 } }}
-        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+        transition={{ type: "spring", stiffness: 300, damping: 25 }}
         onHoverStart={() => {
-          if (status === 'streaming') return;
+          if (status === "streaming") return;
 
           cancelCloseTimer();
           setIsToolbarVisible(true);
         }}
         onHoverEnd={() => {
-          if (status === 'streaming') return;
+          if (status === "streaming") return;
 
           startCloseTimer();
         }}
@@ -418,7 +407,7 @@ const PureToolbar = ({
         }}
         ref={toolbarRef}
       >
-        {status === 'streaming' ? (
+        {status === "streaming" ? (
           <motion.div
             key="stop-icon"
             initial={{ scale: 1 }}
@@ -432,7 +421,7 @@ const PureToolbar = ({
           >
             <StopIcon />
           </motion.div>
-        ) : selectedTool === 'adjust-reading-level' ? (
+        ) : selectedTool === "adjust-reading-level" ? (
           <ReadingLevelSelector
             key="reading-level-selector"
             sendMessage={sendMessage}

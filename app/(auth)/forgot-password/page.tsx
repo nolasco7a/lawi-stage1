@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useActionState, useEffect, useState } from 'react';
-import { toast } from '@/components/toast';
-import { Form } from '@/components/form';
-import { FormInput } from '@/components/form-input';
-import { createVerifyEmailSchema, type VerifyEmailFormData } from '@/lib/validations/auth';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { Form } from "@/components/form";
+import { FormInput } from "@/components/form-input";
+import { toast } from "@/components/toast";
+import { Button } from "@/components/ui/button";
+import { type VerifyEmailFormData, createVerifyEmailSchema } from "@/lib/validations/auth";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useActionState, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 
-import { forgotPassword, type ForgotPasswordActionState } from '../actions';
+import { type ForgotPasswordActionState, forgotPassword } from "../actions";
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
@@ -20,59 +20,56 @@ export default function ForgotPasswordPage() {
   const form = useForm<VerifyEmailFormData>({
     resolver: zodResolver(createVerifyEmailSchema()),
     defaultValues: {
-      email: '',
+      email: "",
     },
   });
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const [state, formAction] = useActionState<ForgotPasswordActionState, FormData>(
-    forgotPassword,
-    {
-      status: 'idle',
-    },
-  );
+  const [state, formAction] = useActionState<ForgotPasswordActionState, FormData>(forgotPassword, {
+    status: "idle",
+  });
 
   useEffect(() => {
-    if (state.status === 'failed') {
+    if (state.status === "failed") {
       setIsLoading(false);
       toast({
-        type: 'error',
-        description: 'Failed to send reset email. Please try again.',
+        type: "error",
+        description: "Failed to send reset email. Please try again.",
       });
-    } else if (state.status === 'invalid_data') {
+    } else if (state.status === "invalid_data") {
       setIsLoading(false);
       toast({
-        type: 'error',
-        description: 'Please enter a valid email address.',
+        type: "error",
+        description: "Please enter a valid email address.",
       });
-    } else if (state.status === 'user_not_found') {
+    } else if (state.status === "user_not_found") {
       setIsLoading(false);
       toast({
-        type: 'error',
-        description: 'No account found with this email address.',
+        type: "error",
+        description: "No account found with this email address.",
       });
-    } else if (state.status === 'success') {
+    } else if (state.status === "success") {
       setIsLoading(false);
       toast({
-        type: 'success',
-        description: 'Reset code sent! Check your email.',
+        type: "success",
+        description: "Reset code sent! Check your email.",
       });
-      router.push(`/forgot-password/verify?email=${encodeURIComponent(form.getValues('email'))}`);
+      router.push(`/forgot-password/verify?email=${encodeURIComponent(form.getValues("email"))}`);
     }
   }, [state.status, router, form]);
 
   const onSubmit = (data: VerifyEmailFormData) => {
     setIsLoading(true);
     const formData = new FormData();
-    formData.append('email', data.email);
+    formData.append("email", data.email);
     formAction(formData);
   };
 
   return (
     <div className="w-full h-screen flex flex-col">
       <div className="h-10 w-full flex flex-row justify-start p-4">
-        <Link href={'/login'} className="text-primary rounded-full">
+        <Link href={"/login"} className="text-primary rounded-full">
           <Button variant="link" className="text-primary rounded-full pl-0">
             <ArrowLeft className="size-4" />
             Back to Login

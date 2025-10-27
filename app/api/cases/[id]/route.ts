@@ -1,15 +1,18 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/app/(auth)/auth';
-import { getCaseById, getChatsByCaseId, getCaseFilesByCaseId, updateCase, deleteCaseById } from '@/lib/db/queries';
+import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@/app/(auth)/auth";
+import {
+  getCaseById,
+  getChatsByCaseId,
+  getCaseFilesByCaseId,
+  updateCase,
+  deleteCaseById,
+} from "@/lib/db/queries";
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   const session = await auth();
 
   if (!session || !session.user) {
-    return new NextResponse('Unauthorized', { status: 401 });
+    return new NextResponse("Unauthorized", { status: 401 });
   }
 
   const { id } = params;
@@ -22,7 +25,7 @@ export async function GET(
     ]);
 
     if (!caseData) {
-      return new NextResponse('Case not found', { status: 404 });
+      return new NextResponse("Case not found", { status: 404 });
     }
 
     return NextResponse.json({
@@ -31,19 +34,16 @@ export async function GET(
       files,
     });
   } catch (error) {
-    console.error('Error fetching case details:', error);
-    return new NextResponse('Internal Server Error', { status: 500 });
+    console.error("Error fetching case details:", error);
+    return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
 
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
   const session = await auth();
 
   if (!session || !session.user) {
-    return new NextResponse('Unauthorized', { status: 401 });
+    return new NextResponse("Unauthorized", { status: 401 });
   }
 
   const { id } = params;
@@ -52,7 +52,7 @@ export async function PATCH(
     const { title, description } = await request.json();
 
     if (!title?.trim()) {
-      return new NextResponse('Title is required', { status: 400 });
+      return new NextResponse("Title is required", { status: 400 });
     }
 
     const [updatedCase] = await updateCase({
@@ -63,27 +63,24 @@ export async function PATCH(
     });
 
     if (!updatedCase) {
-      return new NextResponse('Case not found', { status: 404 });
+      return new NextResponse("Case not found", { status: 404 });
     }
 
-    return NextResponse.json({ 
-      success: true, 
-      case: updatedCase 
+    return NextResponse.json({
+      success: true,
+      case: updatedCase,
     });
   } catch (error) {
-    console.error('Error updating case:', error);
-    return new NextResponse('Internal Server Error', { status: 500 });
+    console.error("Error updating case:", error);
+    return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   const session = await auth();
 
   if (!session || !session.user) {
-    return new NextResponse('Unauthorized', { status: 401 });
+    return new NextResponse("Unauthorized", { status: 401 });
   }
 
   const { id } = params;
@@ -95,15 +92,15 @@ export async function DELETE(
     });
 
     if (!deletedCase) {
-      return new NextResponse('Case not found', { status: 404 });
+      return new NextResponse("Case not found", { status: 404 });
     }
 
-    return NextResponse.json({ 
-      success: true, 
-      deletedCase 
+    return NextResponse.json({
+      success: true,
+      deletedCase,
     });
   } catch (error) {
-    console.error('Error deleting case:', error);
-    return new NextResponse('Internal Server Error', { status: 500 });
+    console.error("Error deleting case:", error);
+    return new NextResponse("Internal Server Error", { status: 500 });
   }
 }

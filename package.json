@@ -6,9 +6,11 @@
     "dev": "next dev --turbo",
     "build": "tsx lib/db/migrate && next build",
     "start": "next start",
-    "lint": "next lint && biome lint --write --unsafe",
-    "lint:fix": "next lint --fix && biome lint --write --unsafe",
-    "format": "biome format --write",
+    "lint": "next lint && biome check --write --unsafe",
+    "lint:fix": "next lint --fix && biome check --write --unsafe",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "check": "biome check .",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "npx tsx lib/db/migrate.ts",
     "db:studio": "drizzle-kit studio",
@@ -16,7 +18,8 @@
     "db:pull": "drizzle-kit pull",
     "db:check": "drizzle-kit check",
     "db:up": "drizzle-kit up",
-    "test": "export PLAYWRIGHT=True && pnpm exec playwright test"
+    "test": "export PLAYWRIGHT=True && pnpm exec playwright test",
+    "prepare": "husky"
   },
   "dependencies": {
     "@ai-sdk/provider": "2.0.0-beta.1",
@@ -67,12 +70,14 @@
     "fast-deep-equal": "^3.1.3",
     "framer-motion": "^11.3.19",
     "geist": "^1.3.1",
+    "i": "^0.3.7",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.446.0",
     "nanoid": "^5.0.8",
     "next": "15.3.0-canary.31",
     "next-auth": "5.0.0-beta.25",
     "next-themes": "^0.3.0",
+    "npm": "^11.6.0",
     "orderedmap": "^2.1.1",
     "papaparse": "^5.5.2",
     "postgres": "^3.4.4",
@@ -86,6 +91,7 @@
     "prosemirror-view": "^1.34.3",
     "react": "19.0.0-rc-45804af1-20241021",
     "react-data-grid": "7.0.0-beta.47",
+    "react-doc-viewer": "^0.1.14",
     "react-dom": "19.0.0-rc-45804af1-20241021",
     "react-hook-form": "^7.61.1",
     "react-markdown": "^9.0.1",
@@ -107,6 +113,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
+    "@eslint/js": "^9.38.0",
     "@playwright/test": "^1.50.1",
     "@tailwindcss/typography": "^0.5.15",
     "@types/d3-scale": "^4.0.8",
@@ -118,13 +125,19 @@
     "drizzle-kit": "^0.25.0",
     "eslint": "^8.57.0",
     "eslint-config-next": "14.2.5",
-    "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-typescript": "^3.6.3",
-    "eslint-plugin-tailwindcss": "^3.17.5",
+    "eslint-plugin-tailwindcss": "^3.18.2",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.6",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "tsx": "^4.19.1",
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "typescript-eslint": "^8.46.2"
   },
-  "packageManager": "pnpm@10.14.0"
+  "packageManager": "pnpm@10.14.0",
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": ["biome check --write --unsafe", "eslint --cache --fix"],
+    "*.{json,md,css}": ["biome format --write"]
+  }
 }

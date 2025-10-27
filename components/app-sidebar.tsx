@@ -1,11 +1,19 @@
-'use client';
+"use client";
 
-import type { User } from 'next-auth';
-import { useRouter } from 'next/navigation';
-import { MessageCirclePlus, Settings, LayoutDashboard, UserRound, FolderKanban, File, MessageCircleMore} from "lucide-react";
-import { SidebarHistory } from '@/components/sidebar-history';
-import { SidebarUserNav } from '@/components/sidebar-user-nav';
-import { Button } from '@/components/ui/button';
+import type { User } from "next-auth";
+import { useRouter } from "next/navigation";
+import {
+  MessageCirclePlus,
+  Settings,
+  LayoutDashboard,
+  UserRound,
+  FolderKanban,
+  File,
+  MessageCircleMore,
+} from "lucide-react";
+import { SidebarHistory } from "@/components/sidebar-history";
+import { SidebarUserNav } from "@/components/sidebar-user-nav";
+import { Button } from "@/components/ui/button";
 import {
   Sidebar,
   SidebarContent,
@@ -18,14 +26,19 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
-} from '@/components/ui/sidebar';
-import Link from 'next/link';
-import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
+} from "@/components/ui/sidebar";
+import Link from "next/link";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import React from "react";
-import {state} from "@auth/core/lib/actions/callback/oauth/checks";
+import { state } from "@auth/core/lib/actions/callback/oauth/checks";
 
-const AppSidebarMenuItem = ({ path = '/', title, icon, customClass }: { path: string; title: string, icon: React.ReactNode, customClass?: string }) => {
-  const {state: appSidebarState} = useSidebar();
+const AppSidebarMenuItem = ({
+  path = "/",
+  title,
+  icon,
+  customClass,
+}: { path: string; title: string; icon: React.ReactNode; customClass?: string }) => {
+  const { state: appSidebarState } = useSidebar();
   return (
     <SidebarMenuItem>
       <Tooltip>
@@ -36,15 +49,11 @@ const AppSidebarMenuItem = ({ path = '/', title, icon, customClass }: { path: st
             </Link>
           </SidebarMenuButton>
         </TooltipTrigger>
-        {
-          appSidebarState === "collapsed" && (
-            <TooltipContent align="end">{title}</TooltipContent>
-          )
-        }
+        {appSidebarState === "collapsed" && <TooltipContent align="end">{title}</TooltipContent>}
       </Tooltip>
     </SidebarMenuItem>
-  )
-}
+  );
+};
 
 export function AppSidebar({ user }: { user: User | undefined }) {
   const router = useRouter();
@@ -55,12 +64,15 @@ export function AppSidebar({ user }: { user: User | undefined }) {
     <Sidebar
       variant="sidebar"
       collapsible="icon"
-      className="group-data-[side=left]:border-r w-[var(--sidebar-width)]">
+      className="group-data-[side=left]:border-r w-[var(--sidebar-width)] z-[999]"
+    >
       <SidebarHeader>
         <SidebarMenu>
           <div className="flex flex-row justify-between items-center">
             <Link href="/" className="flex flex-row gap-3 items-center">
-              <span className={`${appSidebarState === "collapsed" ? "text-[8px] font-bold" : "text-xl font-black"} px-2 hover:bg-muted rounded-md cursor-pointer`}>
+              <span
+                className={`${appSidebarState === "collapsed" ? "text-[8px] font-bold" : "text-xl font-black"} px-2 hover:bg-muted rounded-md cursor-pointer`}
+              >
                 LAWI
               </span>
             </Link>
@@ -68,29 +80,29 @@ export function AppSidebar({ user }: { user: User | undefined }) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-          <SidebarGroup>
-            <SidebarGroupContent>
-              <SidebarGroupLabel>Menu de navegación</SidebarGroupLabel>
-              <SidebarMenu>
-                  {/*{appSidebarState === "collapsed" && (*/}
-                  {/*)}*/}
-                  <AppSidebarMenuItem
-                    path="chat" title="Nuevo chat"
-                    icon={<MessageCirclePlus />}
-                    customClass={"text-red-600 hover:text-red-500"}/>
-                  <AppSidebarMenuItem path="dashboard" title="Dashboard" icon={<LayoutDashboard/>} />
-                  <AppSidebarMenuItem path="chats" title="Historial" icon={<MessageCircleMore/>} />
-                  <AppSidebarMenuItem path="files" title="Archivos" icon={<File/>} />
-                  <AppSidebarMenuItem path="cases" title="Casos" icon={<FolderKanban/>} />
-                  <AppSidebarMenuItem path="settings" title="Configuración" icon={<Settings/>} />
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-          <SidebarHistory user={user} />
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarGroupLabel>Menu de navegación</SidebarGroupLabel>
+            <SidebarMenu>
+              {/*{appSidebarState === "collapsed" && (*/}
+              {/*)}*/}
+              <AppSidebarMenuItem
+                path="chat"
+                title="Nuevo chat"
+                icon={<MessageCirclePlus />}
+                customClass={"text-red-600 hover:text-red-500"}
+              />
+              <AppSidebarMenuItem path="dashboard" title="Dashboard" icon={<LayoutDashboard />} />
+              <AppSidebarMenuItem path="chats" title="Historial" icon={<MessageCircleMore />} />
+              <AppSidebarMenuItem path="files" title="Archivos" icon={<File />} />
+              <AppSidebarMenuItem path="cases" title="Casos" icon={<FolderKanban />} />
+              <AppSidebarMenuItem path="settings" title="Configuración" icon={<Settings />} />
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        <SidebarHistory user={user} />
       </SidebarContent>
-      <SidebarFooter>
-        {user && <SidebarUserNav user={user} />}
-      </SidebarFooter>
+      <SidebarFooter>{user && <SidebarUserNav user={user} />}</SidebarFooter>
     </Sidebar>
   );
 }

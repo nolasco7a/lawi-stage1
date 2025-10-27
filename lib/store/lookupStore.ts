@@ -1,21 +1,21 @@
-'use client';
+"use client";
 
-import { create } from 'zustand';
-import type { Country, DeptoState, CityMunicipality } from '@/lib/db/schema';
+import { create } from "zustand";
+import type { Country, DeptoState, CityMunicipality } from "@/lib/db/schema";
 
 interface LookupState {
   countries: Country[];
   deptoStates: DeptoState[];
   cityMunicipalities: CityMunicipality[];
   selectedCountry: string | null;
-  
+
   fetchCountries: () => Promise<void>;
   fetchDeptoStates: (countryId: string) => Promise<void>;
   fetchCityMunicipalities: (deptoStateId: string) => Promise<void>;
-  
+
   setSelectedCountry: (countryId: string | null) => void;
-    cleanDeptoStates: () => void;
-    cleanCityMunicipalities: () => void;
+  cleanDeptoStates: () => void;
+  cleanCityMunicipalities: () => void;
 }
 
 export const useLookupStore = create<LookupState>()((set) => ({
@@ -23,41 +23,41 @@ export const useLookupStore = create<LookupState>()((set) => ({
   deptoStates: [],
   cityMunicipalities: [],
   selectedCountry: null,
-  
+
   fetchCountries: async () => {
     try {
-      const response = await fetch('/api/lookup?type=countries');
+      const response = await fetch("/api/lookup?type=countries");
       const countries = await response.json();
       set({ countries });
     } catch (error) {
-      console.error('Error fetching countries:', error);
+      console.error("Error fetching countries:", error);
     }
   },
-  
+
   fetchDeptoStates: async (countryId: string) => {
     try {
       const response = await fetch(`/api/lookup?type=departments&countryId=${countryId}`);
       const deptoStates = await response.json();
       set({ deptoStates });
     } catch (error) {
-      console.error('Error fetching departments:', error);
+      console.error("Error fetching departments:", error);
     }
   },
-  
+
   fetchCityMunicipalities: async (countryId: string) => {
     try {
       const response = await fetch(`/api/lookup?type=cities&countryId=${countryId}`);
       const cityMunicipalities = await response.json();
       set({ cityMunicipalities });
     } catch (error) {
-      console.error('Error fetching cities:', error);
+      console.error("Error fetching cities:", error);
     }
   },
-  
+
   setSelectedCountry: (countryId: string | null) => {
     set({ selectedCountry: countryId });
   },
 
-    cleanDeptoStates: () => set({ deptoStates: [] }),
-    cleanCityMunicipalities: () => set({ cityMunicipalities: []})
+  cleanDeptoStates: () => set({ deptoStates: [] }),
+  cleanCityMunicipalities: () => set({ cityMunicipalities: [] }),
 }));

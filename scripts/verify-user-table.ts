@@ -1,19 +1,19 @@
-import { config } from 'dotenv';
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
-import { sql } from 'drizzle-orm';
+import { config } from "dotenv";
+import { sql } from "drizzle-orm";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 
 config({
-  path: '.env.local',
+  path: ".env.local",
 });
 
 const verifyUserTable = async () => {
   try {
-    console.log('🔍 Verifying User table structure...');
+    console.log("🔍 Verifying User table structure...");
 
     // Database connection
     if (!process.env.POSTGRES_URL) {
-      throw new Error('POSTGRES_URL is not defined');
+      throw new Error("POSTGRES_URL is not defined");
     }
 
     const connection = postgres(process.env.POSTGRES_URL, { max: 1 });
@@ -31,9 +31,11 @@ const verifyUserTable = async () => {
       ORDER BY ordinal_position;
     `);
 
-    console.log('📊 User table columns:');
+    console.log("📊 User table columns:");
     tableInfo.forEach((col: any) => {
-      console.log(`  - ${col.column_name}: ${col.data_type} ${col.is_nullable === 'NO' ? '(NOT NULL)' : '(NULLABLE)'} ${col.column_default ? `DEFAULT ${col.column_default}` : ''}`);
+      console.log(
+        `  - ${col.column_name}: ${col.data_type} ${col.is_nullable === "NO" ? "(NOT NULL)" : "(NULLABLE)"} ${col.column_default ? `DEFAULT ${col.column_default}` : ""}`,
+      );
     });
 
     // Check indexes
@@ -46,7 +48,7 @@ const verifyUserTable = async () => {
       ORDER BY indexname;
     `);
 
-    console.log('\n🔗 User table indexes:');
+    console.log("\n🔗 User table indexes:");
     indexes.forEach((idx: any) => {
       console.log(`  - ${idx.indexname}`);
     });
@@ -62,11 +64,16 @@ const verifyUserTable = async () => {
       ORDER BY conname;
     `);
 
-    console.log('\n🔒 User table constraints:');
+    console.log("\n🔒 User table constraints:");
     constraints.forEach((cons: any) => {
-      const type = cons.contype === 'p' ? 'PRIMARY KEY' : 
-                   cons.contype === 'u' ? 'UNIQUE' :
-                   cons.contype === 'f' ? 'FOREIGN KEY' : 'OTHER';
+      const type =
+        cons.contype === "p"
+          ? "PRIMARY KEY"
+          : cons.contype === "u"
+            ? "UNIQUE"
+            : cons.contype === "f"
+              ? "FOREIGN KEY"
+              : "OTHER";
       console.log(`  - ${cons.conname} (${type})`);
     });
 
@@ -82,8 +89,8 @@ const verifyUserTable = async () => {
         GROUP BY role 
         ORDER BY role
       `);
-      
-      console.log('\n📊 Users by role:');
+
+      console.log("\n📊 Users by role:");
       roleCount.forEach((role: any) => {
         console.log(`  - ${role.role}: ${role.count}`);
       });
@@ -94,20 +101,19 @@ const verifyUserTable = async () => {
         GROUP BY is_guest 
         ORDER BY is_guest
       `);
-      
-      console.log('\n👤 Guest vs Regular users:');
+
+      console.log("\n👤 Guest vs Regular users:");
       guestCount.forEach((guest: any) => {
-        const userType = guest.is_guest ? 'Guest' : 'Regular';
+        const userType = guest.is_guest ? "Guest" : "Regular";
         console.log(`  - ${userType}: ${guest.count}`);
       });
     }
 
-    console.log('\n✅ User table verification completed successfully!');
-    
-    await connection.end();
+    console.log("\n✅ User table verification completed successfully!");
 
+    await connection.end();
   } catch (error) {
-    console.error('❌ Verification failed:', error);
+    console.error("❌ Verification failed:", error);
     process.exit(1);
   }
 };
@@ -116,11 +122,11 @@ const verifyUserTable = async () => {
 if (require.main === module) {
   verifyUserTable()
     .then(() => {
-      console.log('🎯 User table verification completed');
+      console.log("🎯 User table verification completed");
       process.exit(0);
     })
     .catch((error) => {
-      console.error('💥 Fatal error during verification:', error);
+      console.error("💥 Fatal error during verification:", error);
       process.exit(1);
     });
 }

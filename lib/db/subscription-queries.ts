@@ -1,13 +1,13 @@
-import { db } from '@/lib/db';
-import { subscription, invoice, user } from '@/lib/db/schema';
-import { eq, and, desc, inArray } from 'drizzle-orm';
+import { db } from "@/lib/db";
+import { invoice, subscription, user } from "@/lib/db/schema";
+import { and, desc, eq, inArray } from "drizzle-orm";
 
 export interface UserSubscription {
   id: string;
   subscription_id: string;
   customer_id: string;
   status: string;
-  plan_type: 'basic' | 'pro';
+  plan_type: "basic" | "pro";
   current_period_start: Date;
   current_period_end: Date;
   cancel_at_period_end: boolean;
@@ -38,17 +38,14 @@ export async function getUserActiveSubscription(userId: string): Promise<UserSub
       .select()
       .from(subscription)
       .where(
-        and(
-          eq(subscription.user_id, userId),
-          inArray(subscription.status, ['active', 'trialing'])
-        )
+        and(eq(subscription.user_id, userId), inArray(subscription.status, ["active", "trialing"])),
       )
       .orderBy(desc(subscription.created_at))
       .limit(1);
-    
+
     return result.length > 0 ? result[0] : null;
   } catch (error) {
-    console.error('Error fetching user active subscription:', error);
+    console.error("Error fetching user active subscription:", error);
     return null;
   }
 }
@@ -61,16 +58,18 @@ export async function getUserSubscriptionHistory(userId: string): Promise<UserSu
       .from(subscription)
       .where(eq(subscription.user_id, userId))
       .orderBy(desc(subscription.created_at));
-    
+
     return result;
   } catch (error) {
-    console.error('Error fetching user subscription history:', error);
+    console.error("Error fetching user subscription history:", error);
     return [];
   }
 }
 
 // Get subscription with invoices
-export async function getSubscriptionWithInvoices(subscriptionId: string): Promise<SubscriptionWithInvoices | null> {
+export async function getSubscriptionWithInvoices(
+  subscriptionId: string,
+): Promise<SubscriptionWithInvoices | null> {
   try {
     // Get subscription
     const subscriptionResult = await db
@@ -78,13 +77,13 @@ export async function getSubscriptionWithInvoices(subscriptionId: string): Promi
       .from(subscription)
       .where(eq(subscription.subscription_id, subscriptionId))
       .limit(1);
-    
+
     if (subscriptionResult.length === 0) {
       return null;
     }
-    
+
     const userSubscription = subscriptionResult[0];
-    
+
     // Get invoices for this subscription
     const invoicesResult = await db
       .select({
@@ -102,13 +101,13 @@ export async function getSubscriptionWithInvoices(subscriptionId: string): Promi
       .from(invoice)
       .where(eq(invoice.subscription_id, userSubscription.id))
       .orderBy(desc(invoice.created_at));
-    
+
     return {
       ...userSubscription,
       invoices: invoicesResult,
     };
   } catch (error) {
-    console.error('Error fetching subscription with invoices:', error);
+    console.error("Error fetching subscription with invoices:", error);
     return null;
   }
 }
@@ -120,22 +119,19 @@ export async function hasActiveSubscription(userId: string): Promise<boolean> {
       .select({ id: subscription.id })
       .from(subscription)
       .where(
-        and(
-          eq(subscription.user_id, userId),
-          inArray(subscription.status, ['active', 'trialing'])
-        )
+        and(eq(subscription.user_id, userId), inArray(subscription.status, ["active", "trialing"])),
       )
       .limit(1);
-    
+
     return result.length > 0;
   } catch (error) {
-    console.error('Error checking active subscription:', error);
+    console.error("Error checking active subscription:", error);
     return false;
   }
 }
 
 // Check if user has specific plan type
-export async function hasActivePlan(userId: string, planType: 'basic' | 'pro'): Promise<boolean> {
+export async function hasActivePlan(userId: string, planType: "basic" | "pro"): Promise<boolean> {
   try {
     const result = await db
       .select({ id: subscription.id })
@@ -143,31 +139,33 @@ export async function hasActivePlan(userId: string, planType: 'basic' | 'pro'): 
       .where(
         and(
           eq(subscription.user_id, userId),
-          inArray(subscription.status, ['active', 'trialing']),
-          eq(subscription.plan_type, planType)
-        )
+          inArray(subscription.status, ["active", "trialing"]),
+          eq(subscription.plan_type, planType),
+        ),
       )
       .limit(1);
-    
+
     return result.length > 0;
   } catch (error) {
-    console.error('Error checking active plan:', error);
+    console.error("Error checking active plan:", error);
     return false;
   }
 }
 
 // Get subscription by Stripe subscription ID
-export async function getSubscriptionByStripeId(stripeSubscriptionId: string): Promise<UserSubscription | null> {
+export async function getSubscriptionByStripeId(
+  stripeSubscriptionId: string,
+): Promise<UserSubscription | null> {
   try {
     const result = await db
       .select()
       .from(subscription)
       .where(eq(subscription.subscription_id, stripeSubscriptionId))
       .limit(1);
-    
+
     return result.length > 0 ? result[0] : null;
   } catch (error) {
-    console.error('Error fetching subscription by Stripe ID:', error);
+    console.error("Error fetching subscription by Stripe ID:", error);
     return null;
   }
 }
@@ -175,11 +173,12 @@ export async function getSubscriptionByStripeId(stripeSubscriptionId: string): P
 // Update user's customer ID (useful for linking users to Stripe customers)
 export async function updateUserCustomerId(userId: string, customerId: string): Promise<void> {
   try {
+    // TODO: checar esta funcion, creo que alguna sfunciones de stripe no sirven para nada por que tengo dos configuraciones, elegir con cual quedarme
     // You might want to add a customer_id field to the user table
     // For now, this is a placeholder function
     console.log(`Would update user ${userId} with customer ID ${customerId}`);
   } catch (error) {
-    console.error('Error updating user customer ID:', error);
+    console.error("Error updating user customer ID:", error);
     throw error;
   }
 }
@@ -194,10 +193,10 @@ export async function cancelSubscriptionAtPeriodEnd(subscriptionId: string): Pro
         updated_at: new Date(),
       })
       .where(eq(subscription.subscription_id, subscriptionId));
-    
+
     return true;
   } catch (error) {
-    console.error('Error canceling subscription:', error);
+    console.error("Error canceling subscription:", error);
     return false;
   }
 }
@@ -212,10 +211,10 @@ export async function reactivateSubscription(subscriptionId: string): Promise<bo
         updated_at: new Date(),
       })
       .where(eq(subscription.subscription_id, subscriptionId));
-    
+
     return true;
   } catch (error) {
-    console.error('Error reactivating subscription:', error);
+    console.error("Error reactivating subscription:", error);
     return false;
   }
 }

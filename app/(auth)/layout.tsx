@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from "next/link";
 
 export default function AuthLayout({
   children,
@@ -10,9 +10,7 @@ export default function AuthLayout({
       <div className="w-full h-screen grid xs:grid-cols-1 sm:grid-cols-4 md:grid-cols-3 lg:grid-cols-2">
         {/* Panel izquierdo */}
         <div className="w-full h-[100vh] md:h-full bg-foreground hidden sm:block xs:col-span-1 sm:col-span-1 md:col-span-1 lg:col-span-1">
-          <div className="h-20 p-4 flex flex-row gap-2">
-            theme y locale switch
-          </div>
+          <div className="h-20 p-4 flex flex-row gap-2">theme y locale switch</div>
           <Link href="/">
             <div className="absolute bottom-4 left-4 sm:-rotate-90 sm:-translate-y-20 sm:-translate-x-5 md:-rotate-0 md:translate-y-0 md:translate-x-0">
               <h1 className="text-4xl text-secondary font-bold">appname</h1>
@@ -28,9 +26,7 @@ export default function AuthLayout({
           {children}
           <div className="absolute bottom-4 left-4 xs:block sm:hidden">
             <Link href="/">
-              <h1 className="text-4xl text-primary sm:hidden font-bold">
-                appname
-              </h1>
+              <h1 className="text-4xl text-primary sm:hidden font-bold">appname</h1>
               <p className="text-sm text-muted-foreground">subtitle</p>
             </Link>
           </div>

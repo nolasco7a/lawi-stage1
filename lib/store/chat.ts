@@ -1,7 +1,7 @@
-import { create } from 'zustand';
-import { toast } from 'sonner';
-import type { Chat } from '@/lib/db/schema';
-import { CHAT_PAGE_SIZE, SEARCH_DEBOUNCE_DELAY } from '@/lib/constants';
+import { CHAT_PAGE_SIZE, SEARCH_DEBOUNCE_DELAY } from "@/lib/constants";
+import type { Chat } from "@/lib/db/schema";
+import { toast } from "sonner";
+import { create } from "zustand";
 
 interface ChatsResponse {
   chats: Chat[];
@@ -19,7 +19,7 @@ interface ChatStore {
   hasMore: boolean;
   loading: boolean;
   totalChats: number;
-  
+
   // Actions
   setSearchQuery: (query: string) => void;
   setDebouncedQuery: (query: string) => void;
@@ -30,7 +30,7 @@ interface ChatStore {
   deleteChat: (chatId: string) => Promise<void>;
   renameChat: (chatId: string, newTitle: string) => Promise<void>;
   refreshChats: () => void;
-  
+
   // Debounce timer
   debounceTimer: NodeJS.Timeout | null;
 }
@@ -38,8 +38,8 @@ interface ChatStore {
 export const useChatStore = create<ChatStore>((set, get) => ({
   // Initial state
   chats: [],
-  searchQuery: '',
-  debouncedQuery: '',
+  searchQuery: "",
+  debouncedQuery: "",
   currentPage: 1,
   hasMore: false,
   loading: false,
@@ -49,20 +49,20 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   // Actions
   setSearchQuery: (query: string) => {
     const { debounceTimer } = get();
-    
+
     // Clear existing timer
     if (debounceTimer) {
       clearTimeout(debounceTimer);
     }
-    
+
     set({ searchQuery: query });
-    
+
     // Set new debounced timer
     const newTimer = setTimeout(() => {
       get().setDebouncedQuery(query);
       get().setCurrentPage(1);
     }, SEARCH_DEBOUNCE_DELAY);
-    
+
     set({ debounceTimer: newTimer });
   },
 
@@ -73,7 +73,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   },
 
   setCurrentPage: (page: number) => set({ currentPage: page }),
-  
+
   setLoading: (loading: boolean) => set({ loading }),
 
   fetchChats: async (page: number, query: string, append = false) => {
@@ -81,7 +81,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
     if (loading) return;
 
     set({ loading: true });
-    
+
     try {
       const params = new URLSearchParams({
         page: page.toString(),
@@ -97,8 +97,8 @@ export const useChatStore = create<ChatStore>((set, get) => ({
         totalChats: data.totalChats,
       }));
     } catch (error) {
-      toast.error('Error al cargar los chats');
-      console.error('Error fetching chats:', error);
+      toast.error("Error al cargar los chats");
+      console.error("Error fetching chats:", error);
     } finally {
       set({ loading: false });
     }
@@ -106,7 +106,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
 
   loadMoreChats: () => {
     const { loading, hasMore, currentPage, debouncedQuery } = get();
-    
+
     if (!loading && hasMore) {
       const nextPage = currentPage + 1;
       set({ currentPage: nextPage });
@@ -117,40 +117,37 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   deleteChat: async (chatId: string) => {
     try {
       const response = await fetch(`/api/chat?id=${chatId}`, {
-        method: 'DELETE',
+        method: "DELETE",
       });
 
       if (response.ok) {
         // Remove chat from local state
         set((state) => ({
-          chats: state.chats.filter(chat => chat.id !== chatId),
+          chats: state.chats.filter((chat) => chat.id !== chatId),
           totalChats: state.totalChats - 1,
         }));
-        
-        toast.success('Chat eliminado exitosamente');
+
+        toast.success("Chat eliminado exitosamente");
         return Promise.resolve();
-      } else {
-        toast.error('Error al eliminar el chat');
-        return Promise.reject(new Error('Failed to delete chat'));
       }
     } catch (error) {
-      toast.error('Error al eliminar el chat');
-      console.error('Error deleting chat:', error);
+      toast.error("Error al eliminar el chat");
+      console.error("Error deleting chat:", error);
       return Promise.reject(error);
     }
   },
 
   renameChat: async (chatId: string, newTitle: string) => {
     if (!newTitle.trim()) {
-      toast.error('El título no puede estar vacío');
-      return Promise.reject(new Error('Title cannot be empty'));
+      toast.error("El título no puede estar vacío");
+      return Promise.reject(new Error("Title cannot be empty"));
     }
 
     try {
-      const response = await fetch('/api/chats', {
-        method: 'PATCH',
+      const response = await fetch("/api/chats", {
+        method: "PATCH",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           chatId,
@@ -161,22 +158,17 @@ export const useChatStore = create<ChatStore>((set, get) => ({
       if (response.ok) {
         // Update chat in local state
         set((state) => ({
-          chats: state.chats.map(chat => 
-            chat.id === chatId 
-              ? { ...chat, title: newTitle.trim() }
-              : chat
+          chats: state.chats.map((chat) =>
+            chat.id === chatId ? { ...chat, title: newTitle.trim() } : chat,
           ),
         }));
-        
-        toast.success('Chat renombrado exitosamente');
+
+        toast.success("Chat renombrado exitosamente");
         return Promise.resolve();
-      } else {
-        toast.error('Error al renombrar el chat');
-        return Promise.reject(new Error('Failed to rename chat'));
       }
     } catch (error) {
-      toast.error('Error al renombrar el chat');
-      console.error('Error renaming chat:', error);
+      toast.error("Error al renombrar el chat");
+      console.error("Error renaming chat:", error);
       return Promise.reject(error);
     }
   },

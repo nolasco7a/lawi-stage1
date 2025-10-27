@@ -1,35 +1,32 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/app/(auth)/auth';
-import { getCaseById, saveChatWithCase } from '@/lib/db/queries';
-import { generateUUID } from '@/lib/utils';
+import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@/app/(auth)/auth";
+import { getCaseById, saveChatWithCase } from "@/lib/db/queries";
+import { generateUUID } from "@/lib/utils";
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
   const session = await auth();
 
   if (!session || !session.user) {
-    return new NextResponse('Unauthorized', { status: 401 });
+    return new NextResponse("Unauthorized", { status: 401 });
   }
 
   const { id: caseId } = params;
 
   try {
     // Verify user owns the case
-    const caseData = await getCaseById({ 
-      id: caseId, 
-      userId: session.user.id! 
+    const caseData = await getCaseById({
+      id: caseId,
+      userId: session.user.id!,
     });
 
     if (!caseData) {
-      return new NextResponse('Case not found', { status: 404 });
+      return new NextResponse("Case not found", { status: 404 });
     }
 
     const { title } = await request.json();
 
     if (!title?.trim()) {
-      return new NextResponse('Title is required', { status: 400 });
+      return new NextResponse("Title is required", { status: 400 });
     }
 
     // Create new chat associated with case
@@ -38,17 +35,17 @@ export async function POST(
       id: chatId,
       userId: session.user.id!,
       title: title.trim(),
-      visibility: 'private',
+      visibility: "private",
       caseId,
     });
 
-    return NextResponse.json({ 
-      success: true, 
+    return NextResponse.json({
+      success: true,
       chatId,
-      redirectUrl: `/chat/${chatId}`
+      redirectUrl: `/chat/${chatId}`,
     });
   } catch (error) {
-    console.error('Error creating chat for case:', error);
-    return new NextResponse('Internal Server Error', { status: 500 });
+    console.error("Error creating chat for case:", error);
+    return new NextResponse("Internal Server Error", { status: 500 });
   }
 }

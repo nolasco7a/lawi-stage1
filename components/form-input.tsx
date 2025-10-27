@@ -1,20 +1,13 @@
+import { FormField, FormLabel, FormControl, FormMessage, FormItem } from "@/components/ui/form";
 import {
-  FormField,
-  FormLabel,
-  FormControl,
-  FormMessage,
-  FormItem,
-} from '@/components/ui/form';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
-import { PhoneInput } from '@/components/phone-input';
-import { Input } from '@/components/ui/input';
-
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { PhoneInput } from "@/components/phone-input";
+import { Input } from "@/components/ui/input";
 
 type FormInputProps = {
   form: any;
@@ -32,27 +25,20 @@ type FormInputPhoneProps = {
   defaultValue?: string;
   placeholder: string;
   disabled?: boolean;
-    defaultCountry?: string|undefined;
+  defaultCountry?: string | undefined;
 };
 
 type FormInputSelectProps = {
-    form: any;
-    name: string;
-    label: string;
-    disabled?: boolean;
-    options?: {value: string, label: string}[];
-    defaultValue?: string;
-    callback?: (value: string) => void;
-}
+  form: any;
+  name: string;
+  label: string;
+  disabled?: boolean;
+  options?: { value: string; label: string }[];
+  defaultValue?: string;
+  callback?: (value: string) => void;
+};
 
-export function FormInput({
-  form,
-  name,
-  label,
-  type,
-  placeholder,
-  disabled,
-}: FormInputProps) {
+export function FormInput({ form, name, label, type, placeholder, disabled }: FormInputProps) {
   return (
     <FormField
       control={form.control}
@@ -83,7 +69,7 @@ export function FormInputPhone({
   defaultValue,
   placeholder,
   disabled,
-    defaultCountry,
+  defaultCountry,
 }: FormInputPhoneProps) {
   return (
     <FormField
@@ -109,47 +95,48 @@ export function FormInputPhone({
 }
 
 export function FormInputSelect({
-    form,
-    name,
-    label,
-    options = [],
-    disabled = false,
-    callback,
+  form,
+  name,
+  label,
+  options = [],
+  disabled = false,
+  callback,
 }: FormInputSelectProps) {
-    return (
+  return (
     <FormField
-        control={form.control}
-        name={name}
-        render={({ field }) => (
-            <FormItem>
-                <FormLabel className="text-primary">{label}</FormLabel>
-                <FormControl>
-                    <Select
-                        disabled={disabled}
-                        value={field.value}
-                        onValueChange={(value) => {
-                            field.onChange(value);
-                            if (callback) {
-                                callback(value);
-                            }
-                        }}
-                    >
-                        <SelectTrigger className="text-primary border-muted-foreground w-full">
-                            <SelectValue placeholder={"Selecione una opción"} />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {options.length > 0
-                                ? options?.map((item) => (
-                                    <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>
-                                ))
-                                : null
-                            }
-                        </SelectContent>
-                    </Select>
-                </FormControl>
-                <FormMessage />
-            </FormItem>
-        )}
+      control={form.control}
+      name={name}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel className="text-primary">{label}</FormLabel>
+          <FormControl>
+            <Select
+              disabled={disabled}
+              value={field.value}
+              onValueChange={(value) => {
+                field.onChange(value);
+                if (callback) {
+                  callback(value);
+                }
+              }}
+            >
+              <SelectTrigger className="text-primary border-muted-foreground w-full">
+                <SelectValue placeholder={"Selecione una opción"} />
+              </SelectTrigger>
+              <SelectContent>
+                {options.length > 0
+                  ? options?.map((item) => (
+                      <SelectItem key={item.value} value={item.value}>
+                        {item.label}
+                      </SelectItem>
+                    ))
+                  : null}
+              </SelectContent>
+            </Select>
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
     />
-    )
+  );
 }

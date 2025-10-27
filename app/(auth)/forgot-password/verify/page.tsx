@@ -1,78 +1,75 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useActionState, useEffect, useState } from 'react';
-import { toast } from '@/components/toast';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useActionState, useEffect, useState } from "react";
+import { toast } from "@/components/toast";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSeparator,
   InputOTPSlot,
-} from '@/components/ui/input-otp';
+} from "@/components/ui/input-otp";
 
-import { verifyOtp, type VerifyOtpActionState } from '../../actions';
+import { verifyOtp, type VerifyOtpActionState } from "../../actions";
 
 export default function VerifyOtpPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const email = searchParams.get('email') || '';
-  
-  const [code, setCode] = useState('');
+  const email = searchParams.get("email") || "";
+
+  const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const [state, formAction] = useActionState<VerifyOtpActionState, FormData>(
-    verifyOtp,
-    {
-      status: 'idle',
-    },
-  );
+  const [state, formAction] = useActionState<VerifyOtpActionState, FormData>(verifyOtp, {
+    status: "idle",
+  });
 
   useEffect(() => {
     if (!email) {
-      router.push('/forgot-password');
+      router.push("/forgot-password");
       return;
     }
   }, [email, router]);
 
   useEffect(() => {
-    if (state.status === 'failed') {
+    if (state.status === "failed") {
       setIsLoading(false);
       toast({
-        type: 'error',
-        description: 'Failed to verify code. Please try again.',
+        type: "error",
+        description: "Failed to verify code. Please try again.",
       });
-    } else if (state.status === 'invalid_data') {
+    } else if (state.status === "invalid_data") {
       setIsLoading(false);
       toast({
-        type: 'error',
-        description: 'Please enter a valid 8-digit code.',
+        type: "error",
+        description: "Please enter a valid 8-digit code.",
       });
-    } else if (state.status === 'invalid_code') {
+    } else if (state.status === "invalid_code") {
       setIsLoading(false);
       toast({
-        type: 'error',
-        description: 'Invalid verification code. Please check and try again.',
+        type: "error",
+        description: "Invalid verification code. Please check and try again.",
       });
-    } else if (state.status === 'expired_code') {
+    } else if (state.status === "expired_code") {
       setIsLoading(false);
       toast({
-        type: 'error',
-        description: 'This code has expired. Please request a new one.',
+        type: "error",
+        description: "This code has expired. Please request a new one.",
       });
-    } else if (state.status === 'max_attempts') {
+    } else if (state.status === "max_attempts") {
       setIsLoading(false);
       toast({
-        type: 'error',
-        description: 'Too many failed attempts. Please request a new code.',
+        type: "error",
+        description: "Too many failed attempts. Please request a new code.",
       });
-    } else if (state.status === 'success') {
+    } else if (state.status === "success") {
       setIsLoading(false);
       toast({
-        type: 'success',
-        description: 'Code verified successfully!',
+        type: "success",
+        description: "Code verified successfully!",
       });
       router.push(`/forgot-password/reset?email=${encodeURIComponent(email)}&code=${code}`);
     }
@@ -81,27 +78,27 @@ export default function VerifyOtpPage() {
   const handleSubmit = () => {
     if (code.length !== 8) {
       toast({
-        type: 'error',
-        description: 'Please enter the complete 8-digit code.',
+        type: "error",
+        description: "Please enter the complete 8-digit code.",
       });
       return;
     }
 
     setIsLoading(true);
     const formData = new FormData();
-    formData.append('email', email);
-    formData.append('code', code);
+    formData.append("email", email);
+    formData.append("code", code);
     formAction(formData);
   };
 
   const handleResendCode = () => {
-    router.push('/forgot-password');
+    router.push("/forgot-password");
   };
 
   return (
     <div className="w-full h-screen flex flex-col">
       <div className="h-10 w-full flex flex-row justify-start p-4">
-        <Link href={'/forgot-password'} className="text-primary rounded-full">
+        <Link href={"/forgot-password"} className="text-primary rounded-full">
           <Button variant="link" className="text-primary rounded-full pl-0">
             <ArrowLeft className="size-4" />
             Back
@@ -115,11 +112,9 @@ export default function VerifyOtpPage() {
             <p className="text-sm text-gray-500 dark:text-zinc-400">
               We sent a 8-digit code to {email}
             </p>
-            <p className="text-xs text-gray-400 dark:text-zinc-500">
-              Code expires in 15 minutes
-            </p>
+            <p className="text-xs text-gray-400 dark:text-zinc-500">Code expires in 15 minutes</p>
           </div>
-          
+
           <div className="flex flex-col gap-6">
             <div className="flex justify-center">
               <InputOTP maxLength={8} value={code} onChange={setCode}>
@@ -138,18 +133,18 @@ export default function VerifyOtpPage() {
                 </InputOTPGroup>
               </InputOTP>
             </div>
-            
+
             <Button
               onClick={handleSubmit}
               disabled={isLoading || code.length !== 8}
               className="w-full mt-4 bg-primary/15 text-primary hover:bg-primary/20"
             >
-              {isLoading ? 'Verifying...' : 'Verify Code'}
+              {isLoading ? "Verifying..." : "Verify Code"}
             </Button>
-            
+
             <div className="text-center">
               <p className="text-sm text-gray-500 dark:text-zinc-400">
-                Didn&apos;t receive a code?{' '}
+                Didn&apos;t receive a code?{" "}
                 <button
                   onClick={handleResendCode}
                   className="text-primary hover:underline"

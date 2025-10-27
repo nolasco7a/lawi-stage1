@@ -1,33 +1,30 @@
-import { config } from 'dotenv';
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
-import { eq, count } from 'drizzle-orm';
-import { country, deptoState, cityMunicipality } from '../lib/db/schema';
+import { config } from "dotenv";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
+import { eq, count } from "drizzle-orm";
+import { country, deptoState, cityMunicipality } from "../lib/db/schema";
 
 config({
-  path: '.env.local',
+  path: ".env.local",
 });
 
 const verifyLocationData = async () => {
   try {
-    console.log('🔍 Verifying Honduras location data...');
+    console.log("🔍 Verifying Honduras location data...");
 
     // Database connection
     if (!process.env.POSTGRES_URL) {
-      throw new Error('POSTGRES_URL is not defined');
+      throw new Error("POSTGRES_URL is not defined");
     }
 
     const connection = postgres(process.env.POSTGRES_URL, { max: 1 });
     const db = drizzle(connection);
 
     // Get Honduras
-    const [honduras] = await db
-      .select()
-      .from(country)
-      .where(eq(country.name, 'Honduras'));
+    const [honduras] = await db.select().from(country).where(eq(country.name, "Honduras"));
 
     if (!honduras) {
-      console.error('❌ Honduras not found in database');
+      console.error("❌ Honduras not found in database");
       return;
     }
 
@@ -62,9 +59,9 @@ const verifyLocationData = async () => {
     }
 
     console.log(`📊 Total municipalities: ${totalMunicipalities}`);
-    
+
     // Sample some cities
-    console.log('\n🏙️ Sample cities:');
+    console.log("\n🏙️ Sample cities:");
     const sampleCities = await db
       .select({
         city: cityMunicipality.name,
@@ -74,16 +71,15 @@ const verifyLocationData = async () => {
       .innerJoin(deptoState, eq(cityMunicipality.depto_state_id, deptoState.id))
       .limit(10);
 
-    sampleCities.forEach(city => {
+    sampleCities.forEach((city) => {
       console.log(`   - ${city.city}, ${city.department}`);
     });
 
-    console.log('\n✅ Verification completed successfully!');
-    
-    await connection.end();
+    console.log("\n✅ Verification completed successfully!");
 
+    await connection.end();
   } catch (error) {
-    console.error('❌ Verification failed:', error);
+    console.error("❌ Verification failed:", error);
     process.exit(1);
   }
 };
@@ -92,11 +88,11 @@ const verifyLocationData = async () => {
 if (require.main === module) {
   verifyLocationData()
     .then(() => {
-      console.log('🎯 Location data verification completed');
+      console.log("🎯 Location data verification completed");
       process.exit(0);
     })
     .catch((error) => {
-      console.error('💥 Fatal error during verification:', error);
+      console.error("💥 Fatal error during verification:", error);
       process.exit(1);
     });
 }

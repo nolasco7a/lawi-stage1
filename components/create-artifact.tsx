@@ -1,16 +1,16 @@
-import type { Suggestion } from '@/lib/db/schema';
-import type { UseChatHelpers } from '@ai-sdk/react';
-import type { ComponentType, Dispatch, ReactNode, SetStateAction } from 'react';
-import type { UIArtifact } from './artifact';
-import type { ChatMessage, CustomUIDataTypes } from '@/lib/types';
-import type { DataUIPart } from 'ai';
+import type { Suggestion } from "@/lib/db/schema";
+import type { UseChatHelpers } from "@ai-sdk/react";
+import type { ComponentType, Dispatch, ReactNode, SetStateAction } from "react";
+import type { UIArtifact } from "./artifact";
+import type { ChatMessage, CustomUIDataTypes } from "@/lib/types";
+import type { DataUIPart } from "ai";
 
 export type ArtifactActionContext<M = any> = {
   content: string;
-  handleVersionChange: (type: 'next' | 'prev' | 'toggle' | 'latest') => void;
+  handleVersionChange: (type: "next" | "prev" | "toggle" | "latest") => void;
   currentVersionIndex: number;
   isCurrentVersion: boolean;
-  mode: 'edit' | 'diff';
+  mode: "edit" | "diff";
   metadata: M;
   setMetadata: Dispatch<SetStateAction<M>>;
 };
@@ -24,7 +24,7 @@ type ArtifactAction<M = any> = {
 };
 
 export type ArtifactToolbarContext = {
-  sendMessage: UseChatHelpers<ChatMessage>['sendMessage'];
+  sendMessage: UseChatHelpers<ChatMessage>["sendMessage"];
 };
 
 export type ArtifactToolbarItem = {
@@ -36,10 +36,10 @@ export type ArtifactToolbarItem = {
 interface ArtifactContent<M = any> {
   title: string;
   content: string;
-  mode: 'edit' | 'diff';
+  mode: "edit" | "diff";
   isCurrentVersion: boolean;
   currentVersionIndex: number;
-  status: 'streaming' | 'idle';
+  status: "streaming" | "idle";
   suggestions: Array<Suggestion>;
   onSaveContent: (updatedContent: string, debounce: boolean) => void;
   isInline: boolean;
