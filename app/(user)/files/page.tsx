@@ -1,9 +1,9 @@
 "use client";
-import { useDocumentStore } from "@/lib/store/documents";
-import { DocumentViewer } from "@/components/document-viewer";
-import { useEffect } from "react";
-import { useSettingsStore } from "@/lib/store/settingsStore";
+import { type DocumentFileType, DocumentViewer } from "@/components/document-viewer";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { useDocumentStore } from "@/lib/store/documents";
+import { useSettingsStore } from "@/lib/store/settingsStore";
+import { useEffect } from "react";
 
 const NoDocumentSelected = ({ filesSidebarOpen }: { filesSidebarOpen: boolean }) => {
   return (
@@ -23,25 +23,26 @@ export default function FilesPage() {
 
   useEffect(() => {
     if (documents.length === 0 && !documentsLoading) {
-      fetchDocuments().then(() => console.log("Documents loaded!"));
+      fetchDocuments().then(() => {});
     }
-  }, []);
+  }, [documents, documentsLoading, fetchDocuments]);
   return (
     <div className="size-full">
-      {!selectedDocument ? (
-        <NoDocumentSelected filesSidebarOpen={filesSidebarOpen} />
-      ) : (
+      {selectedDocument ? (
         <DocumentViewer
           filesSidebarOpen={filesSidebarOpen}
           document={{
             id: selectedDocument.id,
             title: selectedDocument.title,
-            fileType: selectedDocument.kind === "text" ? "md" : (selectedDocument.kind as any),
+            fileType:
+              selectedDocument.kind === "text" ? "md" : (selectedDocument.kind as DocumentFileType),
             content: selectedDocument.content || "",
             fileUrl: selectedDocument.fileUrl || "",
           }}
           isReadonly={false}
         />
+      ) : (
+        <NoDocumentSelected filesSidebarOpen={filesSidebarOpen} />
       )}
     </div>
   );

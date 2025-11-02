@@ -1,18 +1,17 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { ArrowLeft, FileText, MessageCircle, Plus } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ArrowLeft, MessageCircle, FileText, Plus } from "lucide-react";
 
+import ChatCard from "@/components/chat-card";
+import { FileList } from "@/components/file-list";
+import { FileUpload } from "@/components/file-upload";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { FileUpload } from "@/components/file-upload";
-import { FileList } from "@/components/file-list";
-import ChatCard from "@/components/chat-card";
 import { useCaseStore } from "@/lib/store/cases";
-import type { Case, Chat, CaseFile } from "@/lib/db/schema";
 
 export default function CaseDetailsPage() {
   const { data: session } = useSession();

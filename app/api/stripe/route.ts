@@ -1,7 +1,8 @@
-import { NextResponse } from "next/server";
 import { headers } from "next/headers";
+import { NextResponse } from "next/server";
 
 import { stripe } from "@/lib/stripe/stripe";
+import type Stripe from "stripe";
 
 export async function POST(request: Request) {
   try {
@@ -20,7 +21,7 @@ export async function POST(request: Request) {
       userEmail,
     } = body;
 
-    let sessionData: any = {
+    const sessionData: Stripe.Checkout.SessionCreateParams = {
       ui_mode: "embedded",
       mode: "subscription", // Changed to subscription for recurring payments
       return_url: `${origin}/return?session_id={CHECKOUT_SESSION_ID}`,
@@ -68,8 +69,11 @@ export async function POST(request: Request) {
     const session = await stripe.checkout.sessions.create(sessionData);
 
     return NextResponse.json({ clientSecret: session.client_secret });
-  } catch (err: any) {
-    console.error("Stripe error:", err);
-    return NextResponse.json({ error: err.message }, { status: err.statusCode || 500 });
+  } catch (error) {
+    console.error("Stripe error:", error);
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Unknown error" },
+      { status: 500 },
+    );
   }
 }

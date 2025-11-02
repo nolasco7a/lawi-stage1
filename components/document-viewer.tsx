@@ -1,19 +1,17 @@
 "use client";
 
-import { memo } from "react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { FileTextIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Editor } from "./text-editor";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import Papa from "papaparse";
+import { memo, useMemo } from "react";
 import DataGrid from "react-data-grid";
 import DocViewer from "react-doc-viewer";
-import { useMemo } from "react";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { Editor } from "./text-editor";
 import { SidebarTrigger } from "./ui/sidebar";
 
-type DocumentFileType = "txt" | "md" | "csv" | "pdf" | "doc" | "docx";
+export type DocumentFileType = "txt" | "md" | "csv" | "pdf" | "doc" | "docx";
 
 interface DocumentViewerProps {
   document: {
@@ -27,11 +25,7 @@ interface DocumentViewerProps {
   filesSidebarOpen?: boolean;
 }
 
-export function DocumentViewer({
-  document,
-  isReadonly = true,
-  filesSidebarOpen,
-}: DocumentViewerProps) {
+export function DocumentViewer({ document, filesSidebarOpen }: Readonly<DocumentViewerProps>) {
   // The ScrollArea now takes the available space and only it is scrollable, not the whole viewer.
   return (
     <div className="size-full">
@@ -39,7 +33,7 @@ export function DocumentViewer({
         <DocumentHeader
           title={document.title}
           fileType={document.fileType}
-          filesSidebarOpen={filesSidebarOpen}
+          filesSidebarOpen={filesSidebarOpen || false}
         />
       </div>
       <ScrollArea className="bg-muted h-[calc(100vh-100px)]">
@@ -73,6 +67,8 @@ const DocumentHeader = memo(
     </div>
   ),
 );
+
+DocumentHeader.displayName = "DocumentHeader";
 
 const DocumentContent = ({ document }: { document: DocumentViewerProps["document"] }) => {
   const csvData = useMemo(() => {
@@ -124,9 +120,10 @@ const DocumentContent = ({ document }: { document: DocumentViewerProps["document
             isCurrentVersion={true}
             currentVersionIndex={0}
             status="idle"
-            saveContent={() => {}}
             suggestions={[]}
-            onSaveContent={() => {}}
+            onSaveContent={() => {
+              console.info("onSaveContent");
+            }}
           />
         )}
 

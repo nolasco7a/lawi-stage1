@@ -1,25 +1,23 @@
-import { NextRequest, NextResponse } from "next/server";
-import { headers } from "next/headers";
 import { stripe } from "@/lib/stripe/stripe";
 import {
-  handleSubscriptionCreated,
-  handleSubscriptionUpdated,
-  handleSubscriptionDeleted,
-  handleInvoicePaymentSucceeded,
   handleInvoicePaymentFailed,
+  handleInvoicePaymentSucceeded,
+  handleSubscriptionCreated,
+  handleSubscriptionDeleted,
+  handleSubscriptionUpdated,
 } from "@/lib/stripe/webhook-handlers";
+import { headers } from "next/headers";
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
+import type Stripe from "stripe";
 
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
+const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || "";
 
 export async function POST(request: NextRequest) {
   try {
-    console.log("🔔 Webhook received");
     const body = await request.text();
     const headersList = await headers();
     const signature = headersList.get("stripe-signature");
-
-    console.log("📝 Body length:", body.length);
-    console.log("🔐 Signature present:", !!signature);
 
     if (!signature) {
       console.error("No Stripe signature found");
@@ -32,15 +30,15 @@ export async function POST(request: NextRequest) {
     }
 
     // Verify webhook signature
-    let event;
+    let event: Stripe.Event;
     try {
       event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
-    } catch (err: any) {
-      console.error(`Webhook signature verification failed: ${err.message}`);
+    } catch (error) {
+      console.error(
+        `Webhook signature verification failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
       return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
     }
-
-    console.log(`Processing webhook event: ${event.type} - ${event.id}`);
 
     // Handle the event
     switch (event.type) {
@@ -70,16 +68,15 @@ export async function POST(request: NextRequest) {
         break;
 
       case "payment_intent.succeeded":
-        console.log("Payment intent succeeded:", event.data.object);
         // This is handled by invoice.payment_succeeded for subscriptions
         break;
 
       default:
-        console.log(`Unhandled event type: ${event.type}`);
+      //this handle undefined cases
     }
 
     return NextResponse.json({ received: true });
-  } catch (error: any) {
+  } catch (error) {
     console.error("Webhook processing error:", error);
     return NextResponse.json({ error: "Webhook processing failed" }, { status: 500 });
   }

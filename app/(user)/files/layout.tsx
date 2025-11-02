@@ -1,5 +1,13 @@
 "use client";
 
+import { FilesSidebarStateSync } from "@/components/files-sidebar-state-sync";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Sidebar,
   SidebarContent,
@@ -15,19 +23,12 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { useSettingsStore } from "@/lib/store/settingsStore";
-import { FilesSidebarStateSync } from "@/components/files-sidebar-state-sync";
-import { CirclePlus, Home, MoreHorizontal } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import type { Document } from "@/lib/db/schema";
 import { useDocumentStore } from "@/lib/store/documents";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { useSettingsStore } from "@/lib/store/settingsStore";
+import { CirclePlus, Home, MoreHorizontal } from "lucide-react";
 
-const ListItemFile = ({ documentData }: { documentData: any }) => {
+const ListItemFile = ({ documentData }: { documentData: Document }) => {
   const { setSelectedDocument } = useDocumentStore();
 
   const handleClick = () => {
@@ -35,11 +36,10 @@ const ListItemFile = ({ documentData }: { documentData: any }) => {
       id: documentData.id,
       title: documentData.title,
       kind: documentData.kind,
-      content: documentData?.content,
-      fileUrl: documentData?.fileUrl,
+      content: documentData?.content || "",
+      //fileUrl: documentData?.fileUrl || undefined, // fix esto en implementacion
     });
   };
-  console.log(documentData);
   return (
     <SidebarMenuItem className={"cursor-poiter"} onClick={handleClick}>
       <SidebarMenuButton asChild>
@@ -70,8 +70,6 @@ const ListItemFile = ({ documentData }: { documentData: any }) => {
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { documents } = useDocumentStore();
   const { mainSidebarOpen } = useSettingsStore();
-
-  console.log("documents", documents);
 
   // Calcula el margen izquierdo basado en el estado del sidebar principal
   const marginLeft = mainSidebarOpen
@@ -106,7 +104,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <SidebarGroupLabel>Documentos</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {documents?.map((doc: any) => (
+              {documents?.map((doc: Document) => (
                 <ListItemFile key={doc.id} documentData={doc} />
               ))}
             </SidebarMenu>

@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
-import { headers } from "next/headers";
-import { getToken } from "next-auth/jwt";
 import { createSubscriptionCheckoutSession } from "@/lib/stripe/customer-helpers";
+import { getToken } from "next-auth/jwt";
+import { headers } from "next/headers";
+import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   try {
@@ -20,13 +20,7 @@ export async function POST(request: Request) {
 
     // Parse request body to get product info
     const body = await request.json();
-    const { productId, priceId, productName = "Plan Lawi" } = body;
-
-    console.log("Creating checkout session for user:", token.sub, {
-      productId,
-      priceId,
-      productName,
-    });
+    const { priceId = "Plan Lawi" } = body;
 
     if (!priceId) {
       throw new Error("Price ID is required");
@@ -40,11 +34,12 @@ export async function POST(request: Request) {
       cancelUrl: `${origin}/#planes`,
     });
 
-    console.log("Checkout session created successfully:", session.id);
-
     return NextResponse.json({ url: session.url });
-  } catch (err: any) {
-    console.error("Stripe checkout session error:", err);
-    return NextResponse.json({ error: err.message }, { status: err.statusCode || 500 });
+  } catch (error) {
+    console.error("Stripe checkout session error:", error);
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Unknown error" },
+      { status: 500 },
+    );
   }
 }

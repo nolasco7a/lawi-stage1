@@ -1,5 +1,5 @@
-import { type NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe/stripe";
+import { type NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -16,7 +16,10 @@ export async function GET(request: NextRequest) {
       status: session.status,
       customer_email: session.customer_details?.email,
     });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: err.statusCode || 500 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Unknown error" },
+      { status: 500 },
+    );
   }
 }
