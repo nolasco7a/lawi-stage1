@@ -45,8 +45,11 @@ export function getStreamContext() {
       globalStreamContext = createResumableStreamContext({
         waitUntil: after,
       });
-    } catch (error: any) {
-      if (error.message.includes("REDIS_URL")) {
+    } catch (error) {
+      if (error instanceof Error && error.message.includes("REDIS_URL")) {
+        console.error(" > Resumable streams are disabled due to missing REDIS_URL");
+      } else {
+        console.error(error);
       }
     }
   }
@@ -60,7 +63,8 @@ export async function POST(request: Request) {
   try {
     const json = await request.json();
     requestBody = postRequestBodySchema.parse(json);
-  } catch (_) {
+  } catch (error) {
+    console.error("Error parsing request body:", error);
     return new ChatSDKError("bad_request:api").toResponse();
   }
 
@@ -96,7 +100,11 @@ export async function POST(request: Request) {
 
     const chat = await getChatById({ id });
 
-    if (!chat) {
+    if (chat) {
+      if (chat.userId !== session.user.id) {
+        return new ChatSDKError("forbidden:chat").toResponse();
+      }
+    } else {
       const title = await generateTitleFromUserMessage({
         message,
       });
@@ -107,10 +115,6 @@ export async function POST(request: Request) {
         title,
         visibility: selectedVisibilityType,
       });
-    } else {
-      if (chat.userId !== session.user.id) {
-        return new ChatSDKError("forbidden:chat").toResponse();
-      }
     }
 
     const messagesFromDb = await getMessagesByChatId({ id });
@@ -202,16 +206,13 @@ export async function POST(request: Request) {
           stream.pipeThrough(new JsonToSseTransformStream()),
         ),
       );
-    } else {
-      return new Response(stream.pipeThrough(new JsonToSseTransformStream()));
     }
   } catch (error) {
     if (error instanceof ChatSDKError) {
       return error.toResponse();
     }
-    // ✅ Agregar manejo para otros errores
     console.error("Unexpected error:", error);
-    return new ChatSDKError("internal_server_error": string).toResponse();
+    return new ChatSDKError("internal_server_error:chat").toResponse();
   }
 }
 

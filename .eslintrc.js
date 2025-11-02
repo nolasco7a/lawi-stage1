@@ -5,13 +5,7 @@ module.exports = {
     es2021: true,
     node: true,
   },
-  extends: [
-    "eslint:recommended",
-    "plugin:react/recommended",
-    "plugin:react-hooks/recommended",
-    "plugin:@typescript-eslint/recommended",
-    "next/core-web-vitals",
-  ],
+  extends: ["next/core-web-vitals", "plugin:@typescript-eslint/recommended"],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     ecmaFeatures: {
@@ -20,12 +14,8 @@ module.exports = {
     ecmaVersion: "latest",
     sourceType: "module",
   },
-  plugins: ["react", "react-hooks", "@typescript-eslint"],
+  plugins: ["@typescript-eslint"],
   rules: {
-    // React
-    "react/react-in-jsx-scope": "off",
-    "react/prop-types": "off",
-
     // TypeScript
     "@typescript-eslint/no-unused-vars": [
       "warn",
@@ -42,10 +32,5 @@ module.exports = {
     "no-console": ["warn", { allow: ["warn", "error"] }],
     "prefer-const": "warn",
     "no-var": "error",
-  },
-  settings: {
-    react: {
-      version: "detect",
-    },
   },
 };
