@@ -86,6 +86,7 @@ export const createResetPasswordSchema = () =>
 
 export const createVerifyOtpSchema = () =>
   z.object({
+    email: z.string().email("Invalid email"),
     code: z.string().length(8, "Code must be 8 characters"),
   });
 

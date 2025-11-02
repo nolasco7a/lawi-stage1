@@ -1,11 +1,11 @@
+import { DUMMY_PASSWORD } from "@/lib/constants";
+import { createGuestUser, getUser, getUserById } from "@/lib/db/queries";
+import { getActiveSubscription } from "@/lib/db/subscription-helpers";
 import { compare } from "bcrypt-ts";
 import NextAuth, { type DefaultSession } from "next-auth";
-import Credentials from "next-auth/providers/credentials";
-import { createGuestUser, getUser, getUserById } from "@/lib/db/queries";
-import { authConfig } from "./auth.config";
-import { DUMMY_PASSWORD } from "@/lib/constants";
 import type { DefaultJWT } from "next-auth/jwt";
-import { getActiveSubscription } from "@/lib/db/subscription-helpers";
+import Credentials from "next-auth/providers/credentials";
+import { authConfig } from "./auth.config";
 
 export type UserType = "guest" | "regular" | "lawyer";
 
@@ -61,7 +61,10 @@ export const {
   providers: [
     Credentials({
       credentials: {},
-      async authorize({ email, password }: any) {
+      async authorize(credentials: Record<string, string>) {
+        const email = credentials.email;
+        const password = credentials.password;
+
         const users = await getUser(email);
 
         if (users.length === 0) {

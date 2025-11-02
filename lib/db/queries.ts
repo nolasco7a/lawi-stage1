@@ -1,39 +1,37 @@
 import "server-only";
 
-import { and, asc, count, desc, eq, gt, gte, inArray, like, lt, type SQL } from "drizzle-orm";
+import { type SQL, and, asc, count, desc, eq, gt, gte, inArray, like, lt } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 
-import {
-  user,
-  chat,
-  type User,
-  document,
-  type Suggestion,
-  suggestion,
-  message,
-  vote,
-  type DBMessage,
-  type Chat,
-  stream,
-  passwordResetToken,
-  type PasswordResetToken,
-  country,
-  deptoState,
-  cityMunicipality,
-  type Country,
-  type DeptoState,
-  type CityMunicipality,
-  caseTable,
-  type Case,
-  caseFile,
-  type CaseFile,
-} from "./schema";
 import type { ArtifactKind } from "@/components/artifact";
-import { generateUUID } from "../utils";
-import { generateHashedPassword } from "./utils";
 import type { VisibilityType } from "@/components/visibility-selector";
 import { ChatSDKError } from "../errors";
+import { generateUUID } from "../utils";
+import {
+  stream,
+  type Chat,
+  type CityMunicipality,
+  type Country,
+  type DBMessage,
+  type DeptoState,
+  type PasswordResetToken,
+  type Suggestion,
+  type User,
+  caseFile,
+  caseTable,
+  chat,
+  cityMunicipality,
+  country,
+  deptoState,
+  document,
+  message,
+  passwordResetToken,
+  suggestion,
+  user,
+  vote,
+} from "./schema";
+import { generateHashedPassword } from "./utils";
 
 // Optionally, if not using email/pass login, you can
 // use the Drizzle adapter for Auth.js / NextAuth
@@ -47,6 +45,7 @@ export async function getUser(email: string): Promise<Array<User>> {
   try {
     return await db.select().from(user).where(eq(user.email, email));
   } catch (error) {
+    console.error("Failed to get user by email:", error);
     throw new ChatSDKError("bad_request:database", "Failed to get user by email");
   }
 }
@@ -62,6 +61,7 @@ export async function createUser(email: string, password: string) {
       is_guest: false,
     });
   } catch (error) {
+    console.error("Failed to create user:", error);
     throw new ChatSDKError("bad_request:database", "Failed to create user");
   }
 }
@@ -79,18 +79,9 @@ export async function createUserWithDetails(userData: {
   depto_state_id?: string;
   city_municipality_id?: string;
 }) {
-  console.log("user Data received for createUserWithDetails:", {
-    ...userData,
-    password: "[HIDDEN]",
-  });
   const hashedPassword = generateHashedPassword(userData.password);
 
   try {
-    console.log("createUserWithDetails - Creating user with data:", {
-      ...userData,
-      password: "[HIDDEN]",
-    });
-
     return await db
       .insert(user)
       .values({
@@ -115,6 +106,7 @@ export async function createUserWithDetails(userData: {
         role: user.role,
       });
   } catch (error) {
+    console.error("Failed to create user with details:", error);
     throw new ChatSDKError("bad_request:database", "Failed to create user with details");
   }
 }
@@ -137,6 +129,7 @@ export async function createGuestUser() {
         email: user.email,
       });
   } catch (error) {
+    console.error("Failed to create guest user:", error);
     throw new ChatSDKError("bad_request:database", "Failed to create guest user");
   }
 }
@@ -161,6 +154,7 @@ export async function saveChat({
       visibility,
     });
   } catch (error) {
+    console.error("Failed to save chat:", error);
     throw new ChatSDKError("bad_request:database", "Failed to save chat");
   }
 }
@@ -188,6 +182,7 @@ export async function saveChatWithCase({
       caseId,
     });
   } catch (error) {
+    console.error("Failed to save chat with case:", error);
     throw new ChatSDKError("bad_request:database", "Failed to save chat with case");
   }
 }
@@ -201,6 +196,7 @@ export async function deleteChatById({ id }: { id: string }) {
     const [chatsDeleted] = await db.delete(chat).where(eq(chat.id, id)).returning();
     return chatsDeleted;
   } catch (error) {
+    console.error("Failed to delete chat by id:", error);
     throw new ChatSDKError("bad_request:database", "Failed to delete chat by id");
   }
 }
@@ -260,6 +256,7 @@ export async function getChatsByUserId({
       hasMore,
     };
   } catch (error) {
+    console.error("Failed to get chats by user id:", error);
     throw new ChatSDKError("bad_request:database", "Failed to get chats by user id");
   }
 }
@@ -269,6 +266,7 @@ export async function getChatById({ id }: { id: string }) {
     const [selectedChat] = await db.select().from(chat).where(eq(chat.id, id));
     return selectedChat;
   } catch (error) {
+    console.error("Failed to get chat by id:", error);
     throw new ChatSDKError("bad_request:database", "Failed to get chat by id");
   }
 }
@@ -281,6 +279,7 @@ export async function saveMessages({
   try {
     return await db.insert(message).values(messages);
   } catch (error) {
+    console.error("Failed to save messages:", error);
     throw new ChatSDKError("bad_request:database", "Failed to save messages");
   }
 }
@@ -293,6 +292,7 @@ export async function getMessagesByChatId({ id }: { id: string }) {
       .where(eq(message.chatId, id))
       .orderBy(asc(message.createdAt));
   } catch (error) {
+    console.error("Failed to get messages by chat id:", error);
     throw new ChatSDKError("bad_request:database", "Failed to get messages by chat id");
   }
 }
@@ -324,6 +324,7 @@ export async function voteMessage({
       isUpvoted: type === "up",
     });
   } catch (error) {
+    console.error("Failed to vote message:", error);
     throw new ChatSDKError("bad_request:database", "Failed to vote message");
   }
 }
@@ -332,6 +333,7 @@ export async function getVotesByChatId({ id }: { id: string }) {
   try {
     return await db.select().from(vote).where(eq(vote.chatId, id));
   } catch (error) {
+    console.error("Failed to get votes by chat id:", error);
     throw new ChatSDKError("bad_request:database", "Failed to get votes by chat id");
   }
 }
@@ -362,6 +364,7 @@ export async function saveDocument({
       })
       .returning();
   } catch (error) {
+    console.error("Failed to save document:", error);
     throw new ChatSDKError("bad_request:database", "Failed to save document");
   }
 }
@@ -376,6 +379,7 @@ export async function getDocumentsById({ id }: { id: string }) {
 
     return documents;
   } catch (error) {
+    console.error("Failed to get documents by id:", error);
     throw new ChatSDKError("bad_request:database", "Failed to get documents by id");
   }
 }
@@ -390,6 +394,7 @@ export async function getDocumentById({ id }: { id: string }) {
 
     return selectedDocument;
   } catch (error) {
+    console.error("Failed to get document by id:", error);
     throw new ChatSDKError("bad_request:database", "Failed to get document by id");
   }
 }
@@ -411,6 +416,7 @@ export async function deleteDocumentsByIdAfterTimestamp({
       .where(and(eq(document.id, id), gt(document.createdAt, timestamp)))
       .returning();
   } catch (error) {
+    console.error("Failed to delete documents by id after timestamp:", error);
     throw new ChatSDKError(
       "bad_request:database",
       "Failed to delete documents by id after timestamp",
@@ -426,6 +432,7 @@ export async function saveSuggestions({
   try {
     return await db.insert(suggestion).values(suggestions);
   } catch (error) {
+    console.error("Failed to save suggestions:", error);
     throw new ChatSDKError("bad_request:database", "Failed to save suggestions");
   }
 }
@@ -441,6 +448,7 @@ export async function getSuggestionsByDocumentId({
       .from(suggestion)
       .where(and(eq(suggestion.documentId, documentId)));
   } catch (error) {
+    console.error("Failed to get suggestions by document id:", error);
     throw new ChatSDKError("bad_request:database", "Failed to get suggestions by document id");
   }
 }
@@ -449,6 +457,7 @@ export async function getMessageById({ id }: { id: string }) {
   try {
     return await db.select().from(message).where(eq(message.id, id));
   } catch (error) {
+    console.error("Failed to get message by id:", error);
     throw new ChatSDKError("bad_request:database", "Failed to get message by id");
   }
 }
@@ -478,6 +487,7 @@ export async function deleteMessagesByChatIdAfterTimestamp({
         .where(and(eq(message.chatId, chatId), inArray(message.id, messageIds)));
     }
   } catch (error) {
+    console.error("Failed to delete messages by chat id after timestamp:", error);
     throw new ChatSDKError(
       "bad_request:database",
       "Failed to delete messages by chat id after timestamp",
@@ -495,6 +505,7 @@ export async function updateChatVisiblityById({
   try {
     return await db.update(chat).set({ visibility }).where(eq(chat.id, chatId));
   } catch (error) {
+    console.error("Failed to update chat visibility by id:", error);
     throw new ChatSDKError("bad_request:database", "Failed to update chat visibility by id");
   }
 }
@@ -521,6 +532,7 @@ export async function getMessageCountByUserId({
 
     return stats?.count ?? 0;
   } catch (error) {
+    console.error("Failed to get message count by user id:", error);
     throw new ChatSDKError("bad_request:database", "Failed to get message count by user id");
   }
 }
@@ -535,6 +547,7 @@ export async function createStreamId({
   try {
     await db.insert(stream).values({ id: streamId, chatId, createdAt: new Date() });
   } catch (error) {
+    console.error("Failed to create stream id:", error);
     throw new ChatSDKError("bad_request:database", "Failed to create stream id");
   }
 }
@@ -550,6 +563,7 @@ export async function getStreamIdsByChatId({ chatId }: { chatId: string }) {
 
     return streamIds.map(({ id }) => id);
   } catch (error) {
+    console.error("Failed to get stream ids by chat id:", error);
     throw new ChatSDKError("bad_request:database", "Failed to get stream ids by chat id");
   }
 }
@@ -577,6 +591,7 @@ export async function createPasswordResetToken({
       })
       .returning();
   } catch (error) {
+    console.error("Failed to create password reset token:", error);
     throw new ChatSDKError("bad_request:database", "Failed to create password reset token");
   }
 }
@@ -602,6 +617,7 @@ export async function getPasswordResetToken({
 
     return resetToken || null;
   } catch (error) {
+    console.error("Failed to get password reset token:", error);
     throw new ChatSDKError("bad_request:database", "Failed to get password reset token");
   }
 }
@@ -623,6 +639,7 @@ export async function incrementPasswordResetAttempts({
       })
       .where(and(eq(passwordResetToken.email, email), eq(passwordResetToken.token, token)));
   } catch (error) {
+    console.error("Failed to increment password reset attempts:", error);
     throw new ChatSDKError("bad_request:database", "Failed to increment password reset attempts");
   }
 }
@@ -639,6 +656,7 @@ async function getPasswordResetTokenByEmailAndToken(
 
     return resetToken || null;
   } catch (error) {
+    console.error("Failed to get password reset token by email and token:", error);
     throw new ChatSDKError(
       "bad_request:database",
       "Failed to get password reset token by email and token",
@@ -658,6 +676,7 @@ export async function deletePasswordResetToken({
       .delete(passwordResetToken)
       .where(and(eq(passwordResetToken.email, email), eq(passwordResetToken.token, token)));
   } catch (error) {
+    console.error("Failed to delete password reset token:", error);
     throw new ChatSDKError("bad_request:database", "Failed to delete password reset token");
   }
 }
@@ -673,6 +692,7 @@ export async function updateUserPassword({
     const hashedPassword = generateHashedPassword(password);
     return await db.update(user).set({ password: hashedPassword }).where(eq(user.email, email));
   } catch (error) {
+    console.error("Failed to update user password:", error);
     throw new ChatSDKError("bad_request:database", "Failed to update user password");
   }
 }
@@ -687,6 +707,7 @@ export async function updateUserCustomerId({
   try {
     return await db.update(user).set({ customer_id: customerId }).where(eq(user.id, userId));
   } catch (error) {
+    console.error("Failed to update user customer ID:", error);
     throw new ChatSDKError("bad_request:database", "Failed to update user customer ID");
   }
 }
@@ -696,6 +717,7 @@ export async function getUserById({ id }: { id: string }) {
     const [selectedUser] = await db.select().from(user).where(eq(user.id, id));
     return selectedUser;
   } catch (error) {
+    console.error("Failed to get user by id:", error);
     throw new ChatSDKError("bad_request:database", "Failed to get user by id");
   }
 }
@@ -704,6 +726,7 @@ export async function getAllCountries(): Promise<Country[]> {
   try {
     return await db.select().from(country);
   } catch (error) {
+    console.error("Failed to get all countries:", error);
     throw new ChatSDKError("bad_request:database", "Failed to get all countries");
   }
 }
@@ -712,6 +735,7 @@ export async function getDeptoStatesByCountryId(country_id: string): Promise<Dep
   try {
     return await db.select().from(deptoState).where(eq(deptoState.country_id, country_id));
   } catch (error) {
+    console.error("Failed to get states/departments by country id:", error);
     throw new ChatSDKError(
       "bad_request:database",
       "Failed to get states/departments by country id",
@@ -728,6 +752,7 @@ export async function getCityMunicipalitiesByCountryId(
       .from(cityMunicipality)
       .where(eq(cityMunicipality.country_id, country_id));
   } catch (error) {
+    console.error("Failed to get cities/municipalities by state/department id:", error);
     throw new ChatSDKError(
       "bad_request:database",
       "Failed to get cities/municipalities by state/department id",
@@ -749,7 +774,7 @@ export async function searchChatsByUserId({
   try {
     const whereConditions = [eq(chat.userId, userId)];
 
-    if (query && query.trim()) {
+    if (query?.trim()) {
       whereConditions.push(like(chat.title, `%${query.trim()}%`));
     }
 
@@ -768,6 +793,7 @@ export async function searchChatsByUserId({
       hasMore,
     };
   } catch (error) {
+    console.error("Failed to search chats by user id:", error);
     throw new ChatSDKError("bad_request:database", "Failed to search chats by user id");
   }
 }
@@ -782,6 +808,7 @@ export async function updateChatTitle({
   try {
     return await db.update(chat).set({ title }).where(eq(chat.id, chatId)).returning();
   } catch (error) {
+    console.error("Failed to update chat title:", error);
     throw new ChatSDKError("bad_request:database", "Failed to update chat title");
   }
 }
@@ -799,6 +826,7 @@ export async function getTotalChatsByUserId({
 
     return result?.count ?? 0;
   } catch (error) {
+    console.error("Failed to get total chats count:", error);
     throw new ChatSDKError("bad_request:database", "Failed to get total chats count");
   }
 }
@@ -823,6 +851,7 @@ export async function createCase({
       })
       .returning();
   } catch (error) {
+    console.error("Failed to create case:", error);
     throw new ChatSDKError("bad_request:database", "Failed to create case");
   }
 }
@@ -852,6 +881,7 @@ export async function getCasesByUserId({
       hasMore,
     };
   } catch (error) {
+    console.error("Failed to get cases by user id:", error);
     throw new ChatSDKError("bad_request:database", "Failed to get cases by user id");
   }
 }
@@ -871,6 +901,7 @@ export async function getCaseById({
 
     return selectedCase;
   } catch (error) {
+    console.error("Failed to get case by id:", error);
     throw new ChatSDKError("bad_request:database", "Failed to get case by id");
   }
 }
@@ -897,6 +928,7 @@ export async function updateCase({
       .where(and(eq(caseTable.id, id), eq(caseTable.userId, userId), eq(caseTable.active, true)))
       .returning();
   } catch (error) {
+    console.error("Failed to update case:", error);
     throw new ChatSDKError("bad_request:database", "Failed to update case");
   }
 }
@@ -919,6 +951,7 @@ export async function deleteCaseById({
       .where(and(eq(caseTable.id, id), eq(caseTable.userId, userId), eq(caseTable.active, true)))
       .returning();
   } catch (error) {
+    console.error("Failed to delete case:", error);
     throw new ChatSDKError("bad_request:database", "Failed to delete case");
   }
 }
@@ -937,6 +970,7 @@ export async function getChatsByCaseId({
       .where(and(eq(chat.caseId, caseId), eq(chat.userId, userId)))
       .orderBy(desc(chat.createdAt));
   } catch (error) {
+    console.error("Failed to get chats by case id:", error);
     throw new ChatSDKError("bad_request:database", "Failed to get chats by case id");
   }
 }
@@ -954,6 +988,7 @@ export async function getTotalCasesByUserId({
 
     return result?.count ?? 0;
   } catch (error) {
+    console.error("Failed to get total cases count:", error);
     throw new ChatSDKError("bad_request:database", "Failed to get total cases count");
   }
 }
@@ -995,6 +1030,7 @@ export async function getCasesWithChatCount({
       hasMore,
     };
   } catch (error) {
+    console.error("Failed to get cases with chat count:", error);
     throw new ChatSDKError("bad_request:database", "Failed to get cases with chat count");
   }
 }
@@ -1028,6 +1064,7 @@ export async function createCaseFile({
       })
       .returning();
   } catch (error) {
+    console.error("Failed to create case file:", error);
     throw new ChatSDKError("bad_request:database", "Failed to create case file");
   }
 }
@@ -1044,6 +1081,7 @@ export async function getCaseFilesByCaseId({
       .where(eq(caseFile.caseId, caseId))
       .orderBy(desc(caseFile.createdAt));
   } catch (error) {
+    console.error("Failed to get case files:", error);
     throw new ChatSDKError("bad_request:database", "Failed to get case files");
   }
 }
@@ -1061,6 +1099,7 @@ export async function deleteCaseFileById({
       .where(and(eq(caseFile.id, id), eq(caseFile.caseId, caseId)))
       .returning();
   } catch (error) {
+    console.error("Failed to delete case file:", error);
     throw new ChatSDKError("bad_request:database", "Failed to delete case file");
   }
 }
@@ -1080,6 +1119,7 @@ export async function getCaseFileById({
 
     return file;
   } catch (error) {
+    console.error("Failed to get case file by id:", error);
     throw new ChatSDKError("bad_request:database", "Failed to get case file by id");
   }
 }

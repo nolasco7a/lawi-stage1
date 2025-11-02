@@ -55,18 +55,18 @@ export default function Page() {
           });
           // Check if there's a return URL for checkout flow
           const returnUrl = searchParams.get("returnUrl");
-          if (returnUrl && returnUrl.startsWith("/checkout")) {
+          if (returnUrl?.startsWith("/checkout")) {
             router.push(returnUrl);
           } else {
             router.push("/chat");
           }
         })
         .catch((error) => {
-          console.log(error);
+          console.error("Failed to update session:", error);
           setIsLoading(false);
         });
     }
-  }, [state.status, router]);
+  }, [state.status, router, updateSession, searchParams]);
 
   const onSubmit = (data: LoginFormData) => {
     const formData = new FormData();

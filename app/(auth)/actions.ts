@@ -3,23 +3,23 @@
 import { z } from "zod";
 
 import {
+  createPasswordResetToken,
   createUser,
   createUserWithDetails,
-  getUser,
-  createPasswordResetToken,
-  getPasswordResetToken,
-  incrementPasswordResetAttempts,
   deletePasswordResetToken,
+  getPasswordResetToken,
+  getUser,
+  incrementPasswordResetAttempts,
   updateUserPassword,
 } from "@/lib/db/queries";
+import emailProvider from "@/lib/email/provider";
 import {
-  createRegisterUserSchema,
   createRegisterLawyerSchema,
+  createRegisterUserSchema,
   createResetPasswordSchema,
   createVerifyEmailSchema,
   createVerifyOtpSchema,
 } from "@/lib/validations/auth";
-import emailProvider from "@/lib/email/provider";
 
 import { signIn } from "./auth";
 
@@ -113,8 +113,6 @@ export const registerUser = async (
       role: "user" as const,
     };
 
-    console.log("registerUser - Form data received:", formDataObj);
-
     const validatedData = createRegisterUserSchema().parse(formDataObj);
 
     const [existingUser] = await getUser(validatedData.email);
@@ -122,8 +120,6 @@ export const registerUser = async (
     if (existingUser) {
       return { status: "user_exists" };
     }
-
-    console.log("registerUser - Creating user with validated data:", validatedData);
 
     await createUserWithDetails({
       email: validatedData.email,
@@ -137,24 +133,18 @@ export const registerUser = async (
       city_municipality_id: validatedData.city_municipality_id,
     });
 
-    console.log("registerUser - User created successfully, now signing in...");
-
     await signIn("credentials", {
       email: validatedData.email,
       password: validatedData.password,
       redirect: false,
     });
 
-    console.log("registerUser - Sign in successful");
     return { status: "success" };
   } catch (error) {
-    console.log("registerUser - Error occurred:", error);
     if (error instanceof z.ZodError) {
-      console.log("registerUser - Validation errors:", error.errors);
       return { status: "invalid_data" };
     }
 
-    console.log("registerUser - Unknown error:", error);
     return { status: "failed" };
   }
 };
@@ -190,8 +180,6 @@ export const registerLawyer = async (
       city_municipality_id: formData.get("city_municipality_id"),
       role: "lawyer" as const,
     };
-
-    console.log("registerLawyer - Form data received:", formDataObj);
 
     const validatedData = createRegisterLawyerSchema().parse(formDataObj);
 

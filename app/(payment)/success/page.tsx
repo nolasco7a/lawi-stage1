@@ -1,15 +1,26 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Loader2, ArrowRight } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowRight, CheckCircle, Loader2 } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
 
 function SuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [sessionData, setSessionData] = useState<any>(null);
+  const [sessionData, setSessionData] = useState<{
+    status: string;
+    customer_email: string;
+    amount_total: number;
+    currency: string;
+    metadata: {
+      userId: string;
+      productId: string;
+    };
+    subscription_id: string;
+    customer_id: string;
+  } | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -28,6 +39,7 @@ function SuccessContent() {
 
         if (response.ok) {
           const data = await response.json();
+          console.info("🚀 ~ verifySession ~ data:", data);
           setSessionData(data);
         } else {
           console.error("Failed to verify session");
