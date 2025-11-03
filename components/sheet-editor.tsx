@@ -1,34 +1,26 @@
 "use client";
 
+import { cn } from "@/lib/utils";
+import { useTheme } from "next-themes";
+import { parse, unparse } from "papaparse";
 import React, { memo, useEffect, useMemo, useState } from "react";
 import DataGrid, { textEditor } from "react-data-grid";
-import { parse, unparse } from "papaparse";
-import { useTheme } from "next-themes";
-import { cn } from "@/lib/utils";
 
 import "react-data-grid/lib/styles.css";
 
 type SheetEditorProps = {
   content: string;
   saveContent: (content: string, isCurrentVersion: boolean) => void;
-  status: string;
-  isCurrentVersion: boolean;
-  currentVersionIndex: number;
 };
 
 const MIN_ROWS = 50;
 const MIN_COLS = 26;
 
-const PureSpreadsheetEditor = ({
-  content,
-  saveContent,
-  status,
-  isCurrentVersion,
-}: SheetEditorProps) => {
+const PureSpreadsheetEditor = ({ content, saveContent }: SheetEditorProps) => {
   const { resolvedTheme } = useTheme();
 
   const parseData = useMemo(() => {
-    if (!content) return Array(MIN_ROWS).fill(Array(MIN_COLS).fill(""));
+    if (!content) return new Array(MIN_ROWS).fill(new Array(MIN_COLS).fill(""));
     const result = parse<string[]>(content, { skipEmptyLines: true });
 
     const paddedData = result.data.map((row) => {
@@ -40,7 +32,7 @@ const PureSpreadsheetEditor = ({
     });
 
     while (paddedData.length < MIN_ROWS) {
-      paddedData.push(Array(MIN_COLS).fill(""));
+      paddedData.push(new Array(MIN_COLS).fill(""));
     }
 
     return paddedData;
@@ -59,13 +51,13 @@ const PureSpreadsheetEditor = ({
 
     const dataColumns = Array.from({ length: MIN_COLS }, (_, i) => ({
       key: i.toString(),
-      name: String.fromCharCode(65 + i),
+      name: String.fromCodePoint(65 + i),
       renderEditCell: textEditor,
       width: 120,
-      cellClass: cn(`border-t dark:bg-zinc-950 dark:text-zinc-50`, {
+      cellClass: cn("border-t dark:bg-zinc-950 dark:text-zinc-50", {
         "border-l": i !== 0,
       }),
-      headerCellClass: cn(`border-t dark:bg-zinc-900 dark:text-zinc-50`, {
+      headerCellClass: cn("border-t dark:bg-zinc-900 dark:text-zinc-50", {
         "border-l": i !== 0,
       }),
     }));
@@ -75,14 +67,15 @@ const PureSpreadsheetEditor = ({
 
   const initialRows = useMemo(() => {
     return parseData.map((row, rowIndex) => {
-      const rowData: any = {
-        id: rowIndex,
-        rowNumber: rowIndex + 1,
+      const rowData: { [key: string]: string } = {
+        id: rowIndex.toString(),
+        rowNumber: (rowIndex + 1).toString(),
       };
 
-      columns.slice(1).forEach((col, colIndex) => {
-        rowData[col.key] = row[colIndex] || "";
-      });
+      const columnsWithoutRowNumber = columns.slice(1);
+      for (const col of columnsWithoutRowNumber) {
+        rowData[col.key] = row[col.key] || "";
+      }
 
       return rowData;
     });
@@ -94,11 +87,11 @@ const PureSpreadsheetEditor = ({
     setLocalRows(initialRows);
   }, [initialRows]);
 
-  const generateCsv = (data: any[][]) => {
+  const generateCsv = (data: string[][]) => {
     return unparse(data);
   };
 
-  const handleRowsChange = (newRows: any[]) => {
+  const handleRowsChange = (newRows: { [key: string]: string }[]) => {
     setLocalRows(newRows);
 
     const updatedData = newRows.map((row) => {

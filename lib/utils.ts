@@ -1,4 +1,4 @@
-import type { DBMessage, Document } from "@/lib/db/schema";
+import type { CityMunicipality, Country, DBMessage, DeptoState, Document } from "@/lib/db/schema";
 import type { CoreAssistantMessage, CoreToolMessage, UIMessage, UIMessagePart } from "ai";
 import { type ClassValue, clsx } from "clsx";
 import { formatISO } from "date-fns";
@@ -176,18 +176,21 @@ export const copyToClipboard = async (
   }
 };
 
-export const getCountriesOptions = (countries: any[]) => {
+export const getCountriesOptions = (countries: Country[]) => {
   return countries.map((country) => ({
     label: country.name,
     value: country.id,
   }));
 };
 
-export const getDeptoStatesOptions = (states: any[]) => {
-  return states.map((state) => ({ label: state.name, value: state.id }));
+export const getDeptoStatesOptions = (states: DeptoState[]) => {
+  return states.map((state) => ({ label: state.name as string, value: state.id as string }));
 };
 
-export const getCityMunicipalitiesOptions = (cities: string[], deptoStateId: string[]) => {
-  const citiesByState = cities.filter((city) => city.depto_state_id === deptoStateId);
+export const getCityMunicipalitiesOptions = (
+  cities: CityMunicipality[],
+  deptoStateId: string[],
+) => {
+  const citiesByState = cities.filter((city) => city.depto_state_id === deptoStateId[0]);
   return citiesByState.map((city) => ({ label: city.name, value: city.id }));
 };

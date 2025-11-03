@@ -8,6 +8,7 @@ import type { ArtifactKind } from "@/components/artifact";
 import type { VisibilityType } from "@/components/visibility-selector";
 import { ChatSDKError } from "../errors";
 import { generateUUID } from "../utils";
+import type { VectorizedDocument } from "../vectorization";
 import {
   stream,
   type Chat,
@@ -1049,7 +1050,7 @@ export async function createCaseFile({
   originalName: string;
   mimeType: string;
   size: number;
-  vectorData?: any;
+  vectorData?: VectorizedDocument;
 }) {
   try {
     return await db

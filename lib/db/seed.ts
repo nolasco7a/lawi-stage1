@@ -481,6 +481,7 @@ const runSeed = async () => {
       // Seed municipalities for this department
       for (const municipality of department.municipalities) {
         await db.insert(cityMunicipality).values({
+          country_id: countryRecord.id,
           depto_state_id: deptoRecord.id,
           name: municipality,
         });
@@ -506,7 +507,7 @@ const runSeed = async () => {
 
 // Run the seed function
 if (require.main === module) {
-  runSeed()
+  await runSeed()
     .then(() => {
       console.info("Seed process completed");
       process.exit(0);

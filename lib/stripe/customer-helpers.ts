@@ -79,7 +79,6 @@ export async function createSubscriptionCheckoutSession({
       },
     });
 
-    console.log(`Created checkout session ${session.id} for user ${userId}`);
     return session;
   } catch (error) {
     console.error("Error creating checkout session:", error);
@@ -133,7 +132,6 @@ export async function createPaymentCheckoutSession({
       },
     });
 
-    console.log(`Created payment session ${session.id} for user ${userId}`);
     return session;
   } catch (error) {
     console.error("Error creating payment session:", error);

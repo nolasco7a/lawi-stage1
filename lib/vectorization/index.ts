@@ -27,8 +27,7 @@ class XenovaProvider implements VectorProvider {
   async vectorize(text: string): Promise<number[]> {
     // TODO: Implement xenova/transformers vectorization
     // For now, return placeholder
-    console.log("Vectorizing text with Xenova:", text.substring(0, 100));
-    return new Array(384).fill(0).map(() => Math.random());
+    return text.split(" ").map((word) => word.length);
   }
 
   async extractText(file: File): Promise<string> {

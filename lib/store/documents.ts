@@ -1,7 +1,8 @@
 "use client";
 
-import { create } from "zustand";
 import { toast } from "sonner";
+import { create } from "zustand";
+import type { Document } from "../db/schema";
 
 interface ISelectedDocument {
   id: string;
@@ -14,17 +15,17 @@ interface ISelectedDocument {
 interface DocumentStore {
   // state
   documentsLoading: boolean;
-  documents: any[];
+  documents: Document[];
   selectedDocument?: ISelectedDocument | null;
 
   //   actions
   setDocumentsLoading: (loading: boolean) => void;
-  setDocuments: (documents: any[]) => void;
+  setDocuments: (documents: Document[]) => void;
   setSelectedDocument: (data: ISelectedDocument) => void;
 
   fetchDocuments: () => Promise<void>;
 }
-export const useDocumentStore = create<DocumentStore>((set, get) => ({
+export const useDocumentStore = create<DocumentStore>((set) => ({
   //   initial state
   documents: [],
   selectedDocument: null,
@@ -32,7 +33,7 @@ export const useDocumentStore = create<DocumentStore>((set, get) => ({
 
   //   Actions
   setDocumentsLoading: (loading: boolean) => set({ documentsLoading: loading }),
-  setDocuments: (documents: any[]) => set({ documents: documents }),
+  setDocuments: (documents: Document[]) => set({ documents: documents }),
   setSelectedDocument: (data: ISelectedDocument) => set({ selectedDocument: data }),
 
   fetchDocuments: async () => {
@@ -48,7 +49,7 @@ export const useDocumentStore = create<DocumentStore>((set, get) => ({
       console.error("Error fetching documents:", error);
       toast.error("Error fetching documents");
     } finally {
-      set({ selectedDocumentId: null });
+      set({ selectedDocument: null });
       set({ documentsLoading: false });
     }
   },

@@ -8,9 +8,7 @@ export const useCountryStateCitySelection = () => {
 
   useEffect(() => {
     if (lookupStore.countries.length === 0) {
-      lookupStore.fetchCountries().then((countries) => {
-        console.info("fetched countries: ", countries);
-      });
+      lookupStore.fetchCountries();
     }
   }, [lookupStore, lookupStore.countries.length]);
 
@@ -24,9 +22,7 @@ export const useCountryStateCitySelection = () => {
     const countryId = value;
     setCountryId(countryId);
     if (countryId) {
-      lookupStore.fetchDeptoStates(countryId).then((deptoState) => {
-        console.info("fetched deptoStates: ", deptoState);
-      });
+      lookupStore.fetchDeptoStates(countryId);
     }
   };
 
@@ -35,9 +31,7 @@ export const useCountryStateCitySelection = () => {
     const deptoStateId = value;
     setDeptoStateId(deptoStateId);
     if (countryId) {
-      lookupStore.fetchCityMunicipalities(countryId).then((city) => {
-        console.info("fetched cityMunicipalities: ", city);
-      });
+      lookupStore.fetchCityMunicipalities(countryId);
     }
   };
 
