@@ -1,7 +1,20 @@
-import type { Chat } from "@/lib/db/schema";
+import ActionDialog from "@/components/action-dialog";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuPortal,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import { useChatVisibility } from "@/hooks/use-chat-visibility";
+import type { Chat } from "@/lib/db/schema";
 import { useChatStore } from "@/lib/store/chat";
-import Link from "next/link";
+import { copyToClipboard } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 import {
@@ -14,30 +27,16 @@ import {
   Share,
   Trash,
 } from "lucide-react";
-import { copyToClipboard } from "@/lib/utils";
-import { toast } from "sonner";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuPortal,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import ActionDialog from "@/components/action-dialog";
-import { Input } from "@/components/ui/input";
+import Link from "next/link";
 import { useState } from "react";
+import { toast } from "sonner";
 
-export default function ChatCard({
-  chat,
-  showCaseTag = false,
-}: {
+interface ChatCardProps {
   chat: Chat;
   showCaseTag?: boolean;
-}) {
+}
+
+export default function ChatCard({ chat }: Readonly<ChatCardProps>): React.ReactNode {
   const { visibilityType, setVisibilityType } = useChatVisibility({
     chatId: chat.id,
     initialVisibilityType: chat.visibility,
@@ -57,7 +56,7 @@ export default function ChatCard({
     try {
       await deleteChat(deleteId);
     } catch (error) {
-      // Error handling is done in the store
+      console.error("Error deleting chat:", error);
     }
 
     setShowDeleteDialog(false);
@@ -70,7 +69,7 @@ export default function ChatCard({
     try {
       await renameChat(renameId, newTitle.trim());
     } catch (error) {
-      // Error handling is done in the store
+      console.error("Error renaming chat:", error);
     }
 
     setShowRenameDialog(false);
@@ -115,6 +114,11 @@ export default function ChatCard({
                     onClick={() =>
                       copyToClipboard(`${window.location.origin}/chat/${chat.id}`, toast)
                     }
+                    onKeyUp={(e) => {
+                      if (e.key === "Enter") {
+                        copyToClipboard(`${window.location.origin}/chat/${chat.id}`, toast);
+                      }
+                    }}
                     className="flex flex-direction-row ml-4 gap-1 items-center cursor-pointer hover:underline"
                   >
                     <ClipboardCopy size={14} />

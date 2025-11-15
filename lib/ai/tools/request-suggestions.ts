@@ -1,11 +1,11 @@
-import { z } from "zod";
-import type { Session } from "next-auth";
-import { streamObject, tool, type UIMessageStreamWriter } from "ai";
 import { getDocumentById, saveSuggestions } from "@/lib/db/queries";
 import type { Suggestion } from "@/lib/db/schema";
-import { generateUUID } from "@/lib/utils";
-import { myProvider } from "../providers";
 import type { ChatMessage } from "@/lib/types";
+import { generateUUID } from "@/lib/utils";
+import { type UIMessageStreamWriter, streamObject, tool } from "ai";
+import type { Session } from "next-auth";
+import { z } from "zod";
+import { myProvider } from "../providers";
 
 interface RequestSuggestionsProps {
   session: Session;
@@ -21,7 +21,7 @@ export const requestSuggestions = ({ session, dataStream }: RequestSuggestionsPr
     execute: async ({ documentId }) => {
       const document = await getDocumentById({ id: documentId });
 
-      if (!document || !document.content) {
+      if (!document?.content) {
         return {
           error: "Document not found",
         };
@@ -43,7 +43,6 @@ export const requestSuggestions = ({ session, dataStream }: RequestSuggestionsPr
       });
 
       for await (const element of elementStream) {
-        // @ts-ignore todo: fix type
         const suggestion: Suggestion = {
           originalText: element.originalSentence,
           suggestedText: element.suggestedSentence,
@@ -51,6 +50,9 @@ export const requestSuggestions = ({ session, dataStream }: RequestSuggestionsPr
           id: generateUUID(),
           documentId: documentId,
           isResolved: false,
+          createdAt: new Date(),
+          userId: "",
+          documentCreatedAt: new Date(),
         };
 
         dataStream.write({

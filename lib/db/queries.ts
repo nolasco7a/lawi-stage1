@@ -216,6 +216,7 @@ export async function getChatsByUserId({
   try {
     const extendedLimit = limit + 1;
 
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     const query = (whereCondition?: SQL<any>) =>
       db
         .select()

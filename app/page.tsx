@@ -1,49 +1,32 @@
 "use client";
-import { useEffect, useState } from "react";
-import Link from "next/link";
 import Navbar from "@/components/home/navbar";
-import { getFromLocalStorage } from "@/lib/utils";
-import { useLookupStore } from "@/lib/store/lookupStore";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  MessageSquare,
-  UserCheck,
-  Users,
-  Shield,
-  Clock,
-  Briefcase,
-  TrendingUp,
-  Target,
   Award,
+  Briefcase,
   CheckCircle,
   ChevronRight,
+  Clock,
+  MessageSquare,
+  Shield,
+  Target,
+  TrendingUp,
+  UserCheck,
+  Users,
 } from "lucide-react";
-// import DialogCountry from '@/components/home/dialog-country';
+import Link from "next/link";
 
 export default function Home() {
-  const [openDialogCountry, setOpenDialogCountry] = useState(false);
-  const lookupStore = useLookupStore();
-  const country = getFromLocalStorage<string>("country");
-
-  useEffect(() => {
-    if (!country) {
-      setOpenDialogCountry(true);
-      lookupStore.fetchCountries();
-    }
-  }, []);
-
   return (
     <div className="min-h-screen w-full">
       <Navbar />
-      {/*TODO: habilitar en expansion*/}
-      {/*<DialogCountry open={openDialogCountry}/>*/}
 
       {/* Hero Section */}
       <section className="pt-24 md:pt-32 pb-12 md:pb-16 px-4">
@@ -273,8 +256,8 @@ export default function Home() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm md:text-base text-muted-foreground mb-3 md:mb-4">
-                      "Me orientaron en minutos sobre mi problema laboral y encontré un abogado
-                      especializado confiable. El proceso fue súper sencillo."
+                      Me orientaron en minutos sobre mi problema laboral y encontré un abogado
+                      especializado confiable. El proceso fue súper sencillo.
                     </p>
                     <div>
                       <p className="font-semibold text-sm md:text-base">Laura Martínez</p>
@@ -292,8 +275,8 @@ export default function Home() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm md:text-base text-muted-foreground mb-3 md:mb-4">
-                      "Conseguí clientes calificados sin invertir en publicidad. La plataforma me
-                      conecta con personas que realmente necesitan mis servicios."
+                      Conseguí clientes calificados sin invertir en publicidad. La plataforma me
+                      conecta con personas que realmente necesitan mis servicios.
                     </p>
                     <div>
                       <p className="font-semibold text-sm md:text-base">Carlos Rodríguez</p>
@@ -312,7 +295,8 @@ export default function Home() {
       {/* Planes y Precios */}
       <div id="planes" className="py-10">
         <p className={"text-3xl text-center font-black mb-10"}>Planes de LAWI</p>
-        <script async src="https://js.stripe.com/v3/pricing-table.js"></script>
+        <script async src="https://js.stripe.com/v3/pricing-table.js" />
+        {/* @ts-expect-error - Stripe pricing table */}
         <stripe-pricing-table
           pricing-table-id="prctbl_1RzMIl5aFd4VysYjIqMKN0k0"
           publishable-key="pk_test_51RwSs15aFd4VysYjJLIUjQ4eG6uFeBnkzTU3xIp5acEY7MIIl5kW9mTQzjBi4xW06Tp0GcwfHY8zIP2rUoOmDArT00AdJ0wyqu"

@@ -1,10 +1,10 @@
+import { cn } from "@/lib/utils";
+import { type Dispatch, type SetStateAction, memo, useState } from "react";
+import { toast } from "sonner";
+import { type UIArtifact, artifactDefinitions } from "./artifact";
+import type { ArtifactActionContext } from "./create-artifact";
 import { Button } from "./ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
-import { artifactDefinitions, type UIArtifact } from "./artifact";
-import { type Dispatch, memo, type SetStateAction, useState } from "react";
-import type { ArtifactActionContext } from "./create-artifact";
-import { cn } from "@/lib/utils";
-import { toast } from "sonner";
 
 interface ArtifactActionsProps {
   artifact: UIArtifact;
@@ -24,7 +24,7 @@ function PureArtifactActions({
   mode,
   metadata,
   setMetadata,
-}: ArtifactActionsProps) {
+}: Readonly<ArtifactActionsProps>) {
   const [isLoading, setIsLoading] = useState(false);
 
   const artifactDefinition = artifactDefinitions.find(
@@ -35,7 +35,7 @@ function PureArtifactActions({
     throw new Error("Artifact definition not found!");
   }
 
-  const actionContext: ArtifactActionContext = {
+  const actionContext: ArtifactActionContext<unknown> = {
     content: artifact.content,
     handleVersionChange,
     currentVersionIndex,
@@ -43,6 +43,16 @@ function PureArtifactActions({
     mode,
     metadata,
     setMetadata,
+  };
+
+  const disabled = (action: any) => {
+    if (isLoading || artifact.status === "streaming") {
+      return true;
+    }
+    if (action.isDisabled) {
+      return action.isDisabled(actionContext);
+    }
+    return false;
   };
 
   return (
@@ -59,21 +69,15 @@ function PureArtifactActions({
               onClick={async () => {
                 setIsLoading(true);
 
-                try {
-                  await Promise.resolve(action.onClick(actionContext));
-                } catch (error) {
-                  toast.error("Failed to execute action");
-                } finally {
-                  setIsLoading(false);
-                }
+                await Promise.resolve(action.onClick(actionContext))
+                  .then(() => {
+                    setIsLoading(false);
+                  })
+                  .catch(() => {
+                    toast.error("Failed to execute action");
+                  });
               }}
-              disabled={
-                isLoading || artifact.status === "streaming"
-                  ? true
-                  : action.isDisabled
-                    ? action.isDisabled(actionContext)
-                    : false
-              }
+              disabled={disabled(action)}
             >
               {action.icon}
               {action.label}

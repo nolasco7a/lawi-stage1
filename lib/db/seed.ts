@@ -441,27 +441,20 @@ const runSeed = async () => {
       .where(eq(country.name, hondurasData.country.name));
 
     if (existingCountry) {
-      console.info("Honduras already exists in database. Skipping seed.");
       await connection.end();
       return;
     }
 
     // Seed Honduras country data
-    console.info("Seeding Honduras country data...");
     const [countryRecord] = await db.insert(country).values(hondurasData.country).returning();
 
     if (!countryRecord) {
       throw new Error("Failed to create country record");
     }
 
-    console.info(`Country created: ${countryRecord.name} (${countryRecord.id})`);
-
     // Seed departments and municipalities
-    let totalMunicipalities = 0;
 
     for (const department of hondurasData.departments) {
-      console.info(`Seeding department: ${department.name}...`);
-
       const [deptoRecord] = await db
         .insert(deptoState)
         .values({
@@ -476,8 +469,6 @@ const runSeed = async () => {
         continue;
       }
 
-      console.info(`Department created: ${deptoRecord.name} (${deptoRecord.id})`);
-
       // Seed municipalities for this department
       for (const municipality of department.municipalities) {
         await db.insert(cityMunicipality).values({
@@ -485,17 +476,8 @@ const runSeed = async () => {
           depto_state_id: deptoRecord.id,
           name: municipality,
         });
-        totalMunicipalities++;
       }
-
-      console.info(`Added ${department.municipalities.length} municipalities`);
     }
-
-    console.info(" Seed completed successfully!");
-    console.info(" Summary:");
-    console.info("  - Country: 1 (Honduras)");
-    console.info(`  - Departments: ${hondurasData.departments.length}`);
-    console.info(`  - Municipalities: ${totalMunicipalities}`);
 
     // Close database connection
     await connection.end();

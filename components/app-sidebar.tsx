@@ -1,36 +1,32 @@
 "use client";
 
-import type { User } from "next-auth";
-import { useRouter } from "next/navigation";
-import {
-  MessageCirclePlus,
-  Settings,
-  LayoutDashboard,
-  UserRound,
-  FolderKanban,
-  File,
-  MessageCircleMore,
-} from "lucide-react";
 import { SidebarHistory } from "@/components/sidebar-history";
 import { SidebarUserNav } from "@/components/sidebar-user-nav";
-import { Button } from "@/components/ui/button";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarHeader,
-  SidebarMenu,
-  useSidebar,
-  SidebarMenuItem,
-  SidebarMenuButton,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
+import {
+  File,
+  FolderKanban,
+  LayoutDashboard,
+  MessageCircleMore,
+  MessageCirclePlus,
+  Settings,
+} from "lucide-react";
+import type { User } from "next-auth";
 import Link from "next/link";
+import type React from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
-import React from "react";
-import { state } from "@auth/core/lib/actions/callback/oauth/checks";
 
 const AppSidebarMenuItem = ({
   path = "/",
@@ -55,10 +51,8 @@ const AppSidebarMenuItem = ({
   );
 };
 
-export function AppSidebar({ user }: { user: User | undefined }) {
-  const router = useRouter();
-  const { setOpenMobile, state: appSidebarState } = useSidebar();
-  // console.log(user);
+export function AppSidebar({ user }: Readonly<{ user: User | undefined }>) {
+  const { state: appSidebarState } = useSidebar();
 
   return (
     <Sidebar

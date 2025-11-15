@@ -1,10 +1,10 @@
 import { auth } from "@/app/(auth)/auth";
+import { AppSidebar } from "@/components/app-sidebar";
+import { DataStreamProvider } from "@/components/data-stream-provider";
+import { SidebarStateSync } from "@/components/sidebar-state-sync";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { cookies } from "next/headers";
 import Script from "next/script";
-import { DataStreamProvider } from "@/components/data-stream-provider";
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/app-sidebar";
-import { SidebarStateSync } from "@/components/sidebar-state-sync";
 
 export const experimental_ppr = true;
 

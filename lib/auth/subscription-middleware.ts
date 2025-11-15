@@ -1,5 +1,4 @@
 import { getUserActiveSubscription, hasActivePlan } from "@/lib/db/subscription-queries";
-import { NextRequest, NextResponse } from "next/server";
 
 export interface SubscriptionCheck {
   hasSubscription: boolean;
@@ -76,7 +75,6 @@ export async function requireSubscription(
   }
 }
 
-//TODO: revisar esto
 // Features available per plan
 export const PLAN_FEATURES = {
   basic: [
@@ -118,9 +116,7 @@ export async function hasFeatureAccess(userId: string, feature: FeatureName): Pr
       return false;
     }
     const availableFeatures = PLAN_FEATURES[userPlan];
-
-    // TODO: arreglar este tipo
-    return availableFeatures.includes(feature as any);
+    return availableFeatures.includes(feature);
   } catch (error) {
     console.error("Error checking feature access:", error);
     return false;
@@ -159,7 +155,7 @@ export async function getSubscriptionStatus(userId: string): Promise<Subscriptio
       daysUntilExpiry,
       cancelAtPeriodEnd: activeSubscription.cancel_at_period_end,
       nextBillingDate: activeSubscription.current_period_end,
-      features: PLAN_FEATURES[activeSubscription.plan_type],
+      features: [...PLAN_FEATURES[activeSubscription.plan_type]],
     };
   } catch (error) {
     console.error("Error getting subscription status:", error);

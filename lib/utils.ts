@@ -2,6 +2,7 @@ import type { CityMunicipality, Country, DBMessage, DeptoState, Document } from 
 import type { CoreAssistantMessage, CoreToolMessage, UIMessage, UIMessagePart } from "ai";
 import { type ClassValue, clsx } from "clsx";
 import { formatISO } from "date-fns";
+import type { toast as Toast } from "sonner";
 import { twMerge } from "tailwind-merge";
 import { ChatSDKError, type ErrorCode } from "./errors";
 import type { ChatMessage, ChatTools, CustomUIDataTypes } from "./types";
@@ -150,10 +151,9 @@ export const getInitialsFromName = (
   }
 };
 
-//TODO: arreglar tipo
 export const copyToClipboard = async (
   text: string,
-  toast: any,
+  toast: Toast,
   successMessage = "Texto copiado al portapapeles",
 ) => {
   try {
@@ -184,13 +184,10 @@ export const getCountriesOptions = (countries: Country[]) => {
 };
 
 export const getDeptoStatesOptions = (states: DeptoState[]) => {
-  return states.map((state) => ({ label: state.name as string, value: state.id as string }));
+  return states.map((state) => ({ label: state.name, value: state.id }));
 };
 
-export const getCityMunicipalitiesOptions = (
-  cities: CityMunicipality[],
-  deptoStateId: string[],
-) => {
-  const citiesByState = cities.filter((city) => city.depto_state_id === deptoStateId[0]);
+export const getCityMunicipalitiesOptions = (cities: CityMunicipality[], deptoStateId: string) => {
+  const citiesByState = cities.filter((city) => city.depto_state_id === deptoStateId);
   return citiesByState.map((city) => ({ label: city.name, value: city.id }));
 };

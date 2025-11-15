@@ -1,9 +1,9 @@
-import { NextResponse } from "next/server";
 import {
   getAllCountries,
-  getDeptoStatesByCountryId,
   getCityMunicipalitiesByCountryId,
+  getDeptoStatesByCountryId,
 } from "@/lib/db/queries";
+import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -22,7 +22,6 @@ export async function GET(request: Request) {
           return NextResponse.json({ error: "Country ID required" }, { status: 400 });
         }
         const departments = await getDeptoStatesByCountryId(countryId);
-        console.log(departments);
         return NextResponse.json(departments);
       }
 

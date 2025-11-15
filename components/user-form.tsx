@@ -1,20 +1,19 @@
-import { Form } from "./form";
-import { FormInput, FormInputPhone, FormInputSelect } from "./form-input";
-import type { RegisterUserFormData } from "@/lib/validations/auth";
+import { useCountryStateCitySelection } from "@/lib/hooks/useCountryStateCitySelection";
 import {
   getCityMunicipalitiesOptions,
   getCountriesOptions,
   getDeptoStatesOptions,
 } from "@/lib/utils";
-import { useCountryStateCitySelection } from "@/lib/hooks/useCountryStateCitySelection";
+import type { RegisterUserFormData } from "@/lib/validations/auth";
+import { Form } from "./form";
+import { FormInput, FormInputPhone, FormInputSelect } from "./form-input";
 
 type UserFormProps = {
-  form: any;
+  form: typeof Form extends { prototype: infer U } ? U : never;
   isLoading: boolean;
   callback: (data: RegisterUserFormData) => void;
 };
-export default function UserForm({ form, isLoading, callback }: UserFormProps) {
-  console.log("UserForm - Current form values:", form.getValues());
+export default function UserForm({ form, isLoading, callback }: Readonly<UserFormProps>) {
   const {
     onCountryChange,
     onStateChange,
@@ -71,7 +70,7 @@ export default function UserForm({ form, isLoading, callback }: UserFormProps) {
         form={form}
         name="city_municipality_id"
         label="Ciudad ó Municipio"
-        options={getCityMunicipalitiesOptions(cityMunicipalities, deptoStateId)}
+        options={getCityMunicipalitiesOptions(cityMunicipalities, deptoStateId as string)}
         disabled={cityMunicipalities.length === 0}
       />
       <FormInput

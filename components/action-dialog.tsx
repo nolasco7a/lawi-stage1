@@ -1,19 +1,18 @@
-import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
-  DialogTrigger,
+  DialogClose,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
-  DialogClose,
+  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import React from "react";
+import type React from "react";
 
 interface ActionDialogProps {
   openModal: boolean;
-  conversationId?: string;
+  // conversationId?: string;
   button?: boolean;
   icon?: React.ReactNode;
   buttonText?: string;
@@ -22,7 +21,7 @@ interface ActionDialogProps {
   action: () => void;
   cancelText: string;
   actionText: string;
-  errorAction?: string;
+  // errorAction?: string;
   setOpenModal: (open: boolean) => void;
   children?: React.ReactNode;
   customContent?: React.ReactNode;
@@ -38,18 +37,14 @@ const ActionDialog = ({
   action,
   actionText,
   cancelText,
-  errorAction,
   setOpenModal,
   children,
   customContent,
 }: ActionDialogProps) => {
   const handleAction = async () => {
-    try {
-      action();
-    } catch (error) {
-      toast.error(errorAction || "Ocurrió un error, por favor intenta de nuevo.");
-    }
+    action();
   };
+
   return (
     <Dialog open={openModal} onOpenChange={setOpenModal}>
       {button && (
@@ -73,7 +68,7 @@ const ActionDialog = ({
           <Button
             variant="destructive"
             onClick={() => {
-              handleAction().then(() => console.log("action handled executed"));
+              handleAction();
             }}
           >
             {actionText}

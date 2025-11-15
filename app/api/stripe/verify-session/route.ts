@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe/stripe";
+import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
   try {
@@ -24,8 +24,11 @@ export async function GET(request: Request) {
       subscription_id: session.subscription,
       customer_id: session.customer,
     });
-  } catch (err: any) {
-    console.error("Stripe session verification error:", err);
-    return NextResponse.json({ error: err.message }, { status: err.statusCode || 500 });
+  } catch (error) {
+    console.error("Stripe session verification error:", error);
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Unknown error" },
+      { status: 500 },
+    );
   }
 }
