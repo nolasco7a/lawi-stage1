@@ -3,14 +3,13 @@
 import { Form } from "@/components/form";
 import { FormInput } from "@/components/form-input";
 import { toast } from "@/components/toast";
-import { Button } from "@/components/ui/button";
 import { type VerifyEmailFormData, createVerifyEmailSchema } from "@/lib/validations/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import HeaderAuthForm from "../components/header-auth-form";
+import TemplateSide from "../components/template-side";
 
 import { type ForgotPasswordActionState, forgotPassword } from "../actions";
 
@@ -67,28 +66,19 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="w-full h-screen flex flex-col">
-      <div className="h-10 w-full flex flex-row justify-start p-4">
-        <Link href={"/login"} className="text-primary rounded-full">
-          <Button variant="link" className="text-primary rounded-full pl-0">
-            <ArrowLeft className="size-4" />
-            Back to Login
-          </Button>
-        </Link>
-      </div>
-      <div className="h-full flex items-center justify-center px-4">
+    <TemplateSide textLink="Volver al login" hrefLink="/login" adornmentSide="left">
+      <div className="h-full w-full flex items-center justify-center px-4">
         <div className="w-full max-w-md overflow-hidden rounded-2xl flex flex-col gap-12">
-          <div className="flex flex-col items-center justify-center gap-2 px-4 text-center sm:px-16">
-            <h3 className="text-xl font-semibold dark:text-zinc-50">Forgot Password</h3>
-            <p className="text-sm text-gray-500 dark:text-zinc-400">
-              Enter your email address and we&apos;ll send you a code to reset your password
-            </p>
-          </div>
+          <HeaderAuthForm
+            title="¿Olvidaste tu contraseña?"
+            subtitle="Ingresa tu email y te enviaremos un código para resetear tu contraseña"
+          />
           <Form
-            onSubmit={form.handleSubmit(onSubmit)}
+            onPressAction={() => form.handleSubmit(onSubmit)()}
             isLoading={isLoading}
             form={form}
-            buttonText="Send Reset Code"
+            buttonText="Enviar código de reseteo"
+            contrastColor={true}
           >
             <FormInput
               form={form}
@@ -96,10 +86,11 @@ export default function ForgotPasswordPage() {
               label="Email"
               type="email"
               placeholder="Enter your email address"
+              contrastColor={true}
             />
           </Form>
         </div>
       </div>
-    </div>
+    </TemplateSide>
   );
 }

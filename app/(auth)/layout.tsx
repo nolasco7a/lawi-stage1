@@ -9,7 +9,7 @@ export default function AuthLayout({
   return (
     <div>
       <div className="w-full h-screen grid xs:grid-cols-1 sm:grid-cols-4 md:grid-cols-3 lg:grid-cols-2">
-        {/* Panel izquierdo */}
+        {/* left side */}
         <div className="w-full h-[100vh] md:h-full bg-foreground hidden sm:block xs:col-span-1 sm:col-span-1 md:col-span-1 lg:col-span-1">
           <div className="h-20 p-4 flex flex-row gap-2">theme y locale switch</div>
           <Link href="/">
@@ -19,7 +19,8 @@ export default function AuthLayout({
             </div>
           </Link>
         </div>
-        {/* Panel derecho */}
+
+        {/* right side */}
         <div className="w-full h-[100vh] md:h-full bg-background xs:col-span-1 sm:col-span-3 md:col-span-2 lg:col-span-1 relative">
           <div className="h-20 rounded-br-xl p-4 flex flex-row gap-1 absolute top-0 left-0 xs:block sm:hidden md:hidden lg:hidden bg-background">
             theme y locale switch

@@ -12,7 +12,7 @@ import UserForm from "./components/user-form";
 export default function Page() {
   return (
     <TemplateSide textLink="Login" hrefLink="/login">
-      <Tabs defaultValue="user" className="w-full max-w-md">
+      <Tabs defaultValue="user" className="w-full max-w-md p-3">
         <TabsList>
           <TabsTrigger value="user">User</TabsTrigger>
           <TabsTrigger value="lawyer">Lawyer</TabsTrigger>

@@ -1,19 +1,19 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useActionState, useEffect, useState } from "react";
 import { toast } from "@/components/toast";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useActionState, useEffect, useState } from "react";
 
-import { verifyOtp, type VerifyOtpActionState } from "../../actions";
+import { type VerifyOtpActionState, verifyOtp } from "../../actions";
 
 export default function VerifyOtpPage() {
   const router = useRouter();
@@ -149,6 +149,7 @@ export default function VerifyOtpPage() {
                   onClick={handleResendCode}
                   className="text-primary hover:underline"
                   disabled={isLoading}
+                  type="button"
                 >
                   Send new code
                 </button>
