@@ -1,6 +1,7 @@
 {
-  "name": "ai-chatbot",
-  "version": "3.1.0",
+  "name": "LAWI",
+  "tagline": "Orientación legal al instante, abogados cuando los necesitas.",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev --turbo",

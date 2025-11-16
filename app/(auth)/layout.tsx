@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { APP_NAME, APP_TAGLINE } from "@/constants/app";
 export default function AuthLayout({
   children,
 }: {
@@ -13,8 +14,8 @@ export default function AuthLayout({
           <div className="h-20 p-4 flex flex-row gap-2">theme y locale switch</div>
           <Link href="/">
             <div className="absolute bottom-4 left-4 sm:-rotate-90 sm:-translate-y-20 sm:-translate-x-5 md:-rotate-0 md:translate-y-0 md:translate-x-0">
-              <h1 className="text-4xl text-secondary font-bold">appname</h1>
-              <p className="text-sm text-muted-foreground">subtitle</p>
+              <h1 className="text-4xl text-secondary font-bold">{APP_NAME}</h1>
+              <p className="text-sm text-muted-foreground">{APP_TAGLINE}</p>
             </div>
           </Link>
         </div>
@@ -26,8 +27,8 @@ export default function AuthLayout({
           {children}
           <div className="absolute bottom-4 left-4 xs:block sm:hidden">
             <Link href="/">
-              <h1 className="text-4xl text-primary sm:hidden font-bold">appname</h1>
-              <p className="text-sm text-muted-foreground">subtitle</p>
+              <h1 className="text-4xl text-primary sm:hidden font-bold">{APP_NAME}</h1>
+              <p className="text-sm text-muted-foreground">{APP_TAGLINE}</p>
             </Link>
           </div>
         </div>

@@ -49,6 +49,8 @@
     --destructive: 0 72% 51%; /* rojo sobrio */
     --destructive-foreground: 0 0% 100%;
 
+    --contrast: 0 0% 100%;
+
     --border: 220 8% 88%;
     --input: 220 8% 88%;
     --ring: 210 22% 22%;
@@ -98,6 +100,8 @@
 
     --destructive: 0 65% 45%;
     --destructive-foreground: 0 0% 100%;
+
+    --contrast: 0 0% 100%;
 
     --border: 220 10% 18%;
     --input: 220 10% 18%;

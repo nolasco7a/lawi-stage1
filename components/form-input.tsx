@@ -1,4 +1,9 @@
-import { FormField, FormLabel, FormControl, FormMessage, FormItem } from "@/components/ui/form";
+import { PhoneInput } from "@/components/phone-input";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import type { FieldValues, UseFormReturn } from "react-hook-form";
+import type { Country } from "react-phone-number-input";
+
 import {
   Select,
   SelectContent,
@@ -6,49 +11,66 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { PhoneInput } from "@/components/phone-input";
-import { Input } from "@/components/ui/input";
 
 type FormInputProps = {
-  form: any;
+  // biome-ignore lint/suspicious/noExplicitAny: form is any type
+  form: UseFormReturn<any>;
   name: string;
   label: string;
   type: string;
   placeholder: string;
   disabled?: boolean;
+  contrastColor?: boolean;
 };
 
 type FormInputPhoneProps = {
-  form: any;
+  // biome-ignore lint/suspicious/noExplicitAny: form is any type
+  form: UseFormReturn<any>;
   name: string;
   label: string;
   defaultValue?: string;
-  placeholder: string;
+  placeholder?: string;
   disabled?: boolean;
-  defaultCountry?: string | undefined;
+  defaultCountry?: Country;
+  contrastColor?: boolean;
 };
 
 type FormInputSelectProps = {
-  form: any;
+  // biome-ignore lint/suspicious/noExplicitAny: form is any type
+  form: UseFormReturn<any>;
   name: string;
   label: string;
   disabled?: boolean;
   options?: { value: string; label: string }[];
   defaultValue?: string;
   callback?: (value: string) => void;
+  contrastColor?: boolean;
 };
 
-export function FormInput({ form, name, label, type, placeholder, disabled }: FormInputProps) {
+export function FormInput({
+  form,
+  name,
+  label,
+  type,
+  placeholder,
+  disabled,
+  contrastColor,
+}: FormInputProps) {
   return (
     <FormField
       control={form.control}
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel className="text-primary">{label}</FormLabel>
+          <FormLabel className={contrastColor ? "text-contrast" : "text-primary"}>
+            {label}
+          </FormLabel>
           <FormControl>
             <Input
-              className="text-primary border-muted-foreground"
+              className={[
+                contrastColor ? "text-contrast" : "text-primary",
+                "focus:outline-none focus:ring-0 focus:border-0 focus:visible:ring-0",
+              ].join(" ")}
               {...field}
               type={type}
               placeholder={placeholder}
@@ -101,6 +123,7 @@ export function FormInputSelect({
   options = [],
   disabled = false,
   callback,
+  contrastColor = false,
 }: FormInputSelectProps) {
   return (
     <FormField
@@ -108,7 +131,9 @@ export function FormInputSelect({
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel className="text-primary">{label}</FormLabel>
+          <FormLabel className={contrastColor ? "text-contrast" : "text-primary"}>
+            {label}
+          </FormLabel>
           <FormControl>
             <Select
               disabled={disabled}
@@ -120,10 +145,16 @@ export function FormInputSelect({
                 }
               }}
             >
-              <SelectTrigger className="text-primary border-muted-foreground w-full">
+              <SelectTrigger
+                className={
+                  contrastColor
+                    ? "text-contrast border-muted-foreground w-full"
+                    : "text-primary border-muted-foreground w-full"
+                }
+              >
                 <SelectValue placeholder={"Selecione una opción"} />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className={contrastColor ? "text-contrast" : "text-primary"}>
                 {options.length > 0
                   ? options?.map((item) => (
                       <SelectItem key={item.value} value={item.value}>
