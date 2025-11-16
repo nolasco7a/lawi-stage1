@@ -16,7 +16,6 @@ import { type RegisterUserFormData, createRegisterUserSchema } from "@/lib/valid
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { type UserRegisterActionState, registerUser } from "@/app/(auth)/actions";
-import { Roles } from "@/app/(auth)/types";
 import { toast } from "@/components/toast";
 import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
