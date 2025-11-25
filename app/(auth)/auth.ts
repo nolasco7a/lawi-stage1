@@ -1,15 +1,15 @@
-import { compare } from 'bcrypt-ts';
-import NextAuth, { type DefaultSession } from 'next-auth';
-import Credentials from 'next-auth/providers/credentials';
-import { createGuestUser, getUser, getUserById } from '@/lib/db/queries';
-import { authConfig } from './auth.config';
-import { DUMMY_PASSWORD } from '@/lib/constants';
-import type { DefaultJWT } from 'next-auth/jwt';
-import { getActiveSubscription } from '@/lib/db/subscription-helpers';
+import { DUMMY_PASSWORD } from "@/lib/constants";
+import { createGuestUser, getUser, getUserById } from "@/lib/db/queries";
+import { getActiveSubscription } from "@/lib/db/subscription-helpers";
+import { compare } from "bcrypt-ts";
+import NextAuth, { type DefaultSession } from "next-auth";
+import type { DefaultJWT } from "next-auth/jwt";
+import Credentials from "next-auth/providers/credentials";
+import { authConfig } from "./auth.config";
 
-export type UserType = 'guest' | 'regular' | 'lawyer';
+export type UserType = "guest" | "regular" | "lawyer";
 
-declare module 'next-auth' {
+declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
@@ -18,12 +18,12 @@ declare module 'next-auth' {
       phone?: string | null;
       subscription?: {
         id: string;
-        plan_type: 'basic' | 'pro';
+        plan_type: "basic" | "pro";
         status: string;
         current_period_end: Date;
         cancel_at_period_end: boolean;
       } | null;
-    } & DefaultSession['user'];
+    } & DefaultSession["user"];
   }
 
   interface User {
@@ -35,7 +35,7 @@ declare module 'next-auth' {
   }
 }
 
-declare module 'next-auth/jwt' {
+declare module "next-auth/jwt" {
   interface JWT extends DefaultJWT {
     id: string;
     type: UserType;
@@ -43,7 +43,7 @@ declare module 'next-auth/jwt' {
     phone?: string | null;
     subscription?: {
       id: string;
-      plan_type: 'basic' | 'pro';
+      plan_type: "basic" | "pro";
       status: string;
       current_period_end: Date;
       cancel_at_period_end: boolean;
@@ -61,7 +61,10 @@ export const {
   providers: [
     Credentials({
       credentials: {},
-      async authorize({ email, password }: any) {
+      async authorize(credentials: Record<string, string>) {
+        const email = credentials.email;
+        const password = credentials.password;
+
         const users = await getUser(email);
 
         if (users.length === 0) {
@@ -81,17 +84,17 @@ export const {
         if (!passwordsMatch) return null;
 
         // Map database role to session type
-        const userType: UserType = user.role === 'lawyer' ? 'lawyer' : 'regular';
-        
+        const userType: UserType = user.role === "lawyer" ? "lawyer" : "regular";
+
         return { ...user, type: userType };
       },
     }),
     Credentials({
-      id: 'guest',
+      id: "guest",
       credentials: {},
       async authorize() {
         const [guestUser] = await createGuestUser();
-        return { ...guestUser, type: 'guest' };
+        return { ...guestUser, type: "guest" };
       },
     }),
   ],
@@ -103,7 +106,7 @@ export const {
       }
 
       // Fetch full user data and subscription for each token refresh
-      if (token.id && token.type !== 'guest') {
+      if (token.id && token.type !== "guest") {
         try {
           const fullUser = await getUserById({ id: token.id });
           if (fullUser) {
@@ -125,7 +128,7 @@ export const {
             }
           }
         } catch (error) {
-          console.error('Error fetching user data in JWT callback:', error);
+          console.error("Error fetching user data in JWT callback:", error);
         }
       }
 

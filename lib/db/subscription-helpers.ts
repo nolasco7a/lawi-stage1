@@ -1,6 +1,6 @@
-import { db } from '@/lib/db';
-import { subscription } from '@/lib/db/schema';
-import { eq, and, inArray, desc } from 'drizzle-orm';
+import { db } from "@/lib/db";
+import { subscription } from "@/lib/db/schema";
+import { and, desc, eq, inArray } from "drizzle-orm";
 
 /**
  * Obtiene la suscripción activa de un usuario (basado en status)
@@ -10,10 +10,7 @@ export async function getActiveSubscription(userId: string) {
     .select()
     .from(subscription)
     .where(
-      and(
-        eq(subscription.user_id, userId),
-        inArray(subscription.status, ['active', 'trialing'])
-      )
+      and(eq(subscription.user_id, userId), inArray(subscription.status, ["active", "trialing"])),
     )
     .orderBy(desc(subscription.created_at))
     .limit(1);
@@ -43,16 +40,16 @@ export async function hasActiveSubscription(userId: string): Promise<boolean> {
 /**
  * Verifica si un usuario tiene un plan específico activo
  */
-export async function hasActivePlan(userId: string, planType: 'basic' | 'pro'): Promise<boolean> {
+export async function hasActivePlan(userId: string, planType: "basic" | "pro"): Promise<boolean> {
   const result = await db
     .select({ id: subscription.id })
     .from(subscription)
     .where(
       and(
         eq(subscription.user_id, userId),
-        inArray(subscription.status, ['active', 'trialing']),
-        eq(subscription.plan_type, planType)
-      )
+        inArray(subscription.status, ["active", "trialing"]),
+        eq(subscription.plan_type, planType),
+      ),
     )
     .limit(1);
 

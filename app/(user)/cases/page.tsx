@@ -1,32 +1,32 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { formatDistanceToNow } from 'date-fns';
-import { es } from 'date-fns/locale';
-import { Plus, FolderOpen, MessageCircle, MoreHorizontal, Edit, Trash2 } from 'lucide-react';
+import { formatDistanceToNow } from "date-fns";
+import { es } from "date-fns/locale";
+import { Edit, FolderOpen, MessageCircle, MoreHorizontal, Plus, Trash2 } from "lucide-react";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import ActionDialog from "@/components/action-dialog";
+import { toast } from "@/components/toast";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import ActionDialog from '@/components/action-dialog';
-import { useCaseStore } from '@/lib/store/cases';
-import type { Case } from '@/lib/db/schema';
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import type { Case } from "@/lib/db/schema";
+import { useCaseStore } from "@/lib/store/cases";
 
-
-function CaseCard({ 
-  caseItem, 
-  onRename, 
-  onDelete 
-}: { 
+function CaseCard({
+  caseItem,
+  onRename,
+  onDelete,
+}: {
   caseItem: Case & { chatCount?: number };
   onRename: (caseId: string, currentTitle: string, currentDescription?: string) => void;
   onDelete: (caseId: string) => void;
@@ -44,32 +44,36 @@ function CaseCard({
             <FolderOpen size={20} className="text-blue-600" />
             <h3 className="text-lg font-semibold truncate">{caseItem.title}</h3>
           </div>
-          
+
           {caseItem.description && (
             <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
               {caseItem.description}
             </p>
           )}
-          
+
           <div className="flex items-center gap-4 text-xs text-muted-foreground">
             <span>
-              Creado {formatDistanceToNow(new Date(caseItem.createdAt), { 
-                addSuffix: true, 
-                locale: es 
+              Creado{" "}
+              {formatDistanceToNow(new Date(caseItem.createdAt), {
+                addSuffix: true,
+                locale: es,
               })}
             </span>
             <div className="flex items-center gap-1">
               <MessageCircle size={12} />
-              <span>{caseItem.chatCount || 0} chat{(caseItem.chatCount || 0) !== 1 ? 's' : ''}</span>
+              <span>
+                {caseItem.chatCount || 0} chat
+                {(caseItem.chatCount || 0) !== 1 ? "s" : ""}
+              </span>
             </div>
           </div>
         </Link>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild onClick={handleMenuClick}>
-            <Button 
-              variant="ghost" 
-              size="sm" 
+            <Button
+              variant="ghost"
+              size="sm"
               className="opacity-0 group-hover:opacity-100 hover:opacity-100 transition-opacity"
             >
               <MoreHorizontal size={16} />
@@ -106,22 +110,15 @@ function CaseCard({
 export default function CasesPage() {
   const { data: session } = useSession();
   const router = useRouter();
-  const {
-    cases,
-    loading,
-    totalCases,
-    fetchCases,
-    createCase,
-    updateCase,
-    deleteCase,
-  } = useCaseStore();
-  
+  const { cases, loading, totalCases, fetchCases, createCase, updateCase, deleteCase } =
+    useCaseStore();
+
   const [showCreateDialog, setShowCreateDialog] = useState(false);
-  const [newCaseTitle, setNewCaseTitle] = useState('');
-  const [newCaseDescription, setNewCaseDescription] = useState('');
+  const [newCaseTitle, setNewCaseTitle] = useState("");
+  const [newCaseDescription, setNewCaseDescription] = useState("");
   const [editingCase, setEditingCase] = useState<Case | null>(null);
-  const [editCaseTitle, setEditCaseTitle] = useState('');
-  const [editCaseDescription, setEditCaseDescription] = useState('');
+  const [editCaseTitle, setEditCaseTitle] = useState("");
+  const [editCaseDescription, setEditCaseDescription] = useState("");
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -134,48 +131,53 @@ export default function CasesPage() {
 
   const handleCreateCase = async () => {
     if (!newCaseTitle.trim()) {
-      toast.error('El título es requerido');
+      toast({
+        description: "El título es requerido",
+        type: "error",
+      });
       return;
     }
 
     const caseId = await createCase(newCaseTitle, newCaseDescription);
-    
+
     if (caseId) {
       setShowCreateDialog(false);
-      setNewCaseTitle('');
-      setNewCaseDescription('');
-      
-      // Navigate to the new case
+      setNewCaseTitle("");
+      setNewCaseDescription("");
+
       router.push(`/cases/${caseId}`);
     }
   };
 
   const handleRenameCase = (caseId: string, currentTitle: string, currentDescription?: string) => {
-    setEditingCase(cases.find(c => c.id === caseId) || null);
+    setEditingCase(cases.find((c) => c.id === caseId) || null);
     setEditCaseTitle(currentTitle);
-    setEditCaseDescription(currentDescription || '');
+    setEditCaseDescription(currentDescription || "");
     setShowEditDialog(true);
   };
 
   const handleUpdateCase = async () => {
     if (!editingCase || !editCaseTitle.trim()) {
-      toast.error('El título es requerido');
+      toast({
+        description: "El título es requerido",
+        type: "error",
+      });
       return;
     }
 
     await updateCase(editingCase.id, editCaseTitle, editCaseDescription);
-    
+
     setShowEditDialog(false);
     setEditingCase(null);
-    setEditCaseTitle('');
-    setEditCaseDescription('');
+    setEditCaseTitle("");
+    setEditCaseDescription("");
   };
 
   const handleDeleteCase = async () => {
     if (!deleteId) return;
 
     await deleteCase(deleteId);
-    
+
     setShowDeleteDialog(false);
     setDeleteId(null);
   };
@@ -205,7 +207,8 @@ export default function CasesPage() {
 
       {totalCases > 0 && (
         <div className="text-sm text-muted-foreground">
-          Tienes {totalCases} caso{totalCases !== 1 ? 's' : ''} activo{totalCases !== 1 ? 's' : ''}
+          Tienes {totalCases} caso{totalCases !== 1 ? "s" : ""} activo
+          {totalCases !== 1 ? "s" : ""}
         </div>
       )}
 
@@ -230,8 +233,8 @@ export default function CasesPage() {
           <div className="space-y-4">
             {cases.map((caseItem) => (
               <div key={caseItem.id} className="group">
-                <CaseCard 
-                  caseItem={caseItem} 
+                <CaseCard
+                  caseItem={caseItem}
                   onRename={handleRenameCase}
                   onDelete={openDeleteDialog}
                 />
@@ -253,7 +256,9 @@ export default function CasesPage() {
         customContent={
           <div className="space-y-4">
             <div>
-              <label className="text-sm font-medium">Título del caso *</label>
+              <label htmlFor="newCaseTitle" className="text-sm font-medium">
+                Título del caso *
+              </label>
               <Input
                 value={newCaseTitle}
                 onChange={(e) => setNewCaseTitle(e.target.value)}
@@ -262,7 +267,9 @@ export default function CasesPage() {
               />
             </div>
             <div>
-              <label className="text-sm font-medium">Descripción (opcional)</label>
+              <label htmlFor="newCaseDescription" className="text-sm font-medium">
+                Descripción (opcional)
+              </label>
               <Textarea
                 value={newCaseDescription}
                 onChange={(e) => setNewCaseDescription(e.target.value)}
@@ -287,7 +294,9 @@ export default function CasesPage() {
         customContent={
           <div className="space-y-4">
             <div>
-              <label className="text-sm font-medium">Título del caso *</label>
+              <label htmlFor="editCaseTitle" className="text-sm font-medium">
+                Título del caso *
+              </label>
               <Input
                 value={editCaseTitle}
                 onChange={(e) => setEditCaseTitle(e.target.value)}
@@ -296,7 +305,9 @@ export default function CasesPage() {
               />
             </div>
             <div>
-              <label className="text-sm font-medium">Descripción (opcional)</label>
+              <label htmlFor="editCaseDescription" className="text-sm font-medium">
+                Descripción (opcional)
+              </label>
               <Textarea
                 value={editCaseDescription}
                 onChange={(e) => setEditCaseDescription(e.target.value)}

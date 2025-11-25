@@ -1,35 +1,35 @@
 import { Resend } from "resend";
 
 class EmailProvider {
-    private resend: Resend;
-    
-    constructor() {
-        const apiKey = process.env.RESEND_API_KEY;
-        if (!apiKey) {
-            throw new Error("RESEND_API_KEY is not defined");
-        }
-        this.resend = new Resend(apiKey);
-    }
-    
-    async sendEmail(to: string, from: string, subject: string, html: string) {
-        try {
-            const response = await this.resend.emails.send({
-                to,
-                from,
-                subject,
-                html,
-            });
-            return response;
-        } catch (error) {
-            console.error("Error sending email:", error);
-            throw error;
-        }
-    }
+  private resend: Resend;
 
-    async sendPasswordResetEmail(to: string, otp: string) {
-        const from = process.env.EMAIL_FROM || "noreply@yourapp.com";
-        const subject = "Password Reset - Verification Code";
-        const html = `
+  constructor() {
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      throw new Error("RESEND_API_KEY is not defined");
+    }
+    this.resend = new Resend(apiKey);
+  }
+
+  async sendEmail(to: string, from: string, subject: string, html: string) {
+    try {
+      const response = await this.resend.emails.send({
+        to,
+        from,
+        subject,
+        html,
+      });
+      return response;
+    } catch (error) {
+      console.error("Error sending email:", error);
+      throw error;
+    }
+  }
+
+  async sendPasswordResetEmail(to: string, otp: string) {
+    const from = process.env.EMAIL_FROM || "noreply@yourapp.com";
+    const subject = "Password Reset - Verification Code";
+    const html = `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
                 <h2 style="color: #333;">Password Reset Request</h2>
                 <p>You have requested to reset your password. Please use the verification code below:</p>
@@ -42,12 +42,10 @@ class EmailProvider {
                 <p style="color: #666; font-size: 12px;">This is an automated message, please do not reply.</p>
             </div>
         `;
-        
-        return this.sendEmail(to, from, subject, html);
-    }
+
+    return this.sendEmail(to, from, subject, html);
+  }
 }
 
 const emailProvider = new EmailProvider();
 export default emailProvider;
-
-

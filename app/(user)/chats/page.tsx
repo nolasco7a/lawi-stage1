@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { useEffect, useCallback } from 'react';
-import { useSession } from 'next-auth/react';
-import ChatCard from '@/components/chat-card';
-import { Search } from 'lucide-react';
+import { useEffect, useCallback } from "react";
+import { useSession } from "next-auth/react";
+import ChatCard from "@/components/chat-card";
+import { Search } from "lucide-react";
 
-import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { useChatStore } from '@/lib/store/chat';
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useChatStore } from "@/lib/store/chat";
 
 export default function ChatsPage() {
   const { data: session } = useSession();
@@ -31,14 +31,17 @@ export default function ChatsPage() {
   }, [session?.user?.id, refreshChats, chats.length]);
 
   // Infinite scroll handler
-  const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
-    const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
-    const threshold = 100; // Load more when 100px from bottom
-    
-    if (scrollHeight - scrollTop - clientHeight < threshold) {
-      loadMoreChats();
-    }
-  }, [loadMoreChats]);
+  const handleScroll = useCallback(
+    (e: React.UIEvent<HTMLDivElement>) => {
+      const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+      const threshold = 100; // Load more when 100px from bottom
+
+      if (scrollHeight - scrollTop - clientHeight < threshold) {
+        loadMoreChats();
+      }
+    },
+    [loadMoreChats],
+  );
 
   if (!session?.user) {
     return (
@@ -57,7 +60,10 @@ export default function ChatsPage() {
       {/* Search Input */}
       <div className="w-full">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
+          <Search
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+            size={20}
+          />
           <Input
             placeholder="Buscar chats..."
             value={searchQuery}
@@ -70,12 +76,12 @@ export default function ChatsPage() {
       {/* Chat Count */}
       {totalChats > 0 && (
         <div className="text-sm text-muted-foreground">
-          Tienes {totalChats} chat{totalChats !== 1 ? 's' : ''} previos con LAWI
+          Tienes {totalChats} chat{totalChats !== 1 ? "s" : ""} previos con LAWI
         </div>
       )}
 
       {/* Scroll Area with Chats */}
-      <ScrollArea 
+      <ScrollArea
         // className="w-full"
         onScrollCapture={handleScroll}
       >
@@ -87,29 +93,28 @@ export default function ChatsPage() {
           ) : chats.length === 0 ? (
             <div className="text-center py-8">
               <p className="text-muted-foreground">
-                {debouncedQuery ? 'No se encontraron chats' : 'No tienes chats aún'}
+                {debouncedQuery ? "No se encontraron chats" : "No tienes chats aún"}
               </p>
             </div>
           ) : (
             <>
               {chats.map((chat) => (
-                <ChatCard
-                  key={chat.id}
-                  chat={chat}
-                />
+                <ChatCard key={chat.id} chat={chat} />
               ))}
-              
+
               {/* Loading indicator for infinite scroll */}
               {loading && chats.length > 0 && (
                 <div className="text-center py-4">
                   <p className="text-sm text-muted-foreground">Cargando más chats...</p>
                 </div>
               )}
-              
+
               {/* End indicator */}
               {!hasMore && chats.length > 0 && (
                 <div className="text-center py-4">
-                  <p className="text-sm text-muted-foreground">Has llegado al final de tu historial de chats</p>
+                  <p className="text-sm text-muted-foreground">
+                    Has llegado al final de tu historial de chats
+                  </p>
                 </div>
               )}
             </>

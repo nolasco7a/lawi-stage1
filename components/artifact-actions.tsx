@@ -1,17 +1,17 @@
-import { Button } from './ui/button';
-import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
-import { artifactDefinitions, type UIArtifact } from './artifact';
-import { type Dispatch, memo, type SetStateAction, useState } from 'react';
-import type { ArtifactActionContext } from './create-artifact';
-import { cn } from '@/lib/utils';
-import { toast } from 'sonner';
+import { cn } from "@/lib/utils";
+import { type Dispatch, type SetStateAction, memo, useState } from "react";
+import { toast } from "sonner";
+import { type UIArtifact, artifactDefinitions } from "./artifact";
+import type { ArtifactActionContext } from "./create-artifact";
+import { Button } from "./ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 interface ArtifactActionsProps {
   artifact: UIArtifact;
-  handleVersionChange: (type: 'next' | 'prev' | 'toggle' | 'latest') => void;
+  handleVersionChange: (type: "next" | "prev" | "toggle" | "latest") => void;
   currentVersionIndex: number;
   isCurrentVersion: boolean;
-  mode: 'edit' | 'diff';
+  mode: "edit" | "diff";
   metadata: any;
   setMetadata: Dispatch<SetStateAction<any>>;
 }
@@ -24,7 +24,7 @@ function PureArtifactActions({
   mode,
   metadata,
   setMetadata,
-}: ArtifactActionsProps) {
+}: Readonly<ArtifactActionsProps>) {
   const [isLoading, setIsLoading] = useState(false);
 
   const artifactDefinition = artifactDefinitions.find(
@@ -32,10 +32,10 @@ function PureArtifactActions({
   );
 
   if (!artifactDefinition) {
-    throw new Error('Artifact definition not found!');
+    throw new Error("Artifact definition not found!");
   }
 
-  const actionContext: ArtifactActionContext = {
+  const actionContext: ArtifactActionContext<unknown> = {
     content: artifact.content,
     handleVersionChange,
     currentVersionIndex,
@@ -45,6 +45,16 @@ function PureArtifactActions({
     setMetadata,
   };
 
+  const disabled = (action: any) => {
+    if (isLoading || artifact.status === "streaming") {
+      return true;
+    }
+    if (action.isDisabled) {
+      return action.isDisabled(actionContext);
+    }
+    return false;
+  };
+
   return (
     <div className="flex flex-row gap-1">
       {artifactDefinition.actions.map((action) => (
@@ -52,28 +62,22 @@ function PureArtifactActions({
           <TooltipTrigger asChild>
             <Button
               variant="outline"
-              className={cn('h-fit dark:hover:bg-zinc-700', {
-                'p-2': !action.label,
-                'py-1.5 px-2': action.label,
+              className={cn("h-fit dark:hover:bg-zinc-700", {
+                "p-2": !action.label,
+                "py-1.5 px-2": action.label,
               })}
               onClick={async () => {
                 setIsLoading(true);
 
-                try {
-                  await Promise.resolve(action.onClick(actionContext));
-                } catch (error) {
-                  toast.error('Failed to execute action');
-                } finally {
-                  setIsLoading(false);
-                }
+                await Promise.resolve(action.onClick(actionContext as any))
+                  .then(() => {
+                    setIsLoading(false);
+                  })
+                  .catch(() => {
+                    toast.error("Failed to execute action");
+                  });
               }}
-              disabled={
-                isLoading || artifact.status === 'streaming'
-                  ? true
-                  : action.isDisabled
-                    ? action.isDisabled(actionContext)
-                    : false
-              }
+              disabled={disabled(action)}
             >
               {action.icon}
               {action.label}
@@ -86,15 +90,11 @@ function PureArtifactActions({
   );
 }
 
-export const ArtifactActions = memo(
-  PureArtifactActions,
-  (prevProps, nextProps) => {
-    if (prevProps.artifact.status !== nextProps.artifact.status) return false;
-    if (prevProps.currentVersionIndex !== nextProps.currentVersionIndex)
-      return false;
-    if (prevProps.isCurrentVersion !== nextProps.isCurrentVersion) return false;
-    if (prevProps.artifact.content !== nextProps.artifact.content) return false;
+export const ArtifactActions = memo(PureArtifactActions, (prevProps, nextProps) => {
+  if (prevProps.artifact.status !== nextProps.artifact.status) return false;
+  if (prevProps.currentVersionIndex !== nextProps.currentVersionIndex) return false;
+  if (prevProps.isCurrentVersion !== nextProps.isCurrentVersion) return false;
+  if (prevProps.artifact.content !== nextProps.artifact.content) return false;
 
-    return true;
-  },
-);
+  return true;
+});

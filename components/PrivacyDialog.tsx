@@ -5,19 +5,17 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { ShieldCheck } from "lucide-react"
+} from "@/components/ui/dialog";
+import { ShieldCheck } from "lucide-react";
 
-const ListItem = ({text}: {text: string}) => {
+const ListItem = ({ text }: { text: string }) => {
   return (
     <li className="flex items-start gap-2">
       <div className="mt-1 size-2 rounded-full bg-secondary"></div>
-      <span className="text-sm w-full">
-        {text}
-        </span>
+      <span className="text-sm w-full">{text}</span>
     </li>
-  )
-}
+  );
+};
 
 export default function PrivacyDialog() {
   return (
@@ -37,7 +35,10 @@ export default function PrivacyDialog() {
             </div>
           </DialogTitle>
           <DialogDescription>
-            En LAWI, la protección de la información de nuestros usuarios no es solo una prioridad: es un principio fundamental sobre el que construimos toda nuestra plataforma. Operamos con estándares rigurosos de seguridad y transparencia, garantizando que tus datos estén siempre bajo tu control.
+            En LAWI, la protección de la información de nuestros usuarios no es solo una prioridad:
+            es un principio fundamental sobre el que construimos toda nuestra plataforma. Operamos
+            con estándares rigurosos de seguridad y transparencia, garantizando que tus datos estén
+            siempre bajo tu control.
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-2">
@@ -54,9 +55,13 @@ export default function PrivacyDialog() {
             <ListItem text="Realizamos análisis agregados y anonimizados para comprender tendencias de uso y mejorar continuamente nuestros servicios." />
             <ListItem text="Algunas funcionalidades opcionales pueden requerir permisos adicionales; sin embargo, su activación estará siempre sujeta a tu consentimiento expreso y podrás gestionarlas desde la configuración de tu cuenta." />
           </ul>
-          <h2 className="text-sm text-muted-foreground py-5">En LAWI, creemos que la privacidad no es una función adicional, sino un compromiso permanente. Mantenemos altos estándares éticos y técnicos para asegurar que cada decisión sobre tus datos esté en tus manos.</h2>
+          <h2 className="text-sm text-muted-foreground py-5">
+            En LAWI, creemos que la privacidad no es una función adicional, sino un compromiso
+            permanente. Mantenemos altos estándares éticos y técnicos para asegurar que cada
+            decisión sobre tus datos esté en tus manos.
+          </h2>
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

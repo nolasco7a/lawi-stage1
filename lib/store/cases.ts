@@ -1,6 +1,6 @@
-import { create } from 'zustand';
-import { toast } from 'sonner';
-import type { Case, Chat, CaseFile } from '@/lib/db/schema';
+import type { Case, CaseFile, Chat } from "@/lib/db/schema";
+import { toast } from "sonner";
+import { create } from "zustand";
 
 interface CasesResponse {
   cases: Case[];
@@ -20,13 +20,13 @@ interface CaseStore {
   cases: (Case & { chatCount?: number })[];
   loading: boolean;
   totalCases: number;
-  
+
   // Current case details
   currentCase: Case | null;
   currentChats: Chat[];
   currentFiles: CaseFile[];
   caseLoading: boolean;
-  
+
   // Actions
   setLoading: (loading: boolean) => void;
   setCaseLoading: (loading: boolean) => void;
@@ -34,11 +34,11 @@ interface CaseStore {
   createCase: (title: string, description?: string) => Promise<string | null>;
   updateCase: (id: string, title: string, description?: string) => Promise<void>;
   deleteCase: (id: string) => Promise<void>;
-  
+
   // Case details actions
   fetchCaseDetails: (id: string) => Promise<void>;
   refreshCaseDetails: () => void;
-  
+
   // Current case ID for refreshing
   currentCaseId: string | null;
 }
@@ -60,9 +60,9 @@ export const useCaseStore = create<CaseStore>((set, get) => ({
 
   fetchCases: async () => {
     set({ loading: true });
-    
+
     try {
-      const response = await fetch('/api/cases');
+      const response = await fetch("/api/cases");
       const data: CasesResponse = await response.json();
 
       set({
@@ -70,8 +70,8 @@ export const useCaseStore = create<CaseStore>((set, get) => ({
         totalCases: data.totalCases,
       });
     } catch (error) {
-      toast.error('Error al cargar los casos');
-      console.error('Error fetching cases:', error);
+      toast.error("Error al cargar los casos");
+      console.error("Error fetching cases:", error);
     } finally {
       set({ loading: false });
     }
@@ -79,10 +79,10 @@ export const useCaseStore = create<CaseStore>((set, get) => ({
 
   createCase: async (title: string, description?: string) => {
     try {
-      const response = await fetch('/api/cases', {
-        method: 'POST',
+      const response = await fetch("/api/cases", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           title: title.trim(),
@@ -93,17 +93,15 @@ export const useCaseStore = create<CaseStore>((set, get) => ({
       const data = await response.json();
 
       if (response.ok) {
-        toast.success('Caso creado exitosamente');
+        toast.success("Caso creado exitosamente");
         // Refresh cases list
         get().fetchCases();
         return data.case.id;
-      } else {
-        toast.error('Error al crear el caso');
-        return null;
       }
+      return null;
     } catch (error) {
-      toast.error('Error al crear el caso');
-      console.error('Error creating case:', error);
+      toast.error("Error al crear el caso");
+      console.error("Error creating case:", error);
       return null;
     }
   },
@@ -111,9 +109,9 @@ export const useCaseStore = create<CaseStore>((set, get) => ({
   updateCase: async (id: string, title: string, description?: string) => {
     try {
       const response = await fetch(`/api/cases/${id}`, {
-        method: 'PATCH',
+        method: "PATCH",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           title: title.trim(),
@@ -122,77 +120,82 @@ export const useCaseStore = create<CaseStore>((set, get) => ({
       });
 
       if (response.ok) {
-        toast.success('Caso actualizado exitosamente');
-        
+        toast.success("Caso actualizado exitosamente");
+
         // Update case in local state
-        set((state) => ({
-          cases: state.cases.map(c => 
-            c.id === id 
-              ? { ...c, title: title.trim(), description: description?.trim() }
-              : c
-          ),
+        set((state: CaseStore) => ({
+          cases: state.cases.map((c: Case) =>
+            c.id === id
+              ? { ...c, title: title.trim(), description: description?.trim() || null }
+              : c,
+          ) as (Case & { chatCount?: number })[],
           // Also update current case if it's the same
-          currentCase: state.currentCase?.id === id 
-            ? { ...state.currentCase, title: title.trim(), description: description?.trim() }
-            : state.currentCase,
+          currentCase:
+            state.currentCase?.id === id
+              ? {
+                  ...state.currentCase,
+                  title: title.trim(),
+                  description: description?.trim() || null,
+                }
+              : (state.currentCase as Case),
         }));
       } else {
-        toast.error('Error al actualizar el caso');
+        toast.error("Error al actualizar el caso");
       }
     } catch (error) {
-      toast.error('Error al actualizar el caso');
-      console.error('Error updating case:', error);
+      toast.error("Error al actualizar el caso");
+      console.error("Error updating case:", error);
     }
   },
 
   deleteCase: async (id: string) => {
     try {
       const response = await fetch(`/api/cases/${id}`, {
-        method: 'DELETE',
+        method: "DELETE",
       });
 
       if (response.ok) {
-        toast.success('Caso eliminado exitosamente');
-        
+        toast.success("Caso eliminado exitosamente");
+
         // Remove case from local state
         set((state) => ({
-          cases: state.cases.filter(c => c.id !== id),
+          cases: state.cases.filter((c) => c.id !== id),
           totalCases: state.totalCases - 1,
         }));
       } else {
-        toast.error('Error al eliminar el caso');
+        toast.error("Error al eliminar el caso");
       }
     } catch (error) {
-      toast.error('Error al eliminar el caso');
-      console.error('Error deleting case:', error);
+      toast.error("Error al eliminar el caso");
+      console.error("Error deleting case:", error);
     }
   },
 
   fetchCaseDetails: async (id: string) => {
     set({ caseLoading: true, currentCaseId: id });
-    
+
     try {
       const response = await fetch(`/api/cases/${id}`);
-      
+
       if (response.status === 404) {
-        toast.error('Caso no encontrado');
+        toast.error("Caso no encontrado");
         return;
       }
-      
+
       if (!response.ok) {
-        throw new Error('Failed to fetch case details');
+        throw new Error("Failed to fetch case details");
       }
 
       const data: CaseDetailsResponse = await response.json();
-      
+
       set({
         currentCase: data.case,
         currentChats: data.chats,
         currentFiles: data.files,
       });
     } catch (error) {
-      toast.error('Error al cargar el caso');
-      console.error('Error fetching case details:', error);
+      toast.error("Error al cargar el caso");
+      console.error("Error fetching case details:", error);
     } finally {
       set({ caseLoading: false });
     }

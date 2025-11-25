@@ -1,5 +1,5 @@
-import { stripe } from './stripe';
-import { getUserById, updateUserCustomerId } from '@/lib/db/queries';
+import { getUserById, updateUserCustomerId } from "@/lib/db/queries";
+import { stripe } from "./stripe";
 
 /**
  * Creates or retrieves a Stripe customer for a user
@@ -9,14 +9,13 @@ export async function ensureStripeCustomer(userId: string): Promise<string> {
   try {
     // Get user from database
     const user = await getUserById({ id: userId });
-    
+
     if (!user) {
       throw new Error(`User not found: ${userId}`);
     }
 
     // If user already has a customer_id, return it
     if (user.customer_id) {
-      console.log(`User ${userId} already has customer_id: ${user.customer_id}`);
       return user.customer_id;
     }
 
@@ -31,8 +30,6 @@ export async function ensureStripeCustomer(userId: string): Promise<string> {
       },
     });
 
-    console.log(`Created Stripe customer ${customer.id} for user ${userId}`);
-
     // Save customer_id to user record
     await updateUserCustomerId({
       userId: userId,
@@ -40,9 +37,8 @@ export async function ensureStripeCustomer(userId: string): Promise<string> {
     });
 
     return customer.id;
-    
   } catch (error) {
-    console.error('Error ensuring Stripe customer:', error);
+    console.error("Error ensuring Stripe customer:", error);
     throw error;
   }
 }
@@ -68,14 +64,14 @@ export async function createSubscriptionCheckoutSession({
     // Create checkout session
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
-      payment_method_types: ['card'],
+      payment_method_types: ["card"],
       line_items: [
         {
           price: priceId,
           quantity: 1,
         },
       ],
-      mode: 'subscription',
+      mode: "subscription",
       success_url: successUrl,
       cancel_url: cancelUrl,
       metadata: {
@@ -83,11 +79,9 @@ export async function createSubscriptionCheckoutSession({
       },
     });
 
-    console.log(`Created checkout session ${session.id} for user ${userId}`);
     return session;
-    
   } catch (error) {
-    console.error('Error creating checkout session:', error);
+    console.error("Error creating checkout session:", error);
     throw error;
   }
 }
@@ -98,7 +92,7 @@ export async function createSubscriptionCheckoutSession({
 export async function createPaymentCheckoutSession({
   userId,
   amount,
-  currency = 'usd',
+  currency = "usd",
   description,
   successUrl,
   cancelUrl,
@@ -117,7 +111,7 @@ export async function createPaymentCheckoutSession({
     // Create checkout session
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
-      payment_method_types: ['card'],
+      payment_method_types: ["card"],
       line_items: [
         {
           price_data: {
@@ -130,7 +124,7 @@ export async function createPaymentCheckoutSession({
           quantity: 1,
         },
       ],
-      mode: 'payment',
+      mode: "payment",
       success_url: successUrl,
       cancel_url: cancelUrl,
       metadata: {
@@ -138,11 +132,9 @@ export async function createPaymentCheckoutSession({
       },
     });
 
-    console.log(`Created payment session ${session.id} for user ${userId}`);
     return session;
-    
   } catch (error) {
-    console.error('Error creating payment session:', error);
+    console.error("Error creating payment session:", error);
     throw error;
   }
 }

@@ -1,25 +1,23 @@
-'use client';
+"use client";
 
-import { isToday, isYesterday, subMonths, subWeeks } from 'date-fns';
-import { useParams, useRouter } from 'next/navigation';
-import type { User } from 'next-auth';
-import Link from 'next/link'
-import { useState } from 'react';
-import { toast } from 'sonner';
-import { motion } from 'framer-motion';
+import ActionDialog from "@/components/action-dialog";
 import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarMenu,
-  useSidebar
-} from '@/components/ui/sidebar';
-import type { Chat } from '@/lib/db/schema';
-import { fetcher } from '@/lib/utils';
-import { ChatItem } from './sidebar-history-item';
-import useSWRInfinite from 'swr/infinite';
-import { LoaderIcon } from './icons';
-import ActionDialog from "@/components/action-dialog";
-
+  useSidebar,
+} from "@/components/ui/sidebar";
+import type { Chat } from "@/lib/db/schema";
+import { fetcher } from "@/lib/utils";
+import { isToday, isYesterday, subMonths, subWeeks } from "date-fns";
+import { motion } from "framer-motion";
+import type { User } from "next-auth";
+import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
+import useSWRInfinite from "swr/infinite";
+import { LoaderIcon } from "./icons";
+import { ChatItem } from "./sidebar-history-item";
 
 type GroupedChats = {
   today: Chat[];
@@ -69,10 +67,7 @@ const groupChatsByDate = (chats: Chat[]): GroupedChats => {
   );
 };
 
-export function getChatHistoryPaginationKey(
-  pageIndex: number,
-  previousPageData: ChatHistory,
-) {
+export function getChatHistoryPaginationKey(pageIndex: number, previousPageData: ChatHistory) {
   if (previousPageData && previousPageData.hasMore === false) {
     return null;
   }
@@ -89,9 +84,6 @@ export function getChatHistoryPaginationKey(
 export function SidebarHistory({ user }: { user: User | undefined }) {
   const { setOpenMobile, state: appSidebarState } = useSidebar();
   const { id } = useParams();
-
-  console.log("datos de udaurio", user)
-
   const {
     data: paginatedChatHistories,
     setSize,
@@ -116,11 +108,11 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
 
   const handleDelete = async () => {
     const deletePromise = fetch(`/api/chat?id=${deleteId}`, {
-      method: 'DELETE',
+      method: "DELETE",
     });
 
     toast.promise(deletePromise, {
-      loading: 'Deleting chat...',
+      loading: "Deleting chat...",
       success: () => {
         mutate((chatHistories) => {
           if (chatHistories) {
@@ -131,15 +123,15 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
           }
         });
 
-        return 'Chat deleted successfully';
+        return "Chat deleted successfully";
       },
-      error: 'Failed to delete chat',
+      error: "Failed to delete chat",
     });
 
     setShowDeleteDialog(false);
 
     if (deleteId === id) {
-      router.push('/');
+      router.push("/");
     }
   };
 
@@ -158,21 +150,16 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
   if (isLoading) {
     return (
       <SidebarGroup>
-        <div className="px-2 py-1 text-xs text-sidebar-foreground/50">
-          Today
-        </div>
+        <div className="px-2 py-1 text-xs text-sidebar-foreground/50">Today</div>
         <SidebarGroupContent>
           <div className="flex flex-col">
             {[44, 32, 28, 64, 52].map((item) => (
-              <div
-                key={item}
-                className="rounded-md h-8 flex gap-2 px-2 items-center"
-              >
+              <div key={item} className="rounded-md h-8 flex gap-2 px-2 items-center">
                 <div
                   className="h-4 rounded-md flex-1 max-w-[--skeleton-width] bg-sidebar-accent-foreground/10"
                   style={
                     {
-                      '--skeleton-width': `${item}%`,
+                      "--skeleton-width": `${item}%`,
                     } as React.CSSProperties
                   }
                 />
@@ -188,7 +175,6 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
     return (
       <SidebarGroup>
         <SidebarGroupContent>
-
           <div className="px-2 text-zinc-500 w-full flex flex-row justify-center items-center text-sm gap-2">
             Your conversations will appear here once you start chatting!
           </div>
@@ -200,9 +186,8 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
   return (
     <>
       <SidebarGroup>
-        {
-          appSidebarState === 'collapsed' ? null : (
-            <SidebarGroupContent>
+        {appSidebarState === "collapsed" ? null : (
+          <SidebarGroupContent>
             <SidebarMenu>
               {paginatedChatHistories &&
                 (() => {
@@ -216,9 +201,7 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
                     <div className="flex flex-col gap-6">
                       {groupedChats.today.length > 0 && (
                         <div>
-                          <div className="px-2 py-1 text-xs text-sidebar-foreground/50">
-                            Today
-                          </div>
+                          <div className="px-2 py-1 text-xs text-sidebar-foreground/50">Today</div>
                           {groupedChats.today.map((chat) => (
                             <ChatItem
                               key={chat.id}
@@ -339,19 +322,20 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
               </div>
             )}
           </SidebarGroupContent>
-          )
-        }
-
+        )}
       </SidebarGroup>
 
       <ActionDialog
         openModal={showDeleteDialog}
         setOpenModal={setShowDeleteDialog}
         title={"Estas seguro?"}
-        description={"Esta acción no se puede deshacer. Esto eliminará permanentemente tu chat y lo removerá de nuestros servidores."}
+        description={
+          "Esta acción no se puede deshacer. Esto eliminará permanentemente tu chat y lo removerá de nuestros servidores."
+        }
         action={handleDelete}
         actionText={"Borrar"}
-        cancelText={"Cancelar"}/>
+        cancelText={"Cancelar"}
+      />
     </>
   );
 }

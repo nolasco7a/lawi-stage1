@@ -1,28 +1,42 @@
-import type {Chat} from "@/lib/db/schema";
-import {useChatVisibility} from "@/hooks/use-chat-visibility";
-import {useChatStore} from "@/lib/store/chat";
-import Link from "next/link";
-import {formatDistanceToNow} from "date-fns";
-import {es} from "date-fns/locale";
-import {CheckCircle, ClipboardCopy, Edit, Globe, Lock, MoreHorizontal, Share, Trash} from "lucide-react";
-import {copyToClipboard} from "@/lib/utils";
-import {toast} from "sonner";
+import ActionDialog from "@/components/action-dialog";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem, DropdownMenuPortal,
-  DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger,
-  DropdownMenuTrigger
+  DropdownMenuItem,
+  DropdownMenuPortal,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {Button} from "@/components/ui/button";
-import ActionDialog from "@/components/action-dialog";
-import {Input} from "@/components/ui/input";
-import {useState} from "react";
+import { Input } from "@/components/ui/input";
+import { useChatVisibility } from "@/hooks/use-chat-visibility";
+import type { Chat } from "@/lib/db/schema";
+import { useChatStore } from "@/lib/store/chat";
+import { copyToClipboard } from "@/lib/utils";
+import { formatDistanceToNow } from "date-fns";
+import { es } from "date-fns/locale";
+import {
+  CheckCircle,
+  ClipboardCopy,
+  Edit,
+  Globe,
+  Lock,
+  MoreHorizontal,
+  Share,
+  Trash,
+} from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
+import { toast } from "sonner";
 
-export default function ChatCard ({ chat, showCaseTag = false }: {
+interface ChatCardProps {
   chat: Chat;
   showCaseTag?: boolean;
-}) {
+}
+
+export default function ChatCard({ chat }: Readonly<ChatCardProps>): React.ReactNode {
   const { visibilityType, setVisibilityType } = useChatVisibility({
     chatId: chat.id,
     initialVisibilityType: chat.visibility,
@@ -31,9 +45,9 @@ export default function ChatCard ({ chat, showCaseTag = false }: {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [renameId, setRenameId] = useState<string | null>(null);
-  const [newTitle, setNewTitle] = useState('');
+  const [newTitle, setNewTitle] = useState("");
   const [showRenameDialog, setShowRenameDialog] = useState(false);
-  
+
   const { deleteChat, renameChat } = useChatStore();
 
   const handleDelete = async () => {
@@ -42,7 +56,7 @@ export default function ChatCard ({ chat, showCaseTag = false }: {
     try {
       await deleteChat(deleteId);
     } catch (error) {
-      // Error handling is done in the store
+      console.error("Error deleting chat:", error);
     }
 
     setShowDeleteDialog(false);
@@ -55,12 +69,12 @@ export default function ChatCard ({ chat, showCaseTag = false }: {
     try {
       await renameChat(renameId, newTitle.trim());
     } catch (error) {
-      // Error handling is done in the store
+      console.error("Error renaming chat:", error);
     }
 
     setShowRenameDialog(false);
     setRenameId(null);
-    setNewTitle('');
+    setNewTitle("");
   };
 
   const openDeleteDialog = (chatId: string) => {
@@ -88,19 +102,24 @@ export default function ChatCard ({ chat, showCaseTag = false }: {
             <span>
               {formatDistanceToNow(new Date(chat.createdAt), {
                 addSuffix: true,
-                locale: es
+                locale: es,
               })}
             </span>
             <div className="flex items-center gap-1">
-              {visibilityType === 'public' ? (
+              {visibilityType === "public" ? (
                 <>
                   <Globe size={14} />
                   <span>Público</span>
-                  <div onClick={() => copyToClipboard(
-                    `${window.location.origin}/chat/${chat.id}`,
-                    toast
-                  )}
-                       className="flex flex-direction-row ml-4 gap-1 items-center cursor-pointer hover:underline"
+                  <div
+                    onClick={() =>
+                      copyToClipboard(`${window.location.origin}/chat/${chat.id}`, toast)
+                    }
+                    onKeyUp={(e) => {
+                      if (e.key === "Enter") {
+                        copyToClipboard(`${window.location.origin}/chat/${chat.id}`, toast);
+                      }
+                    }}
+                    className="flex flex-direction-row ml-4 gap-1 items-center cursor-pointer hover:underline"
                   >
                     <ClipboardCopy size={14} />
                     Copiar enlace
@@ -145,27 +164,27 @@ export default function ChatCard ({ chat, showCaseTag = false }: {
                     className="cursor-pointer flex-row justify-between"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setVisibilityType('private');
+                      setVisibilityType("private");
                     }}
                   >
                     <div className="flex flex-row gap-2 items-center">
                       <Lock size={12} />
                       <span>Privado</span>
                     </div>
-                    {visibilityType === 'private' && <CheckCircle size={16} />}
+                    {visibilityType === "private" && <CheckCircle size={16} />}
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     className="cursor-pointer flex-row justify-between"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setVisibilityType('public');
+                      setVisibilityType("public");
                     }}
                   >
                     <div className="flex flex-row gap-2 items-center">
                       <Globe size={12} />
                       <span>Público</span>
                     </div>
-                    {visibilityType === 'public' && <CheckCircle size={16} />}
+                    {visibilityType === "public" && <CheckCircle size={16} />}
                   </DropdownMenuItem>
                 </DropdownMenuSubContent>
               </DropdownMenuPortal>
@@ -211,7 +230,7 @@ export default function ChatCard ({ chat, showCaseTag = false }: {
             onChange={(e) => setNewTitle(e.target.value)}
             placeholder="Nuevo título del chat"
             onKeyDown={(e) => {
-              if (e.key === 'Enter') {
+              if (e.key === "Enter") {
                 void handleRename();
               }
             }}
