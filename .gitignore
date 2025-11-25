@@ -43,7 +43,7 @@ yarn-error.log*
 /playwright/*
 
 #migrations
-/lib/db/migrations/*
+# /lib/db/migrations/*
 
 # WebStorm
 .idea/

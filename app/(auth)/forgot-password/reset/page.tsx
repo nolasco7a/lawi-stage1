@@ -9,12 +9,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useActionState, useEffect, useState } from "react";
+import { Suspense, useActionState, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { type ResetPasswordActionState, resetPassword } from "../../actions";
 
-export default function ResetPasswordPage() {
+function ResetPasswordForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const email = searchParams.get("email") || "";
@@ -135,5 +135,15 @@ export default function ResetPasswordPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense
+      fallback={<div className="w-full h-screen flex items-center justify-center">Loading...</div>}
+    >
+      <ResetPasswordForm />
+    </Suspense>
   );
 }

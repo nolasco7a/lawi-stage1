@@ -11,11 +11,11 @@ import {
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useActionState, useEffect, useState } from "react";
+import { Suspense, useActionState, useEffect, useState } from "react";
 
 import { type VerifyOtpActionState, verifyOtp } from "../../actions";
 
-export default function VerifyOtpPage() {
+function VerifyOtpForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const email = searchParams.get("email") || "";
@@ -159,5 +159,15 @@ export default function VerifyOtpPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function VerifyOtpPage() {
+  return (
+    <Suspense
+      fallback={<div className="w-full h-screen flex items-center justify-center">Loading...</div>}
+    >
+      <VerifyOtpForm />
+    </Suspense>
   );
 }
