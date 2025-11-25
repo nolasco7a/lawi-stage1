@@ -1,27 +1,20 @@
+"use client";
+
+import { useChatVisibility } from "@/hooks/use-chat-visibility";
 import type { Chat } from "@/lib/db/schema";
-import { SidebarMenuAction, SidebarMenuButton, SidebarMenuItem } from "./ui/sidebar";
+import { Ellipsis } from "lucide-react";
 import Link from "next/link";
+import { memo } from "react";
+import {} from "./icons";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuPortal,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import {
-  CheckCircleFillIcon,
-  GlobeIcon,
-  LockIcon,
-  MoreHorizontalIcon,
-  ShareIcon,
-  TrashIcon,
-} from "./icons";
-import { memo } from "react";
-import { useChatVisibility } from "@/hooks/use-chat-visibility";
-
+import { SidebarMenuAction, SidebarMenuButton, SidebarMenuItem } from "./ui/sidebar";
 const PureChatItem = ({
   chat,
   isActive,
@@ -45,19 +38,38 @@ const PureChatItem = ({
           <span>{chat.title}</span>
         </Link>
       </SidebarMenuButton>
-
-      <DropdownMenu modal={true}>
+      <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <SidebarMenuAction
             className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground mr-0.5"
             showOnHover={!isActive}
           >
-            <MoreHorizontalIcon />
+            <Ellipsis />
+            <span className="sr-only">More</span>
+          </SidebarMenuAction>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem>Profile</DropdownMenuItem>
+          <DropdownMenuItem>Billing</DropdownMenuItem>
+          <DropdownMenuItem>Team</DropdownMenuItem>
+          <DropdownMenuItem>Subscription</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      {/* <DropdownMenu modal={false}>
+        <DropdownMenuTrigger asChild>
+          <SidebarMenuAction
+            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground mr-0.5"
+            showOnHover={!isActive}
+          >
+            <Ellipsis />
             <span className="sr-only">More</span>
           </SidebarMenuAction>
         </DropdownMenuTrigger>
 
-        <DropdownMenuContent side="bottom" align="end">
+        <DropdownMenuContent side="bottom" align="end" className="z-[60]">
           <DropdownMenuSub>
             <DropdownMenuSubTrigger className="cursor-pointer">
               <ShareIcon />
@@ -101,7 +113,7 @@ const PureChatItem = ({
             <span>Delete</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
-      </DropdownMenu>
+      </DropdownMenu> */}
     </SidebarMenuItem>
   );
 };

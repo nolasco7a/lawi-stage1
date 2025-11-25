@@ -1,1 +1,0 @@
-// implementar webhook para stripe

@@ -1,7 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/app/(auth)/auth";
-import { searchChatsByUserId, updateChatTitle, getTotalChatsByUserId } from "@/lib/db/queries";
 import { CHAT_PAGE_SIZE } from "@/lib/constants";
+import { getTotalChatsByUserId, searchChatsByUserId, updateChatTitle } from "@/lib/db/queries";
+import {} from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   const session = await auth();
@@ -18,12 +19,12 @@ export async function GET(request: NextRequest) {
   try {
     const [result, totalCount] = await Promise.all([
       searchChatsByUserId({
-        userId: session.user.id!,
+        userId: session.user.id,
         query,
         limit: CHAT_PAGE_SIZE,
         offset,
       }),
-      getTotalChatsByUserId({ userId: session.user.id! }),
+      getTotalChatsByUserId({ userId: session.user.id }),
     ]);
 
     return NextResponse.json({

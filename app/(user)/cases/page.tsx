@@ -1,25 +1,26 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
-import { Plus, FolderOpen, MessageCircle, MoreHorizontal, Edit, Trash2 } from "lucide-react";
+import { Edit, FolderOpen, MessageCircle, MoreHorizontal, Plus, Trash2 } from "lucide-react";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
+import ActionDialog from "@/components/action-dialog";
+import { toast } from "@/components/toast";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import ActionDialog from "@/components/action-dialog";
-import { useCaseStore } from "@/lib/store/cases";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import type { Case } from "@/lib/db/schema";
+import { useCaseStore } from "@/lib/store/cases";
 
 function CaseCard({
   caseItem,
@@ -130,7 +131,10 @@ export default function CasesPage() {
 
   const handleCreateCase = async () => {
     if (!newCaseTitle.trim()) {
-      toast.error("El título es requerido");
+      toast({
+        description: "El título es requerido",
+        type: "error",
+      });
       return;
     }
 
@@ -141,7 +145,6 @@ export default function CasesPage() {
       setNewCaseTitle("");
       setNewCaseDescription("");
 
-      // Navigate to the new case
       router.push(`/cases/${caseId}`);
     }
   };
@@ -155,7 +158,10 @@ export default function CasesPage() {
 
   const handleUpdateCase = async () => {
     if (!editingCase || !editCaseTitle.trim()) {
-      toast.error("El título es requerido");
+      toast({
+        description: "El título es requerido",
+        type: "error",
+      });
       return;
     }
 
@@ -250,7 +256,9 @@ export default function CasesPage() {
         customContent={
           <div className="space-y-4">
             <div>
-              <label className="text-sm font-medium">Título del caso *</label>
+              <label htmlFor="newCaseTitle" className="text-sm font-medium">
+                Título del caso *
+              </label>
               <Input
                 value={newCaseTitle}
                 onChange={(e) => setNewCaseTitle(e.target.value)}
@@ -259,7 +267,9 @@ export default function CasesPage() {
               />
             </div>
             <div>
-              <label className="text-sm font-medium">Descripción (opcional)</label>
+              <label htmlFor="newCaseDescription" className="text-sm font-medium">
+                Descripción (opcional)
+              </label>
               <Textarea
                 value={newCaseDescription}
                 onChange={(e) => setNewCaseDescription(e.target.value)}
@@ -284,7 +294,9 @@ export default function CasesPage() {
         customContent={
           <div className="space-y-4">
             <div>
-              <label className="text-sm font-medium">Título del caso *</label>
+              <label htmlFor="editCaseTitle" className="text-sm font-medium">
+                Título del caso *
+              </label>
               <Input
                 value={editCaseTitle}
                 onChange={(e) => setEditCaseTitle(e.target.value)}
@@ -293,7 +305,9 @@ export default function CasesPage() {
               />
             </div>
             <div>
-              <label className="text-sm font-medium">Descripción (opcional)</label>
+              <label htmlFor="editCaseDescription" className="text-sm font-medium">
+                Descripción (opcional)
+              </label>
               <Textarea
                 value={editCaseDescription}
                 onChange={(e) => setEditCaseDescription(e.target.value)}

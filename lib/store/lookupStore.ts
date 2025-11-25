@@ -1,7 +1,7 @@
 "use client";
 
+import type { CityMunicipality, Country, DeptoState } from "@/lib/db/schema";
 import { create } from "zustand";
-import type { Country, DeptoState, CityMunicipality } from "@/lib/db/schema";
 
 interface LookupState {
   countries: Country[];

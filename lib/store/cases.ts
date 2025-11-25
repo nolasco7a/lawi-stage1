@@ -123,15 +123,21 @@ export const useCaseStore = create<CaseStore>((set, get) => ({
         toast.success("Caso actualizado exitosamente");
 
         // Update case in local state
-        set((state) => ({
-          cases: state.cases.map((c) =>
-            c.id === id ? { ...c, title: title.trim(), description: description?.trim() } : c,
-          ),
+        set((state: CaseStore) => ({
+          cases: state.cases.map((c: Case) =>
+            c.id === id
+              ? { ...c, title: title.trim(), description: description?.trim() || null }
+              : c,
+          ) as (Case & { chatCount?: number })[],
           // Also update current case if it's the same
           currentCase:
             state.currentCase?.id === id
-              ? { ...state.currentCase, title: title.trim(), description: description?.trim() }
-              : state.currentCase,
+              ? {
+                  ...state.currentCase,
+                  title: title.trim(),
+                  description: description?.trim() || null,
+                }
+              : (state.currentCase as Case),
         }));
       } else {
         toast.error("Error al actualizar el caso");

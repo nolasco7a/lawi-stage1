@@ -1,12 +1,6 @@
 "use client";
 
-import { isToday, isYesterday, subMonths, subWeeks } from "date-fns";
-import { useParams, useRouter } from "next/navigation";
-import type { User } from "next-auth";
-import Link from "next/link";
-import { useState } from "react";
-import { toast } from "sonner";
-import { motion } from "framer-motion";
+import ActionDialog from "@/components/action-dialog";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -15,10 +9,15 @@ import {
 } from "@/components/ui/sidebar";
 import type { Chat } from "@/lib/db/schema";
 import { fetcher } from "@/lib/utils";
-import { ChatItem } from "./sidebar-history-item";
+import { isToday, isYesterday, subMonths, subWeeks } from "date-fns";
+import { motion } from "framer-motion";
+import type { User } from "next-auth";
+import { useParams, useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 import useSWRInfinite from "swr/infinite";
 import { LoaderIcon } from "./icons";
-import ActionDialog from "@/components/action-dialog";
+import { ChatItem } from "./sidebar-history-item";
 
 type GroupedChats = {
   today: Chat[];

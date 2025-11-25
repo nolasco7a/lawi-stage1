@@ -1,27 +1,26 @@
-import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/app/(auth)/auth";
 import {
-  getCaseById,
-  getChatsByCaseId,
-  getCaseFilesByCaseId,
-  updateCase,
   deleteCaseById,
+  getCaseById,
+  getCaseFilesByCaseId,
+  getChatsByCaseId,
+  updateCase,
 } from "@/lib/db/queries";
-
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+import { type NextRequest, NextResponse } from "next/server";
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
 
   if (!session || !session.user) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
-  const { id } = params;
+  const { id: caseId } = await params;
 
   try {
     const [caseData, chats, files] = await Promise.all([
-      getCaseById({ id, userId: session.user.id! }),
-      getChatsByCaseId({ caseId: id, userId: session.user.id! }),
-      getCaseFilesByCaseId({ caseId: id }),
+      getCaseById({ id: caseId, userId: session.user.id }),
+      getChatsByCaseId({ caseId: caseId, userId: session.user.id }),
+      getCaseFilesByCaseId({ caseId: caseId }),
     ]);
 
     if (!caseData) {
@@ -39,14 +38,14 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
 
   if (!session || !session.user) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
-  const { id } = params;
+  const { id: caseId } = await params;
 
   try {
     const { title, description } = await request.json();
@@ -56,8 +55,8 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
     }
 
     const [updatedCase] = await updateCase({
-      id,
-      userId: session.user.id!,
+      id: caseId,
+      userId: session.user.id,
       title: title.trim(),
       description: description?.trim(),
     });
@@ -76,19 +75,22 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
   const session = await auth();
 
   if (!session || !session.user) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
-  const { id } = params;
+  const { id: caseId } = await params;
 
   try {
     const [deletedCase] = await deleteCaseById({
-      id,
-      userId: session.user.id!,
+      id: caseId,
+      userId: session.user.id,
     });
 
     if (!deletedCase) {

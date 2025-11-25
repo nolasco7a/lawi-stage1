@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, Suspense } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Loader2 } from "lucide-react";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { removeFromLocalStorage } from "@/lib/utils";
+import { ArrowLeft, Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Suspense, useEffect } from "react";
 
 function BasicCheckoutContent() {
   const { isAuthenticated } = useAuth();
@@ -73,15 +73,6 @@ function BasicCheckoutContent() {
           <p className="text-muted-foreground">
             Plan de visibilidad para hacer crecer tu practica legal
           </p>
-        </div>
-
-        {/* Stripe Pricing Table para Basic */}
-        <div className="flex justify-center">
-          <script async src="https://js.stripe.com/v3/pricing-table.js"></script>
-          <stripe-pricing-table
-            pricing-table-id="prctbl_1RxEb35aFd4VysYjQCVtbihk"
-            publishable-key="pk_test_51RwSs15aFd4VysYjJLIUjQ4eG6uFeBnkzTU3xIp5acEY7MIIl5kW9mTQzjBi4xW06Tp0GcwfHY8zIP2rUoOmDArT00AdJ0wyqu"
-          ></stripe-pricing-table>
         </div>
       </div>
     </div>

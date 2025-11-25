@@ -1,18 +1,18 @@
 "use client";
 
+import { Form } from "@/components/form";
+import { FormInput } from "@/components/form-input";
+import { toast } from "@/components/toast";
+import { Button } from "@/components/ui/button";
+import { type ResetPasswordFormData, createResetPasswordSchema } from "@/lib/validations/auth";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
-import { toast } from "@/components/toast";
-import { Form } from "@/components/form";
-import { FormInput } from "@/components/form-input";
-import { createResetPasswordSchema, type ResetPasswordFormData } from "@/lib/validations/auth";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
 
-import { resetPassword, type ResetPasswordActionState } from "../../actions";
+import { type ResetPasswordActionState, resetPassword } from "../../actions";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
@@ -108,7 +108,7 @@ export default function ResetPasswordPage() {
             </p>
           </div>
           <Form
-            onSubmit={form.handleSubmit(onSubmit)}
+            onPressAction={() => form.handleSubmit(onSubmit)()}
             isLoading={isLoading}
             form={form}
             buttonText="Reset Password"

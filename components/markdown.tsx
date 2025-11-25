@@ -1,12 +1,11 @@
 import Link from "next/link";
-import React, { memo } from "react";
+import { memo } from "react";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { CodeBlock } from "./code-block";
 
 const components: Partial<Components> = {
-  // @ts-expect-error
-  code: CodeBlock,
+  code: CodeBlock as unknown as Components["code"],
   pre: ({ children }) => <>{children}</>,
   ol: ({ node, children, ...props }) => {
     return (
@@ -38,8 +37,13 @@ const components: Partial<Components> = {
   },
   a: ({ node, children, ...props }) => {
     return (
-      // @ts-expect-error
-      <Link className="text-blue-500 hover:underline" target="_blank" rel="noreferrer" {...props}>
+      <Link
+        href={props.href as string}
+        className="text-blue-500 hover:underline"
+        target="_blank"
+        rel="noreferrer"
+        {...props}
+      >
         {children}
       </Link>
     );

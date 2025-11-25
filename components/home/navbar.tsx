@@ -25,7 +25,7 @@ import {
 import { signOut } from "next-auth/react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
-import React, { useState } from "react";
+import { useState } from "react";
 
 export default function Navbar() {
   const { isAuthenticated, user, userEmail } = useAuth();
@@ -33,7 +33,6 @@ export default function Navbar() {
   const [sideNavOpen, setSideNavOpen] = useState(false);
 
   return (
-    // eslint-disable-next-line tailwindcss/no-contradicting-classname
     <div className="bg-foreground rounded-[100px] py-3 sm:py-4 px-4 sm:px-6 md:px-10 w-[95%] sm:w-[80%] md:w-[60%] lg:w-[50%] absolute right-[2.5%] sm:right-[10%] md:right-[20%] lg:right-[25%] top-4 bg-gray-400 bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-10 border-none">
       <div className="flex items-center justify-between">
         <Link href="/" className="font-black text-xl sm:text-2xl text-foreground">

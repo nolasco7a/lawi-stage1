@@ -40,6 +40,7 @@
       },
       "correctness": {
         "noUnusedVariables": "warn",
+        "noUnusedImports": "error",
         "useExhaustiveDependencies": "warn"
       },
       "style": {

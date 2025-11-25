@@ -57,7 +57,7 @@ export function SidebarUserNav({ user }: { user: User }) {
     <SidebarMenu>
       <SidebarMenuItem>
         <div
-          className={`flex ${appSidebarState == "collapsed" ? "flex-col items-center" : "flex-row"} justify-between w-full px-2`}
+          className={`flex ${appSidebarState === "collapsed" ? "flex-col items-center" : "flex-row"} justify-between w-full px-2`}
         >
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

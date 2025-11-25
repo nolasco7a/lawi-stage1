@@ -120,7 +120,7 @@ export function validateFile(
   if (file.size > config.maxSize) {
     return {
       isValid: false,
-      error: t("validation.file.too_large", { size: config.maxSize / (1024 * 1024) }),
+      error: `El archivo es demasiado grande. El tamaño máximo permitido es ${config.maxSize / (1024 * 1024)}MB`,
     };
   }
 
@@ -128,7 +128,7 @@ export function validateFile(
   if (!config.mimeTypes.includes(file.type)) {
     return {
       isValid: false,
-      error: t("validation.file.invalid_mime_type", { types: config.extensions.join(", ") }),
+      error: `El archivo no es un tipo de archivo válido. Los tipos de archivo permitidos son ${config.extensions.join(", ")}`,
     };
   }
 
@@ -137,7 +137,7 @@ export function validateFile(
   if (!extension || !config.extensions.includes(extension)) {
     return {
       isValid: false,
-      error: t("validation.file.invalid_extension", { extensions: config.extensions.join(", ") }),
+      error: `El archivo no es una extensión de archivo válida. Las extensiones de archivo permitidas son ${config.extensions.join(", ")}`,
     };
   }
 

@@ -355,16 +355,16 @@ export const resetPassword = async (
 ): Promise<ResetPasswordActionState> => {
   try {
     const validatedData = createResetPasswordSchema().parse({
-      email: formData.get("email"),
-      code: formData.get("code"),
-      password: formData.get("password"),
+      email: formData.get("email") as string,
+      code: formData.get("code") as string,
+      password: formData.get("password") as string,
       confirmPassword: formData.get("confirmPassword"),
     });
 
     // Verify token one more time
     const token = await getPasswordResetToken({
-      email: validatedData.email,
-      token: validatedData.code,
+      email: formData.get("email") as string,
+      token: formData.get("code") as string,
     });
 
     if (!token) {
@@ -377,14 +377,14 @@ export const resetPassword = async (
 
     // Update password
     await updateUserPassword({
-      email: validatedData.email,
+      email: formData.get("email") as string,
       password: validatedData.password,
     });
 
     // Delete the used token
     await deletePasswordResetToken({
-      email: validatedData.email,
-      token: validatedData.code,
+      email: formData.get("email") as string,
+      token: formData.get("code") as string,
     });
 
     return { status: "success" };

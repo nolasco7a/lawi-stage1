@@ -1,30 +1,36 @@
-import { NextRequest, NextResponse } from "next/server";
+import { mkdir } from "node:fs/promises";
+import { writeFile } from "node:fs/promises";
+import { join } from "node:path";
 import { auth } from "@/app/(auth)/auth";
 import {
   createCaseFile,
-  getCaseFilesByCaseId,
-  getCaseById,
   deleteCaseFileById,
+  getCaseById,
+  getCaseFilesByCaseId,
 } from "@/lib/db/queries";
-import { vectorizeDocument, validateFileType, validateFileSize } from "@/lib/vectorization";
-import { writeFile, mkdir } from "fs/promises";
-import { join } from "path";
 import { generateUUID } from "@/lib/utils";
+import {
+  type VectorizedDocument,
+  validateFileSize,
+  validateFileType,
+  vectorizeDocument,
+} from "@/lib/vectorization";
+import { type NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
 
   if (!session || !session.user) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
-  const { id: caseId } = params;
+  const { id: caseId } = await params;
 
   try {
     // Verify user owns the case
     const caseData = await getCaseById({
       id: caseId,
-      userId: session.user.id!,
+      userId: session.user.id,
     });
 
     if (!caseData) {
@@ -40,20 +46,20 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
 
   if (!session || !session.user) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
-  const { id: caseId } = params;
+  const { id: caseId } = await params;
 
   try {
     // Verify user owns the case
     const caseData = await getCaseById({
       id: caseId,
-      userId: session.user.id!,
+      userId: session.user.id,
     });
 
     if (!caseData) {
@@ -90,7 +96,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     await writeFile(filePath, Buffer.from(bytes));
 
     // Vectorize document
-    let vectorData = null;
+    let vectorData: VectorizedDocument | null = null;
     try {
       const vectorizedDoc = await vectorizeDocument(file);
       vectorData = {
@@ -110,7 +116,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
       originalName: file.name,
       mimeType: file.type,
       size: file.size,
-      vectorData,
+      vectorData: vectorData ?? undefined,
     });
 
     return NextResponse.json({
@@ -123,14 +129,17 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> },
+) {
   const session = await auth();
 
   if (!session || !session.user) {
     return new NextResponse("Unauthorized", { status: 401 });
   }
 
-  const { id: caseId } = params;
+  const { id: caseId } = await params;
   const { searchParams } = new URL(request.url);
   const fileId = searchParams.get("fileId");
 
@@ -142,7 +151,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
     // Verify user owns the case
     const caseData = await getCaseById({
       id: caseId,
-      userId: session.user.id!,
+      userId: session.user.id,
     });
 
     if (!caseData) {

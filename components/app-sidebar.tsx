@@ -15,6 +15,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { APP_NAME } from "@/constants/app";
+import { useAuth } from "@/lib/hooks/useAuth";
 import {
   File,
   FolderKanban,
@@ -35,6 +37,7 @@ const AppSidebarMenuItem = ({
   customClass,
 }: { path: string; title: string; icon: React.ReactNode; customClass?: string }) => {
   const { state: appSidebarState } = useSidebar();
+  const { isAuthenticated } = useAuth();
   return (
     <SidebarMenuItem>
       <Tooltip>
@@ -67,7 +70,7 @@ export function AppSidebar({ user }: Readonly<{ user: User | undefined }>) {
               <span
                 className={`${appSidebarState === "collapsed" ? "text-[8px] font-bold" : "text-xl font-black"} px-2 hover:bg-muted rounded-md cursor-pointer`}
               >
-                LAWI
+                {APP_NAME}
               </span>
             </Link>
           </div>

@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
 import { parse, unparse } from "papaparse";
-import React, { memo, useEffect, useMemo, useState } from "react";
+import { memo, useEffect, useMemo, useState } from "react";
 import DataGrid, { textEditor } from "react-data-grid";
 
 import "react-data-grid/lib/styles.css";
@@ -11,12 +11,24 @@ import "react-data-grid/lib/styles.css";
 type SheetEditorProps = {
   content: string;
   saveContent: (content: string, isCurrentVersion: boolean) => void;
+  currentVersionIndex: number;
+  isCurrentVersion: boolean;
+  status: "streaming" | "idle";
 };
 
 const MIN_ROWS = 50;
 const MIN_COLS = 26;
 
-const PureSpreadsheetEditor = ({ content, saveContent }: SheetEditorProps) => {
+const PureSpreadsheetEditor = ({
+  content,
+  saveContent,
+  currentVersionIndex,
+  isCurrentVersion,
+  status,
+}: SheetEditorProps) => {
+  console.info("currentVersionIndex", currentVersionIndex);
+  console.info("isCurrentVersion", isCurrentVersion);
+  console.info("status", status);
   const { resolvedTheme } = useTheme();
 
   const parseData = useMemo(() => {

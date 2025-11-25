@@ -69,7 +69,7 @@ function PureArtifactActions({
               onClick={async () => {
                 setIsLoading(true);
 
-                await Promise.resolve(action.onClick(actionContext))
+                await Promise.resolve(action.onClick(actionContext as any))
                   .then(() => {
                     setIsLoading(false);
                   })

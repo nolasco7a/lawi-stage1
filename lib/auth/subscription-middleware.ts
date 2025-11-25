@@ -116,7 +116,7 @@ export async function hasFeatureAccess(userId: string, feature: FeatureName): Pr
       return false;
     }
     const availableFeatures = PLAN_FEATURES[userPlan];
-    return availableFeatures.includes(feature);
+    return availableFeatures.includes(feature as any);
   } catch (error) {
     console.error("Error checking feature access:", error);
     return false;

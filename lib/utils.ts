@@ -2,7 +2,7 @@ import type { CityMunicipality, Country, DBMessage, DeptoState, Document } from 
 import type { CoreAssistantMessage, CoreToolMessage, UIMessage, UIMessagePart } from "ai";
 import { type ClassValue, clsx } from "clsx";
 import { formatISO } from "date-fns";
-import type { toast as Toast } from "sonner";
+import type { toast as sonnerToast } from "sonner";
 import { twMerge } from "tailwind-merge";
 import { ChatSDKError, type ErrorCode } from "./errors";
 import type { ChatMessage, ChatTools, CustomUIDataTypes } from "./types";
@@ -153,7 +153,7 @@ export const getInitialsFromName = (
 
 export const copyToClipboard = async (
   text: string,
-  toast: Toast,
+  toast: typeof sonnerToast,
   successMessage = "Texto copiado al portapapeles",
 ) => {
   try {
