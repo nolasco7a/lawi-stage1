@@ -1,13 +1,13 @@
-import { PreviewMessage, ThinkingMessage } from "./message";
-import { Greeting } from "./greeting";
-import { memo } from "react";
-import type { Vote } from "@/lib/db/schema";
-import equal from "fast-deep-equal";
-import type { UseChatHelpers } from "@ai-sdk/react";
-import { motion } from "framer-motion";
 import { useMessages } from "@/hooks/use-messages";
+import type { Vote } from "@/lib/db/schema";
 import type { ChatMessage } from "@/lib/types";
+import type { UseChatHelpers } from "@ai-sdk/react";
+import equal from "fast-deep-equal";
+import { motion } from "framer-motion";
+import { memo } from "react";
 import { useDataStream } from "./data-stream-provider";
+import { Greeting } from "./greeting";
+import { PreviewMessage, ThinkingMessage } from "./message";
 
 interface MessagesProps {
   chatId: string;
@@ -43,10 +43,7 @@ function PureMessages({
   useDataStream();
 
   return (
-    <div
-      ref={messagesContainerRef}
-      className="flex flex-col min-w-0 gap-6 flex-1 overflow-y-scroll pt-4 relative"
-    >
+    <div ref={messagesContainerRef} className="flex flex-col min-w-0 gap-6 flex-1 pt-4 relative">
       {messages.length === 0 && <Greeting />}
 
       {messages.map((message, index) => (

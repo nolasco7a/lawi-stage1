@@ -10,7 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 import { useRouter } from "next/navigation";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 
 import { type RegisterLawyerFormData, createRegisterLawyerSchema } from "@/lib/validations/auth";
 
@@ -30,6 +30,7 @@ export default function LawyerForm() {
   } = useCountryStateCitySelection();
   const { update: updateSession } = useSession();
   const router = useRouter();
+  const processedStatusRef = useRef<string | null>(null);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -61,6 +62,13 @@ export default function LawyerForm() {
 
   // === effects
   useEffect(() => {
+    // Evitar procesar el mismo status múltiples veces
+    if (lawyerState.status === "idle" || processedStatusRef.current === lawyerState.status) {
+      return;
+    }
+
+    processedStatusRef.current = lawyerState.status;
+
     if (lawyerState.status === "user_exists") {
       toast({ type: "error", description: "Account already exists!" });
     } else if (lawyerState.status === "failed") {
@@ -108,7 +116,7 @@ export default function LawyerForm() {
   // MARK: - Render
   return (
     <Form
-      onPressAction={() => lawyerForm.handleSubmit(onLawyerSubmit)()}
+      onPressAction={lawyerForm.handleSubmit(onLawyerSubmit)}
       isLoading={isLoading}
       form={lawyerForm}
       buttonText="Registrarse"

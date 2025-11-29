@@ -1,7 +1,6 @@
 import { auth } from "@/app/(auth)/auth";
-import { AppSidebar } from "@/components/app-sidebar";
 import { DataStreamProvider } from "@/components/data-stream-provider";
-import { SidebarStateSync } from "@/components/sidebar-state-sync";
+import { SideBar } from "@/components/sidebar/sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { cookies } from "next/headers";
 import Script from "next/script";
@@ -24,8 +23,9 @@ export default async function Layout({
       />
       <DataStreamProvider>
         <SidebarProvider defaultOpen={!isCollapsed}>
-          <SidebarStateSync />
-          <AppSidebar user={session?.user} />
+          {/* sidebar */}
+          <SideBar user={session?.user} />
+
           <SidebarInset>{children}</SidebarInset>
         </SidebarProvider>
       </DataStreamProvider>

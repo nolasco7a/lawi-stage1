@@ -1,5 +1,3 @@
-import React from "react";
-
 interface HeaderAuthFormProps {
   title: string;
   subtitle: string;

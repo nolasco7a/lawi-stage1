@@ -29,7 +29,13 @@ export function Form({
   return (
     <FormUI {...form}>
       <ScrollArea className="h-96 w-full p-3" scrollHideDelay={1000}>
-        <form onSubmit={onPressAction} className="space-y-4">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            onPressAction();
+          }}
+          className="space-y-4"
+        >
           {children}
           {buttonVisible && (
             <Button

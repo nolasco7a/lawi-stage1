@@ -22,9 +22,6 @@ export default function AuthLayout({
 
         {/* right side */}
         <div className="w-full h-[100vh] md:h-full bg-background xs:col-span-1 sm:col-span-3 md:col-span-2 lg:col-span-1 relative">
-          <div className="h-20 rounded-br-xl p-4 flex flex-row gap-1 absolute top-0 left-0 xs:block sm:hidden md:hidden lg:hidden bg-background">
-            theme y locale switch
-          </div>
           {children}
           <div className="absolute bottom-4 left-4 xs:block sm:hidden">
             <Link href="/">

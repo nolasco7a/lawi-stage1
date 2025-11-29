@@ -1,9 +1,5 @@
 "use client";
-
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MoveRight } from "lucide-react";
-import Link from "next/link";
 import HeaderAuthForm from "../components/header-auth-form";
 import TemplateSide from "../components/template-side";
 import LawyerForm from "./components/lawyer-form";

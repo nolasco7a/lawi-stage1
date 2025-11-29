@@ -25,11 +25,12 @@ import { SideBarMenuItem } from "./sidebar-menu-item";
 export function SideBar({ user }: Readonly<{ user: User | undefined }>) {
   const { state: appSidebarState } = useSidebar();
   const { isGuest, isRegular, isLawyer } = useAuth();
+
   return (
     <Sidebar
       variant="sidebar"
       collapsible="icon"
-      className="group-data-[side=left]:border-r w-[var(--sidebar-width)] z-[999]"
+      className="group-data-[side=left]:border-r w-[var(--sidebar-width)]"
     >
       {/* Header */}
       <SidebarHeader>
@@ -96,9 +97,13 @@ export function SideBar({ user }: Readonly<{ user: User | undefined }>) {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        {/* chats history section */}
         <SidebarHistory user={user} />
       </SidebarContent>
-      <SidebarFooter>{user && <SidebarUserNav user={user} />}</SidebarFooter>
+
+      {/* footer */}
+      <SidebarFooter>{user && <SidebarUserNav user={user} isGuest={isGuest} />}</SidebarFooter>
     </Sidebar>
   );
 }

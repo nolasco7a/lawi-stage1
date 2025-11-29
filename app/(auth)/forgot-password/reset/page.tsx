@@ -108,7 +108,7 @@ function ResetPasswordForm() {
             </p>
           </div>
           <Form
-            onPressAction={() => form.handleSubmit(onSubmit)()}
+            onPressAction={form.handleSubmit(onSubmit)}
             isLoading={isLoading}
             form={form}
             buttonText="Reset Password"

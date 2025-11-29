@@ -14,6 +14,7 @@ declare module "next-auth" {
     user: {
       id: string;
       type: UserType;
+      name?: string | null;
       lastname?: string | null;
       phone?: string | null;
       subscription?: {
@@ -30,8 +31,16 @@ declare module "next-auth" {
     id?: string;
     email?: string | null;
     type: UserType;
+    name?: string | null;
     lastname?: string | null;
     phone?: string | null;
+    subscription?: {
+      id: string;
+      plan_type: "basic" | "pro";
+      status: string;
+      current_period_end: Date;
+      cancel_at_period_end: boolean;
+    } | null;
   }
 }
 

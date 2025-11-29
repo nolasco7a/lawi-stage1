@@ -74,7 +74,7 @@ export default function ForgotPasswordPage() {
             subtitle="Ingresa tu email y te enviaremos un código para resetear tu contraseña"
           />
           <Form
-            onPressAction={() => form.handleSubmit(onSubmit)()}
+            onPressAction={form.handleSubmit(onSubmit)}
             isLoading={isLoading}
             form={form}
             buttonText="Enviar código de reseteo"

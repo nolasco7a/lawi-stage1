@@ -10,7 +10,7 @@ import {
 } from "@/lib/utils";
 
 import { useRouter } from "next/navigation";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useRef } from "react";
 
 import { type RegisterUserFormData, createRegisterUserSchema } from "@/lib/validations/auth";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -32,9 +32,9 @@ export default function UserForm() {
   } = useCountryStateCitySelection();
   const { update: updateSession } = useSession();
   const router = useRouter();
+  const processedStatusRef = useRef<string | null>(null);
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [userState, userFormAction] = useActionState<UserRegisterActionState, FormData>(
+  const [userState, userFormAction, isPending] = useActionState<UserRegisterActionState, FormData>(
     registerUser,
     { status: "idle" },
   );
@@ -58,6 +58,13 @@ export default function UserForm() {
 
   // === effects
   useEffect(() => {
+    // Evitar procesar el mismo status múltiples veces
+    if (userState.status === "idle" || processedStatusRef.current === userState.status) {
+      return;
+    }
+
+    processedStatusRef.current = userState.status;
+
     if (userState.status === "user_exists") {
       toast({ type: "error", description: "Account already exists!" });
     } else if (userState.status === "failed") {
@@ -84,19 +91,17 @@ export default function UserForm() {
 
   // === handlers
   const onUserSubmit = (data: RegisterUserFormData) => {
-    setIsLoading(true);
     const formData = new FormData();
     Object.entries(data).forEach(([key, value]) => {
       formData.append(key, value as string);
     });
     userFormAction(formData);
-    setIsLoading(false);
   };
 
   return (
     <Form
-      onPressAction={() => userForm.handleSubmit(onUserSubmit)()}
-      isLoading={isLoading}
+      onPressAction={userForm.handleSubmit(onUserSubmit)}
+      isLoading={isPending}
       form={userForm}
       buttonText="Registrarse"
       contrastColor={true}
