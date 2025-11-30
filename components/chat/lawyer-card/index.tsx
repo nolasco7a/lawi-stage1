@@ -1,14 +1,5 @@
 import { ArrowRight, Briefcase, Building2, Scale } from "lucide-react";
 
-// Mock Data (This simulates the props you would pass)
-const lawyerData = {
-  name: "Elena Velasco",
-  firm: "Velasco & Partners",
-  image:
-    "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=1000&auto=format&fit=crop",
-  specialties: ["Derecho Penal", "Corporativo"],
-};
-
 interface LawyerCardProps {
   name: string;
   firm: string;
@@ -22,8 +13,8 @@ export const LawyerCard = ({ name, firm, image, specialties }: LawyerCardProps) 
       {/* Image Section with subtle interaction */}
       <div className="relative aspect-[4/5] w-full overflow-hidden bg-muted">
         <img
-          src={lawyerData.image}
-          alt={lawyerData.name}
+          src={image}
+          alt={name}
           className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
         />
 
@@ -34,7 +25,7 @@ export const LawyerCard = ({ name, firm, image, specialties }: LawyerCardProps) 
         <div className="absolute bottom-4 left-4 translate-y-4 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
           <p className="flex items-center gap-2 text-xs font-medium text-white/90">
             <Building2 className="h-3 w-3" />
-            {lawyerData.firm}
+            {firm}
           </p>
         </div>
       </div>
@@ -44,16 +35,16 @@ export const LawyerCard = ({ name, firm, image, specialties }: LawyerCardProps) 
         {/* Header: Name and Firm */}
         <div className="space-y-1">
           <h3 className="font-serif text-2xl font-semibold tracking-tight text-foreground">
-            {lawyerData.name}
+            {name}
           </h3>
           <p className="text-sm font-medium text-muted-foreground flex items-center gap-1">
-            {lawyerData.firm}
+            {firm}
           </p>
         </div>
 
         {/* Specialties (Badges) */}
         <div className="flex flex-wrap gap-2">
-          {lawyerData.specialties.slice(0, 2).map((specialty, index) => (
+          {specialties.slice(0, 2).map((specialty, index) => (
             <span
               key={specialty}
               className="inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80"
@@ -76,7 +67,7 @@ export const LawyerCard = ({ name, firm, image, specialties }: LawyerCardProps) 
           type="button"
           className="inline-flex w-full items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 group/btn"
         >
-          Enviar resumen de caso
+          <span>Enviar resumen de caso</span>
           <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
         </button>
       </div>
