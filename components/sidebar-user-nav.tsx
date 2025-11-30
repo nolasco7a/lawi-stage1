@@ -1,8 +1,6 @@
 "use client";
-import {} from "@/components/ui/avatar";
 import { DropdownMenu } from "@/components/ui/dropdown-menu";
 import { SidebarMenu, SidebarMenuItem, SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
-import {} from "lucide-react";
 import type { User } from "next-auth";
 import DropdownUserContent from "./sidebar/sidebar-user-nav/dropdown-user-content";
 import DropdownUserTrigger from "./sidebar/sidebar-user-nav/dropdown-user-trigger";
@@ -12,7 +10,7 @@ interface SidebarUserNavProps {
   isGuest: boolean;
 }
 
-export function SidebarUserNav({ user, isGuest }: SidebarUserNavProps) {
+export function SidebarUserNav({ user, isGuest }: Readonly<SidebarUserNavProps>) {
   const { state: appSidebarState } = useSidebar();
 
   return (
