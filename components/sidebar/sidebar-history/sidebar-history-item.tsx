@@ -2,28 +2,33 @@
 
 import { useChatVisibility } from "@/hooks/use-chat-visibility";
 import type { Chat } from "@/lib/db/schema";
-import { Ellipsis } from "lucide-react";
+import { Ellipsis, GlobeIcon, Pencil, TrashIcon } from "lucide-react";
 import Link from "next/link";
 import { memo } from "react";
-import {} from "./icons";
+import { CheckCircleFillIcon, LockIcon, ShareIcon } from "../../icons";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
+  DropdownMenuPortal,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-import { SidebarMenuAction, SidebarMenuButton, SidebarMenuItem } from "./ui/sidebar";
+} from "../../ui/dropdown-menu";
+import { SidebarMenuAction, SidebarMenuButton, SidebarMenuItem } from "../../ui/sidebar";
+
 const PureChatItem = ({
   chat,
   isActive,
+  onRename,
   onDelete,
   setOpenMobile,
 }: {
   chat: Chat;
   isActive: boolean;
   onDelete: (chatId: string) => void;
+  onRename: (chatId: string) => void;
   setOpenMobile: (open: boolean) => void;
 }) => {
   const { visibilityType, setVisibilityType } = useChatVisibility({
@@ -48,27 +53,6 @@ const PureChatItem = ({
             <span className="sr-only">More</span>
           </SidebarMenuAction>
         </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>Profile</DropdownMenuItem>
-          <DropdownMenuItem>Billing</DropdownMenuItem>
-          <DropdownMenuItem>Team</DropdownMenuItem>
-          <DropdownMenuItem>Subscription</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-
-      {/* <DropdownMenu modal={false}>
-        <DropdownMenuTrigger asChild>
-          <SidebarMenuAction
-            className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground mr-0.5"
-            showOnHover={!isActive}
-          >
-            <Ellipsis />
-            <span className="sr-only">More</span>
-          </SidebarMenuAction>
-        </DropdownMenuTrigger>
-
         <DropdownMenuContent side="bottom" align="end" className="z-[60]">
           <DropdownMenuSub>
             <DropdownMenuSubTrigger className="cursor-pointer">
@@ -106,6 +90,14 @@ const PureChatItem = ({
           </DropdownMenuSub>
 
           <DropdownMenuItem
+            className="cursor-pointer flex-row gap-2 items-center"
+            onSelect={() => onRename(chat.id)}
+          >
+            <Pencil />
+            <span>Rename</span>
+          </DropdownMenuItem>
+
+          <DropdownMenuItem
             className="cursor-pointer text-destructive focus:bg-destructive/15 focus:text-destructive dark:text-red-500"
             onSelect={() => onDelete(chat.id)}
           >
@@ -113,12 +105,11 @@ const PureChatItem = ({
             <span>Delete</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
-      </DropdownMenu> */}
+      </DropdownMenu>
     </SidebarMenuItem>
   );
 };
 
 export const ChatItem = memo(PureChatItem, (prevProps, nextProps) => {
-  if (prevProps.isActive !== nextProps.isActive) return false;
-  return true;
+  return prevProps.isActive === nextProps.isActive;
 });

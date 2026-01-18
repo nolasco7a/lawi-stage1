@@ -25,7 +25,7 @@ export default function FilesPage() {
     if (documents.length === 0 && !documentsLoading) {
       fetchDocuments().then(() => {});
     }
-  }, [documents, documentsLoading, fetchDocuments]);
+  }, []);
   return (
     <div className="size-full">
       {selectedDocument ? (

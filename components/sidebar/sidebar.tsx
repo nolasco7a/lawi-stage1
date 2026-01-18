@@ -1,7 +1,7 @@
 "use client";
 
-import { SidebarHistory } from "@/components/sidebar-history";
-import { SidebarUserNav } from "@/components/sidebar-user-nav";
+import { Sidebar as SideBarUser } from "@/components/sidebar/sidebar-history";
+import { SidebarUserNav } from "@/components/sidebar/sidebar-user-nav";
 import {
   Sidebar,
   SidebarContent,
@@ -13,10 +13,8 @@ import {
   SidebarMenu,
   useSidebar,
 } from "@/components/ui/sidebar";
-import {} from "@/components/ui/tooltip";
 import { APP_NAME } from "@/constants/app";
 import { useAuth } from "@/lib/hooks/useAuth";
-import {} from "lucide-react";
 import type { User } from "next-auth";
 import Link from "next/link";
 import { GUEST_MENU, LAWYER_MENU, USER_MENU } from "./config";
@@ -99,11 +97,11 @@ export function SideBar({ user }: Readonly<{ user: User | undefined }>) {
         </SidebarGroup>
 
         {/* chats history section */}
-        <SidebarHistory user={user} />
+        <SideBarUser user={user} />
       </SidebarContent>
 
       {/* footer */}
-      <SidebarFooter>{user && <SidebarUserNav user={user} isGuest={isGuest} />}</SidebarFooter>
+      <SidebarFooter>{user && <SidebarUserNav user={user} />}</SidebarFooter>
     </Sidebar>
   );
 }

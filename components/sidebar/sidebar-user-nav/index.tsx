@@ -1,5 +1,4 @@
 "use client";
-
 import { getInitialsFromName } from "@/lib/utils";
 import { ChevronUp, LogIn, LogOut, Moon, Settings, Sprout, Sun } from "lucide-react";
 import type { User } from "next-auth";
@@ -25,7 +24,7 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { guestRegex } from "@/lib/constants";
+import { useAuth } from "@/lib/hooks/useAuth";
 import { useRouter } from "next/navigation";
 
 export function SidebarUserNav({ user }: { user: User }) {
@@ -33,7 +32,7 @@ export function SidebarUserNav({ user }: { user: User }) {
   const { data, status } = useSession();
   const { setTheme, resolvedTheme } = useTheme();
   const { state: appSidebarState } = useSidebar();
-  const isGuest = guestRegex.test(data?.user?.email ?? "");
+  const { isGuest } = useAuth();
 
   const handleLogout = async () => {
     if (status === "loading") {
@@ -92,6 +91,8 @@ export function SidebarUserNav({ user }: { user: User }) {
                 </SidebarMenuButton>
               )}
             </DropdownMenuTrigger>
+
+            {/*MARK: Content*/}
             <DropdownMenuContent
               data-testid="user-nav-menu"
               side={`${appSidebarState === "collapsed" ? "right" : "top"}`}
@@ -100,7 +101,7 @@ export function SidebarUserNav({ user }: { user: User }) {
               <div className="p-3">
                 <div className={"flex flex-row gap-3"}>
                   <Avatar>
-                    <AvatarImage src="" />
+                    <AvatarImage src={`https://avatar.vercel.sh/${user.email}`} />
                     <AvatarFallback>
                       {getInitialsFromName(data?.user?.name, data?.user?.lastname)}
                     </AvatarFallback>
@@ -113,7 +114,7 @@ export function SidebarUserNav({ user }: { user: User }) {
                   </div>
                 </div>
                 <div className={"text-sm text-red-600 mt-2"}>
-                  {data?.user?.subscription
+                  {data?.user?.subscription && !isGuest
                     ? `Subscripción ${data?.user?.subscription?.plan_type}`
                     : "Subscripción no activa"}
                 </div>
@@ -127,17 +128,25 @@ export function SidebarUserNav({ user }: { user: User }) {
                 {resolvedTheme === "dark" ? <Sun /> : <Moon />}
                 {`Toggle ${resolvedTheme === "light" ? "dark" : "light"} mode`}
               </DropdownMenuItem>
+
+              {!isGuest && (
+                <DropdownMenuItem
+                  data-testid="user-nav-item-theme"
+                  className="cursor-pointer"
+                  onSelect={() =>
+                    router.push("https://billing.stripe.com/p/login/test_aFaaEQ1IYemrafCg7zdwc00")
+                  }
+                >
+                  <Sprout />
+                  Active subscription
+                </DropdownMenuItem>
+              )}
+
               <DropdownMenuItem
                 data-testid="user-nav-item-theme"
                 className="cursor-pointer"
-                onSelect={() =>
-                  router.push("https://billing.stripe.com/p/login/test_aFaaEQ1IYemrafCg7zdwc00")
-                }
+                onSelect={() => router.push("/settings")}
               >
-                <Sprout />
-                Active subscription
-              </DropdownMenuItem>
-              <DropdownMenuItem data-testid="user-nav-item-theme" className="cursor-pointer">
                 <Settings />
                 Configuración
               </DropdownMenuItem>

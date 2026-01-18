@@ -20,7 +20,7 @@ import { LawyersList } from "./chat/lawyers-list";
 import { useDataStream } from "./data-stream-provider";
 import { Messages } from "./messages";
 import { MultimodalInput } from "./multimodal-input";
-import { getChatHistoryPaginationKey } from "./sidebar-history";
+import { getChatHistoryPaginationKey } from "./sidebar/sidebar-history";
 import { toast } from "./toast";
 import type { VisibilityType } from "./visibility-selector";
 

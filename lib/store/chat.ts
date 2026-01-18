@@ -1,6 +1,9 @@
-import { CHAT_PAGE_SIZE, SEARCH_DEBOUNCE_DELAY } from "@/lib/constants";
+import { getChatHistoryPaginationKey } from "@/components/sidebar/sidebar-history";
+import { SEARCH_DEBOUNCE_DELAY } from "@/lib/constants";
 import type { Chat } from "@/lib/db/schema";
 import { toast } from "sonner";
+import { mutate } from "swr";
+import { unstable_serialize } from "swr/infinite";
 import { create } from "zustand";
 
 interface ChatsResponse {
@@ -69,7 +72,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   setDebouncedQuery: (query: string) => {
     set({ debouncedQuery: query });
     // Fetch chats when debounced query changes
-    get().fetchChats(1, query, false);
+    void get().fetchChats(1, query, false);
   },
 
   setCurrentPage: (page: number) => set({ currentPage: page }),
@@ -110,7 +113,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
     if (!loading && hasMore) {
       const nextPage = currentPage + 1;
       set({ currentPage: nextPage });
-      get().fetchChats(nextPage, debouncedQuery, true);
+      void get().fetchChats(nextPage, debouncedQuery, true);
     }
   },
 
@@ -126,6 +129,9 @@ export const useChatStore = create<ChatStore>((set, get) => ({
           chats: state.chats.filter((chat) => chat.id !== chatId),
           totalChats: state.totalChats - 1,
         }));
+
+        // Invalidate SWR cache for sidebar
+        await mutate(unstable_serialize(getChatHistoryPaginationKey));
 
         toast.success("Chat eliminado exitosamente");
         return Promise.resolve();
@@ -163,6 +169,9 @@ export const useChatStore = create<ChatStore>((set, get) => ({
           ),
         }));
 
+        // Invalidate SWR cache for sidebar
+        await mutate(unstable_serialize(getChatHistoryPaginationKey));
+
         toast.success("Chat renombrado exitosamente");
         return Promise.resolve();
       }
@@ -175,6 +184,6 @@ export const useChatStore = create<ChatStore>((set, get) => ({
 
   refreshChats: () => {
     const { debouncedQuery } = get();
-    get().fetchChats(1, debouncedQuery, false);
+    void get().fetchChats(1, debouncedQuery, false);
   },
 }));

@@ -1,7 +1,7 @@
-import { customProvider, extractReasoningMiddleware, wrapLanguageModel } from "ai";
 import { xai } from "@ai-sdk/xai";
-import { artifactModel, chatModel, reasoningModel, titleModel } from "./models.test";
+import { customProvider, extractReasoningMiddleware, wrapLanguageModel } from "ai";
 import { isTestEnvironment } from "../constants";
+import { artifactModel, chatModel, reasoningModel, titleModel } from "./models.test";
 
 export const myProvider = isTestEnvironment
   ? customProvider({
@@ -19,8 +19,8 @@ export const myProvider = isTestEnvironment
           model: xai("grok-3-mini"),
           middleware: extractReasoningMiddleware({ tagName: "think" }),
         }),
-        "title-model": xai("grok-2-1212"),
-        "artifact-model": xai("grok-2-1212"),
+        "title-model": xai("grok-4-1-fast-non-reasoning"),
+        "artifact-model": xai("grok-4-1-fast-non-reasoning"),
       },
       imageModels: {
         "small-model": xai.imageModel("grok-2-image"),

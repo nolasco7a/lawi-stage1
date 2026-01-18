@@ -1,6 +1,7 @@
 "use client";
 
 import ActionDialog from "@/components/action-dialog";
+import { Input } from "@/components/ui/input";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -8,15 +9,15 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import type { Chat } from "@/lib/db/schema";
+import { useChatStore } from "@/lib/store/chat";
 import { fetcher } from "@/lib/utils";
 import { isToday, isYesterday, subMonths, subWeeks } from "date-fns";
 import { motion } from "framer-motion";
 import type { User } from "next-auth";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
-import { toast } from "sonner";
 import useSWRInfinite from "swr/infinite";
-import { LoaderIcon } from "./icons";
+import { LoaderIcon } from "../../icons";
 import { ChatItem } from "./sidebar-history-item";
 
 type GroupedChats = {
@@ -68,7 +69,7 @@ const groupChatsByDate = (chats: Chat[]): GroupedChats => {
 };
 
 export function getChatHistoryPaginationKey(pageIndex: number, previousPageData: ChatHistory) {
-  if (previousPageData && previousPageData.hasMore === false) {
+  if (previousPageData && !previousPageData.hasMore) {
     return null;
   }
 
@@ -81,25 +82,29 @@ export function getChatHistoryPaginationKey(pageIndex: number, previousPageData:
   return `/api/history?ending_before=${firstChatFromPage.id}&limit=${PAGE_SIZE}`;
 }
 
-export function SidebarHistory({ user }: { user: User | undefined }) {
+export function Sidebar({ user }: { user: User | undefined }) {
   const { setOpenMobile, state: appSidebarState } = useSidebar();
   const { id } = useParams();
+  const router = useRouter();
   const {
     data: paginatedChatHistories,
     setSize,
     isValidating,
     isLoading,
-    mutate,
   } = useSWRInfinite<ChatHistory>(getChatHistoryPaginationKey, fetcher, {
     fallbackData: [],
   });
 
-  const router = useRouter();
-  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [chatId, setChatId] = useState<string | null>(null);
+
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showRenameDialog, setShowRenameDialog] = useState(false);
+  const [newTitle, setNewTitle] = useState("");
+
+  const { deleteChat, renameChat } = useChatStore();
 
   const hasReachedEnd = paginatedChatHistories
-    ? paginatedChatHistories.some((page) => page.hasMore === false)
+    ? paginatedChatHistories.some((page) => !page.hasMore)
     : false;
 
   const hasEmptyChatHistory = paginatedChatHistories
@@ -107,31 +112,32 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
     : false;
 
   const handleDelete = async () => {
-    const deletePromise = fetch(`/api/chat?id=${deleteId}`, {
-      method: "DELETE",
-    });
+    if (!chatId) return;
 
-    toast.promise(deletePromise, {
-      loading: "Deleting chat...",
-      success: () => {
-        mutate((chatHistories) => {
-          if (chatHistories) {
-            return chatHistories.map((chatHistory) => ({
-              ...chatHistory,
-              chats: chatHistory.chats.filter((chat) => chat.id !== deleteId),
-            }));
-          }
-        });
+    const isCurrentChat = chatId === id;
 
-        return "Chat deleted successfully";
-      },
-      error: "Failed to delete chat",
-    });
+    try {
+      await deleteChat(chatId);
 
-    setShowDeleteDialog(false);
+      // If deleted chat was the current one, redirect to /chat
+      if (isCurrentChat) {
+        router.push("/chat");
+      }
+    } finally {
+      setShowDeleteDialog(false);
+      setChatId(null);
+    }
+  };
 
-    if (deleteId === id) {
-      router.push("/");
+  const handleRename = async () => {
+    if (!chatId || !newTitle.trim()) return;
+
+    try {
+      await renameChat(chatId, newTitle.trim());
+    } finally {
+      setShowRenameDialog(false);
+      setChatId(null);
+      setNewTitle("");
     }
   };
 
@@ -171,7 +177,7 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
     );
   }
 
-  if (hasEmptyChatHistory) {
+  if (hasEmptyChatHistory && appSidebarState !== "collapsed") {
     return (
       <SidebarGroup>
         <SidebarGroupContent>
@@ -208,8 +214,12 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
                               chat={chat}
                               isActive={chat.id === id}
                               onDelete={(chatId) => {
-                                setDeleteId(chatId);
+                                setChatId(chatId);
                                 setShowDeleteDialog(true);
+                              }}
+                              onRename={(chatId) => {
+                                setChatId(chatId);
+                                setShowRenameDialog(true);
                               }}
                               setOpenMobile={setOpenMobile}
                             />
@@ -228,8 +238,12 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
                               chat={chat}
                               isActive={chat.id === id}
                               onDelete={(chatId) => {
-                                setDeleteId(chatId);
+                                setChatId(chatId);
                                 setShowDeleteDialog(true);
+                              }}
+                              onRename={(chatId) => {
+                                setChatId(chatId);
+                                setShowRenameDialog(true);
                               }}
                               setOpenMobile={setOpenMobile}
                             />
@@ -248,8 +262,12 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
                               chat={chat}
                               isActive={chat.id === id}
                               onDelete={(chatId) => {
-                                setDeleteId(chatId);
+                                setChatId(chatId);
                                 setShowDeleteDialog(true);
+                              }}
+                              onRename={(chatId) => {
+                                setChatId(chatId);
+                                setShowRenameDialog(true);
                               }}
                               setOpenMobile={setOpenMobile}
                             />
@@ -268,8 +286,12 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
                               chat={chat}
                               isActive={chat.id === id}
                               onDelete={(chatId) => {
-                                setDeleteId(chatId);
+                                setChatId(chatId);
                                 setShowDeleteDialog(true);
+                              }}
+                              onRename={(chatId) => {
+                                setChatId(chatId);
+                                setShowRenameDialog(true);
                               }}
                               setOpenMobile={setOpenMobile}
                             />
@@ -288,8 +310,12 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
                               chat={chat}
                               isActive={chat.id === id}
                               onDelete={(chatId) => {
-                                setDeleteId(chatId);
+                                setChatId(chatId);
                                 setShowDeleteDialog(true);
+                              }}
+                              onRename={(chatId) => {
+                                setChatId(chatId);
+                                setShowRenameDialog(true);
                               }}
                               setOpenMobile={setOpenMobile}
                             />
@@ -325,6 +351,7 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
         )}
       </SidebarGroup>
 
+      {/* Delete Dialog */}
       <ActionDialog
         openModal={showDeleteDialog}
         setOpenModal={setShowDeleteDialog}
@@ -335,6 +362,29 @@ export function SidebarHistory({ user }: { user: User | undefined }) {
         action={handleDelete}
         actionText={"Borrar"}
         cancelText={"Cancelar"}
+      />
+
+      {/* Rename Dialog */}
+      <ActionDialog
+        openModal={showRenameDialog}
+        setOpenModal={setShowRenameDialog}
+        title="Renombrar Chat"
+        description="Ingresa un nuevo nombre para tu chat."
+        action={handleRename}
+        actionText="Renombrar"
+        cancelText="Cancelar"
+        customContent={
+          <Input
+            value={newTitle}
+            onChange={(e) => setNewTitle(e.target.value)}
+            placeholder="Nuevo título del chat"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                void handleRename();
+              }
+            }}
+          />
+        }
       />
     </>
   );
