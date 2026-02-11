@@ -15,13 +15,13 @@ const runMigrate = async () => {
   const connection = postgres(process.env.POSTGRES_URL, { max: 1 });
   const db = drizzle(connection);
 
-  console.log("⏳ Running migrations...");
-
   const start = Date.now();
+  console.info("started at: ", start);
+
   await migrate(db, { migrationsFolder: "./lib/db/migrations" });
   const end = Date.now();
+  console.info("finished at: ", end);
 
-  console.log("✅ Migrations completed in", end - start, "ms");
   process.exit(0);
 };
 

@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/app/(auth)/auth";
-import { createCase, getCasesWithChatCount, getTotalCasesByUserId } from "@/lib/db/queries";
 import { CHAT_PAGE_SIZE } from "@/lib/constants";
+import { createCase, getCasesWithChatCount, getTotalCasesByUserId } from "@/lib/db/queries";
+import { type NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   const session = await auth();
@@ -17,11 +17,11 @@ export async function GET(request: NextRequest) {
   try {
     const [result, totalCount] = await Promise.all([
       getCasesWithChatCount({
-        userId: session.user.id!,
+        userId: session.user.id,
         limit: CHAT_PAGE_SIZE,
         offset,
       }),
-      getTotalCasesByUserId({ userId: session.user.id! }),
+      getTotalCasesByUserId({ userId: session.user.id }),
     ]);
 
     return NextResponse.json({
@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
     const result = await createCase({
       title: title.trim(),
       description: description?.trim() || undefined,
-      userId: session.user.id!,
+      userId: session.user.id,
     });
 
     return NextResponse.json({ success: true, case: result[0] });
