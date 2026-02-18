@@ -16,28 +16,31 @@ interface SuggestedActionsProps {
 function PureSuggestedActions({
   chatId,
   sendMessage,
-  selectedVisibilityType,
+  // selectedVisibilityType,
 }: SuggestedActionsProps) {
   const suggestedActions = [
     {
-      title: "Dime mis derechos laborales",
-      label: "de acuerdo a la ley",
-      action: "Dime mis derechos laborales de acuerdo a la ley",
+      title: "Redacta una carta de despido",
+      label: "con argumentos legales",
+      action:
+        "Necesito que redactes una carta de despido justificando la decisión conforme a la ley.",
     },
     {
-      title: "Dime mis derechos laborales",
-      label: "de acuerdo a la ley",
-      action: "Dime mis derechos laborales de acuerdo a la ley",
+      title: "Resume este documento legal",
+      label: "en lenguaje sencillo",
+      action:
+        "Por favor resume el siguiente documento legal con palabras simples para que sea más fácil de entender.",
     },
     {
-      title: "Dime mis derechos laborales",
-      label: "de acuerdo a la ley",
-      action: "Dime mis derechos laborales de acuerdo a la ley",
+      title: "Genera una demanda laboral",
+      label: "para despido injustificado",
+      action:
+        "Ayúdame a redactar una demanda laboral por despido injustificado explicando los fundamentos legales.",
     },
     {
-      title: "Dime mis derechos laborales",
-      label: "de acuerdo a la ley",
-      action: "Dime mis derechos laborales de acuerdo a la ley",
+      title: "Explica mis derechos como trabajador",
+      label: "en caso de accidente laboral",
+      action: "¿Cuáles son mis derechos legales si sufro un accidente en el trabajo?",
     },
   ];
 

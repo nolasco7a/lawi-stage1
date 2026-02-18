@@ -1,11 +1,17 @@
+"use client";
+
+import { useAuth } from "@/lib/hooks/useAuth";
+import { LawyerDashboard } from "./components/lawyer-dashboard";
+import { RegularDashboard } from "./components/regular-dashboard";
+
 export default function DashboardPage() {
+  const { isLawyer } = useAuth();
+
   return (
-    <div className="container py-8">
-      <h1 className="text-3xl font-bold mb-6">Panel de Usuario</h1>
-      <p className="text-lg text-muted-foreground">
-        Bienvenido a tu panel de usuario. Aquí puedes gestionar tu cuenta y acceder a tus datos.
-      </p>
-      {/* Aquí puedes agregar más detalles del dashboard, enlaces a otras secciones, etc. */}
+    <div className="min-h-screen bg-background px-6 py-10 sm:px-12">
+      <div className="mx-auto max-w-5xl">
+        {isLawyer ? <LawyerDashboard /> : <RegularDashboard />}
+      </div>
     </div>
   );
 }

@@ -196,140 +196,142 @@ export default function CasesPage() {
   }
 
   return (
-    <div className="w-7/12 self-center p-4 md:p-6 space-y-4 md:space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl md:text-3xl font-bold">Mis Casos</h1>
-        <Button onClick={() => setShowCreateDialog(true)}>
-          <Plus size={16} />
-          Crear Caso
-        </Button>
-      </div>
-
-      {totalCases > 0 && (
-        <div className="text-sm text-muted-foreground">
-          Tienes {totalCases} caso{totalCases !== 1 ? "s" : ""} activo
-          {totalCases !== 1 ? "s" : ""}
+    <div className="min-h-screen bg-background px-6 py-10 sm:px-12">
+      <div className="mx-auto max-w-5xl space-y-6">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl md:text-3xl font-bold">Mis Casos</h1>
+          <Button onClick={() => setShowCreateDialog(true)}>
+            <Plus size={16} />
+            Crear Caso
+          </Button>
         </div>
-      )}
 
-      <div className="space-y-4">
-        {loading ? (
-          <div className="text-center py-8">
-            <p className="text-muted-foreground">Cargando casos...</p>
-          </div>
-        ) : cases.length === 0 ? (
-          <div className="text-center py-12">
-            <FolderOpen size={48} className="mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-medium mb-2">No tienes casos aún</h3>
-            <p className="text-muted-foreground mb-4">
-              Crea tu primer caso para organizar tus chats y archivos
-            </p>
-            <Button onClick={() => setShowCreateDialog(true)}>
-              <Plus size={16} />
-              Crear mi primer caso
-            </Button>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {cases.map((caseItem) => (
-              <div key={caseItem.id} className="group">
-                <CaseCard
-                  caseItem={caseItem}
-                  onRename={handleRenameCase}
-                  onDelete={openDeleteDialog}
-                />
-              </div>
-            ))}
+        {totalCases > 0 && (
+          <div className="text-sm text-muted-foreground">
+            Tienes {totalCases} caso{totalCases !== 1 ? "s" : ""} activo
+            {totalCases !== 1 ? "s" : ""}
           </div>
         )}
+
+        <div className="space-y-4">
+          {loading ? (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground">Cargando casos...</p>
+            </div>
+          ) : cases.length === 0 ? (
+            <div className="text-center py-12">
+              <FolderOpen size={48} className="mx-auto text-muted-foreground mb-4" />
+              <h3 className="text-lg font-medium mb-2">No tienes casos aún</h3>
+              <p className="text-muted-foreground mb-4">
+                Crea tu primer caso para organizar tus chats y archivos
+              </p>
+              <Button onClick={() => setShowCreateDialog(true)}>
+                <Plus size={16} />
+                Crear mi primer caso
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {cases.map((caseItem) => (
+                <div key={caseItem.id} className="group">
+                  <CaseCard
+                    caseItem={caseItem}
+                    onRename={handleRenameCase}
+                    onDelete={openDeleteDialog}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Create Case Dialog */}
+        <ActionDialog
+          openModal={showCreateDialog}
+          setOpenModal={setShowCreateDialog}
+          title="Crear Nuevo Caso"
+          description="Ingresa los detalles para tu nuevo caso legal."
+          action={handleCreateCase}
+          actionText="Crear Caso"
+          cancelText="Cancelar"
+          customContent={
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="newCaseTitle" className="text-sm font-medium">
+                  Título del caso *
+                </label>
+                <Input
+                  value={newCaseTitle}
+                  onChange={(e) => setNewCaseTitle(e.target.value)}
+                  placeholder="Ej. Divorcio contencioso Sr. López"
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <label htmlFor="newCaseDescription" className="text-sm font-medium">
+                  Descripción (opcional)
+                </label>
+                <Textarea
+                  value={newCaseDescription}
+                  onChange={(e) => setNewCaseDescription(e.target.value)}
+                  placeholder="Breve descripción del caso..."
+                  className="mt-1"
+                  rows={3}
+                />
+              </div>
+            </div>
+          }
+        />
+
+        {/* Edit Case Dialog */}
+        <ActionDialog
+          openModal={showEditDialog}
+          setOpenModal={setShowEditDialog}
+          title="Editar Caso"
+          description="Modifica los detalles del caso."
+          action={handleUpdateCase}
+          actionText="Guardar Cambios"
+          cancelText="Cancelar"
+          customContent={
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="editCaseTitle" className="text-sm font-medium">
+                  Título del caso *
+                </label>
+                <Input
+                  value={editCaseTitle}
+                  onChange={(e) => setEditCaseTitle(e.target.value)}
+                  placeholder="Ej. Divorcio contencioso Sr. López"
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <label htmlFor="editCaseDescription" className="text-sm font-medium">
+                  Descripción (opcional)
+                </label>
+                <Textarea
+                  value={editCaseDescription}
+                  onChange={(e) => setEditCaseDescription(e.target.value)}
+                  placeholder="Breve descripción del caso..."
+                  className="mt-1"
+                  rows={3}
+                />
+              </div>
+            </div>
+          }
+        />
+
+        {/* Delete Case Dialog */}
+        <ActionDialog
+          openModal={showDeleteDialog}
+          setOpenModal={setShowDeleteDialog}
+          title="¿Eliminar caso?"
+          description="Esta acción no se puede deshacer. El caso y todos sus chats y archivos serán eliminados permanentemente."
+          action={handleDeleteCase}
+          actionText="Eliminar"
+          cancelText="Cancelar"
+        />
       </div>
-
-      {/* Create Case Dialog */}
-      <ActionDialog
-        openModal={showCreateDialog}
-        setOpenModal={setShowCreateDialog}
-        title="Crear Nuevo Caso"
-        description="Ingresa los detalles para tu nuevo caso legal."
-        action={handleCreateCase}
-        actionText="Crear Caso"
-        cancelText="Cancelar"
-        customContent={
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="newCaseTitle" className="text-sm font-medium">
-                Título del caso *
-              </label>
-              <Input
-                value={newCaseTitle}
-                onChange={(e) => setNewCaseTitle(e.target.value)}
-                placeholder="Ej. Divorcio contencioso Sr. López"
-                className="mt-1"
-              />
-            </div>
-            <div>
-              <label htmlFor="newCaseDescription" className="text-sm font-medium">
-                Descripción (opcional)
-              </label>
-              <Textarea
-                value={newCaseDescription}
-                onChange={(e) => setNewCaseDescription(e.target.value)}
-                placeholder="Breve descripción del caso..."
-                className="mt-1"
-                rows={3}
-              />
-            </div>
-          </div>
-        }
-      />
-
-      {/* Edit Case Dialog */}
-      <ActionDialog
-        openModal={showEditDialog}
-        setOpenModal={setShowEditDialog}
-        title="Editar Caso"
-        description="Modifica los detalles del caso."
-        action={handleUpdateCase}
-        actionText="Guardar Cambios"
-        cancelText="Cancelar"
-        customContent={
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="editCaseTitle" className="text-sm font-medium">
-                Título del caso *
-              </label>
-              <Input
-                value={editCaseTitle}
-                onChange={(e) => setEditCaseTitle(e.target.value)}
-                placeholder="Ej. Divorcio contencioso Sr. López"
-                className="mt-1"
-              />
-            </div>
-            <div>
-              <label htmlFor="editCaseDescription" className="text-sm font-medium">
-                Descripción (opcional)
-              </label>
-              <Textarea
-                value={editCaseDescription}
-                onChange={(e) => setEditCaseDescription(e.target.value)}
-                placeholder="Breve descripción del caso..."
-                className="mt-1"
-                rows={3}
-              />
-            </div>
-          </div>
-        }
-      />
-
-      {/* Delete Case Dialog */}
-      <ActionDialog
-        openModal={showDeleteDialog}
-        setOpenModal={setShowDeleteDialog}
-        title="¿Eliminar caso?"
-        description="Esta acción no se puede deshacer. El caso y todos sus chats y archivos serán eliminados permanentemente."
-        action={handleDeleteCase}
-        actionText="Eliminar"
-        cancelText="Cancelar"
-      />
     </div>
   );
 }

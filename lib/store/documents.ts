@@ -25,6 +25,7 @@ interface DocumentStore {
 
   fetchDocuments: () => Promise<void>;
 }
+
 export const useDocumentStore = create<DocumentStore>((set) => ({
   //   initial state
   documents: [],
@@ -44,7 +45,7 @@ export const useDocumentStore = create<DocumentStore>((set) => ({
         throw new Error("Failed to fetch documents");
       }
       const data = await response.json();
-      set({ documents: data.documents });
+      set({ documents: data });
     } catch (error) {
       console.error("Error fetching documents:", error);
       toast.error("Error fetching documents");
