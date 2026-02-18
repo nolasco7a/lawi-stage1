@@ -19,15 +19,14 @@ const NoDocumentSelected = ({ filesSidebarOpen }: { filesSidebarOpen: boolean })
 
 export default function FilesPage() {
   const { filesSidebarOpen } = useSettingsStore();
-  const { documents, selectedDocument, documentsLoading, fetchDocuments } = useDocumentStore();
+  const { selectedDocument, fetchDocuments } = useDocumentStore();
 
   useEffect(() => {
-    if (documents.length === 0 && !documentsLoading) {
-      fetchDocuments().then(() => {});
-    }
+    void fetchDocuments();
   }, []);
+
   return (
-    <div className="size-full">
+    <div className="h-full overflow-hidden">
       {selectedDocument ? (
         <DocumentViewer
           filesSidebarOpen={filesSidebarOpen}

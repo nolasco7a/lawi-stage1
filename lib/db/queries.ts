@@ -441,6 +441,47 @@ export async function deleteDocumentsByIdAfterTimestamp({
   }
 }
 
+export async function renameDocumentById({
+  id,
+  title,
+  userId,
+}: {
+  id: string;
+  title: string;
+  userId: string;
+}) {
+  try {
+    return await db
+      .update(document)
+      .set({ title })
+      .where(and(eq(document.id, id), eq(document.userId, userId)))
+      .returning();
+  } catch (error) {
+    console.error("Failed to rename document by id:", error);
+    throw new ChatSDKError("bad_request:database", "Failed to rename document by id");
+  }
+}
+
+export async function deleteDocumentById({
+  id,
+  userId,
+}: {
+  id: string;
+  userId: string;
+}) {
+  try {
+    await db.delete(suggestion).where(eq(suggestion.documentId, id));
+
+    return await db
+      .delete(document)
+      .where(and(eq(document.id, id), eq(document.userId, userId)))
+      .returning();
+  } catch (error) {
+    console.error("Failed to delete document by id:", error);
+    throw new ChatSDKError("bad_request:database", "Failed to delete document by id");
+  }
+}
+
 export async function saveSuggestions({
   suggestions,
 }: {

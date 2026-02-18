@@ -11,7 +11,7 @@ import { ShieldCheck } from "lucide-react";
 const ListItem = ({ text }: { text: string }) => {
   return (
     <li className="flex items-start gap-2">
-      <div className="mt-1 size-2 rounded-full bg-secondary"></div>
+      <div className="mt-1 size-2 rounded-full bg-secondary" />
       <span className="text-sm w-full">{text}</span>
     </li>
   );
@@ -21,7 +21,7 @@ export default function PrivacyDialog() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <div className="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+        <div className="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-secondary focus:bg-secondary">
           <ShieldCheck className="mr-2 size-4" />
           Privacidad
         </div>

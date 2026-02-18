@@ -5,9 +5,8 @@ import type React from "react";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div>
-      <SidebarFiles />
-      {children}
+    <div className="h-full flex overflow-hidden">
+      <SidebarFiles>{children}</SidebarFiles>
     </div>
   );
 }

@@ -26,17 +26,16 @@ interface DocumentViewerProps {
 }
 
 export function DocumentViewer({ document, filesSidebarOpen }: Readonly<DocumentViewerProps>) {
-  // The ScrollArea now takes the available space and only it is scrollable, not the whole viewer.
   return (
-    <div className="size-full">
-      <div className="bg-muted min-h-24 border-b border-zinc-700 p-4">
+    <div className="h-full flex flex-col overflow-hidden">
+      <div className="bg-muted border-b border-zinc-700 p-4 flex-shrink-0">
         <DocumentHeader
           title={document.title}
           fileType={document.fileType}
           filesSidebarOpen={filesSidebarOpen || false}
         />
       </div>
-      <ScrollArea className="bg-muted h-[calc(100vh-100px)]">
+      <ScrollArea className="bg-muted flex-1">
         <DocumentContent document={document} />
       </ScrollArea>
     </div>

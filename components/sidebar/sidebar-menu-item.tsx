@@ -15,7 +15,10 @@ export const SideBarMenuItem = ({ path, title, icon, customClass }: SideBarMenuI
   return (
     <SidebarMenuItem>
       <SidebarMenuButton asChild>
-        <Link href={`/${path}`} className={`flex items-center gap-2 ${customClass}`}>
+        <Link
+          href={`/${path}`}
+          className={`flex items-center gap-2 text-sidebar-foreground ${customClass ?? ""}`}
+        >
           {icon} {title}
         </Link>
       </SidebarMenuButton>

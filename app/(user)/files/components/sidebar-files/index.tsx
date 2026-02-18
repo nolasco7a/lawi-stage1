@@ -6,6 +6,7 @@ import {
   SidebarContent,
   SidebarGroupContent,
   SidebarGroupLabel,
+  SidebarInset,
   SidebarProvider,
   useSidebar,
 } from "@/components/ui/sidebar";
@@ -14,13 +15,26 @@ import { Footer } from "@/app/(user)/files/components/sidebar-files/footer";
 import { Header } from "@/app/(user)/files/components/sidebar-files/header";
 import { SearchBar } from "@/app/(user)/files/components/sidebar-files/search-bar";
 import { Sort } from "@/app/(user)/files/components/sidebar-files/sort";
+import type React from "react";
 
-export function SidebarFiles() {
+interface SidebarFilesProps {
+  children?: React.ReactNode;
+}
+
+export function SidebarFiles({ children }: SidebarFilesProps) {
   const mainSidebarContext = useSidebar();
   const marginLeft = calculateMarginLeft(mainSidebarContext.open);
 
   return (
-    <SidebarProvider>
+    <SidebarProvider
+      style={
+        {
+          "--sidebar-width": "260px",
+          "--sidebar-width-icon": "48px",
+        } as React.CSSProperties
+      }
+      className="h-full min-h-0"
+    >
       <Sidebar
         variant="floating"
         collapsible="icon"
@@ -49,6 +63,9 @@ export function SidebarFiles() {
         {/*Footer actions*/}
         <Footer />
       </Sidebar>
+
+      {/* Page content goes here, properly offset after the files sidebar */}
+      <SidebarInset className="overflow-hidden">{children}</SidebarInset>
     </SidebarProvider>
   );
 }

@@ -3,15 +3,12 @@
 import {
   ArrowDown10,
   ArrowDownAz,
-  ArrowDownNarrowWide,
   ArrowUp01,
-  ArrowUpNarrowWide,
   ArrowUpZa,
   CalendarArrowDown,
   CalendarArrowUp,
   ListFilterIcon,
 } from "lucide-react";
-import * as React from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -24,64 +21,58 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useSidebar } from "@/components/ui/sidebar";
+import { type SortOrder, useDocumentStore } from "@/lib/store/documents";
+
+const SORT_OPTIONS: { value: SortOrder; label: string; icon: React.ReactNode }[] = [
+  { value: "asc_name", label: "Nombre A→Z", icon: <ArrowDownAz size={15} /> },
+  { value: "desc_name", label: "Nombre Z→A", icon: <ArrowUpZa size={15} /> },
+  { value: "asc_date", label: "Más antiguos", icon: <CalendarArrowDown size={15} /> },
+  { value: "desc_date", label: "Más recientes", icon: <CalendarArrowUp size={15} /> },
+  { value: "asc_type", label: "Tipo A→Z", icon: <ArrowDown10 size={15} /> },
+  { value: "desc_type", label: "Tipo Z→A", icon: <ArrowUp01 size={15} /> },
+];
 
 export function Sort() {
   const sidebarContext = useSidebar();
-  const [position, setPosition] = React.useState("asc_name");
+  const { sortOrder, setSortOrder } = useDocumentStore();
+
+  const currentLabel = SORT_OPTIONS.find((o) => o.value === sortOrder)?.label ?? "Ordenar";
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <>
           {sidebarContext.open && (
-            <Button variant="outline" className={"w-full mt-4 rounded-full"}>
-              Ordenar
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full mt-2 rounded-full gap-1.5 text-xs"
+            >
+              <ListFilterIcon size={13} />
+              {currentLabel}
             </Button>
           )}
 
           {!sidebarContext.open && (
-            <Button variant="ghost" className={"p-3"}>
+            <Button variant="ghost" className="p-3" title="Ordenar">
               <ListFilterIcon />
             </Button>
           )}
         </>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuLabel>Ordenar por:</DropdownMenuLabel>
+      <DropdownMenuContent align="start" className="w-48">
+        <DropdownMenuLabel className="text-xs">Ordenar por</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuRadioGroup value={position} onValueChange={setPosition}>
-          <DropdownMenuRadioItem value="asc_name" className={"justify-content-between"}>
-            <ArrowDownAz size={18} className={"mr-2"} />
-            Asc. nombre
-          </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="desc_name">
-            <ArrowUpZa size={18} className={"mr-2"} />
-            Desc. nombre
-          </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="asc_date">
-            <CalendarArrowDown size={18} className={"mr-2"} />
-            Asc. mas recentes
-          </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="desc_date">
-            <CalendarArrowUp size={18} className={"mr-2"} />
-            Desc. mas recientes
-          </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="asc_type">
-            <ArrowDown10 size={18} className={"mr-2"} />
-            Asc. tipo
-          </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="desc_type">
-            <ArrowUp01 size={18} className={"mr-2"} />
-            Desc. tipo
-          </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="asc_size">
-            <ArrowDownNarrowWide size={18} className={"mr-2"} />
-            Asc. tamaño
-          </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="desc_size">
-            <ArrowUpNarrowWide size={18} className={"mr-2"} />
-            Desc. tamaño
-          </DropdownMenuRadioItem>
+        <DropdownMenuRadioGroup
+          value={sortOrder}
+          onValueChange={(v) => setSortOrder(v as SortOrder)}
+        >
+          {SORT_OPTIONS.map((opt) => (
+            <DropdownMenuRadioItem key={opt.value} value={opt.value} className="gap-2 text-sm">
+              {opt.icon}
+              {opt.label}
+            </DropdownMenuRadioItem>
+          ))}
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>
