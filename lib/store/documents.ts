@@ -27,6 +27,7 @@ export type SortOrder =
 interface DocumentStore {
   // state
   documentsLoading: boolean;
+  uploading: boolean;
   documents: Document[];
   selectedDocument?: ISelectedDocument | null;
   searchQuery: string;
@@ -53,6 +54,7 @@ export const useDocumentStore = create<DocumentStore>((set, _get) => ({
   documents: [],
   selectedDocument: null,
   documentsLoading: false,
+  uploading: false,
 
   searchQuery: "",
   sortOrder: "asc_name",
@@ -150,6 +152,7 @@ export const useDocumentStore = create<DocumentStore>((set, _get) => ({
   },
 
   uploadDocument: async (file: File) => {
+    set({ uploading: true });
     try {
       const formData = new FormData();
       formData.append("file", file);
@@ -164,13 +167,18 @@ export const useDocumentStore = create<DocumentStore>((set, _get) => ({
 
       set((state) => ({
         documents: [doc, ...state.documents],
-        selectedDocument: doc,
+        selectedDocument: {
+          ...doc,
+          fileUrl: doc.content,
+        },
         activeTab: "files",
       }));
       toast.success("Archivo subido con éxito");
     } catch (error) {
       console.error("Error uploading document:", error);
       toast.error("Error al subir el archivo");
+    } finally {
+      set({ uploading: false });
     }
   },
 }));

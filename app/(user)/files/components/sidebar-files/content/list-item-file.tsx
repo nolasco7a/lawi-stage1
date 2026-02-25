@@ -98,6 +98,9 @@ export function ListItemFile({ document }: ListItemFileProps) {
       title: document.title,
       kind: document.kind,
       content: document.content ?? undefined,
+      source: document.source as "model" | "user",
+      // For uploaded files, `content` stores the file URL path
+      fileUrl: document.source === "user" ? (document.content ?? undefined) : undefined,
     });
   };
 

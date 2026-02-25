@@ -33,7 +33,7 @@ const SORT_OPTIONS: { value: SortOrder; label: string; icon: React.ReactNode }[]
 ];
 
 export function Sort() {
-  const sidebarContext = useSidebar();
+  const { open } = useSidebar();
   const { sortOrder, setSortOrder } = useDocumentStore();
 
   const currentLabel = SORT_OPTIONS.find((o) => o.value === sortOrder)?.label ?? "Ordenar";
@@ -41,24 +41,16 @@ export function Sort() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <>
-          {sidebarContext.open && (
-            <Button
-              variant="outline"
-              size="sm"
-              className="w-full mt-2 rounded-full gap-1.5 text-xs"
-            >
-              <ListFilterIcon size={13} />
-              {currentLabel}
-            </Button>
-          )}
-
-          {!sidebarContext.open && (
-            <Button variant="ghost" className="p-3" title="Ordenar">
-              <ListFilterIcon />
-            </Button>
-          )}
-        </>
+        {open ? (
+          <Button variant="outline" size="sm" className="w-full mt-2 rounded-full gap-1.5 text-xs">
+            <ListFilterIcon size={13} />
+            {currentLabel}
+          </Button>
+        ) : (
+          <Button variant="ghost" className="p-3" title="Ordenar">
+            <ListFilterIcon />
+          </Button>
+        )}
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-48">
         <DropdownMenuLabel className="text-xs">Ordenar por</DropdownMenuLabel>

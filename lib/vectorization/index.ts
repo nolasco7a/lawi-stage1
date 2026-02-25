@@ -117,8 +117,8 @@ export function validateFileType(file: File): boolean {
   return allowedTypes.includes(file.type);
 }
 
-// Utility to validate file size (max 10MB)
-export function validateFileSize(file: File, maxSizeMB = 10): boolean {
+// Utility to validate file size (max 25MB)
+export function validateFileSize(file: File, maxSizeMB = 25): boolean {
   const maxSizeBytes = maxSizeMB * 1024 * 1024;
   return file.size <= maxSizeBytes;
 }

@@ -2,12 +2,12 @@ import { Button } from "@/components/ui/button";
 import { SidebarFooter } from "@/components/ui/sidebar";
 import { useSidebar } from "@/components/ui/sidebar";
 import { useDocumentStore } from "@/lib/store/documents";
-import { FilePlus, Upload } from "lucide-react";
+import { FilePlus, Loader2, Upload } from "lucide-react";
 import { useRef } from "react";
 
 export function Footer() {
   const sidebarContext = useSidebar();
-  const { createDocument, uploadDocument } = useDocumentStore();
+  const { createDocument, uploadDocument, uploading, activeTab } = useDocumentStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleUploadClick = () => {
@@ -25,47 +25,70 @@ export function Footer() {
     }
   };
 
+  const showCreateButton = activeTab === "artifacts";
+
   return (
     <SidebarFooter>
-      <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" />
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        accept=".pdf,.doc,.docx,.txt,.md,.csv"
+        className="hidden"
+      />
       {sidebarContext.open ? (
         <div className="flex w-full gap-2">
-          <Button
-            variant="ghost"
-            className="flex-1"
-            title="Crear archivo nuevo"
-            onClick={createDocument}
-          >
-            <FilePlus strokeWidth={1.5} />
-          </Button>
+          {showCreateButton && (
+            <Button
+              variant="ghost"
+              className="flex-1"
+              title="Crear archivo nuevo"
+              onClick={createDocument}
+            >
+              <FilePlus strokeWidth={1.5} />
+            </Button>
+          )}
           <Button
             variant="outline"
             className="flex-1"
-            title="Subir archivo nuevo"
+            title="Subir archivo"
             onClick={handleUploadClick}
+            disabled={uploading}
           >
-            <Upload strokeWidth={1.5} />
+            {uploading ? (
+              <Loader2 strokeWidth={1.5} className="animate-spin" />
+            ) : (
+              <Upload strokeWidth={1.5} />
+            )}
+            {uploading && <span className="ml-1 text-xs">Subiendo...</span>}
           </Button>
         </div>
       ) : (
         <>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="w-full"
-            title="Crear archivo nuevo"
-            onClick={createDocument}
-          >
-            <FilePlus strokeWidth={1.5} />
-          </Button>
+          {showCreateButton && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="w-full"
+              title="Crear archivo nuevo"
+              onClick={createDocument}
+            >
+              <FilePlus strokeWidth={1.5} />
+            </Button>
+          )}
           <Button
             variant="outline"
             size="icon"
             className="w-full"
-            title="Subir archivo nuevo"
+            title="Subir archivo"
             onClick={handleUploadClick}
+            disabled={uploading}
           >
-            <Upload strokeWidth={1.5} />
+            {uploading ? (
+              <Loader2 strokeWidth={1.5} className="animate-spin" />
+            ) : (
+              <Upload strokeWidth={1.5} />
+            )}
           </Button>
         </>
       )}

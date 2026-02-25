@@ -1,11 +1,15 @@
 "use client";
 
 import { SidebarGroupContent } from "@/components/ui/sidebar";
+import { useSidebar } from "@/components/ui/sidebar";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useDocumentStore } from "@/lib/store/documents";
 
 export function SidebarTabs() {
   const { activeTab, setActiveTab } = useDocumentStore();
+  const { open } = useSidebar();
+
+  if (!open) return null;
 
   return (
     <SidebarGroupContent className="px-2 pt-2 border-b pb-2 flex-shrink-0">

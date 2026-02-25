@@ -1,5 +1,3 @@
-import { mkdir } from "node:fs/promises";
-import { writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { auth } from "@/app/(auth)/auth";
 import {
@@ -8,13 +6,7 @@ import {
   getCaseById,
   getDocumentsByCaseId,
 } from "@/lib/db/queries";
-import { generateUUID } from "@/lib/utils";
-import {
-  type VectorizedDocument,
-  validateFileSize,
-  validateFileType,
-  vectorizeDocument,
-} from "@/lib/vectorization";
+import { FileUploadError, processFileUpload } from "@/lib/upload";
 import { type NextRequest, NextResponse } from "next/server";
 
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -73,52 +65,19 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       return new NextResponse("No file provided", { status: 400 });
     }
 
-    // Validate file
-    if (!validateFileType(file)) {
-      return new NextResponse("Invalid file type", { status: 400 });
-    }
-
-    if (!validateFileSize(file)) {
-      return new NextResponse("File too large (max 10MB)", { status: 400 });
-    }
-
-    // Generate unique filename
-    const fileExtension = file.name.split(".").pop() || "";
-    const uniqueFilename = `${generateUUID()}.${fileExtension}`;
-
-    // Create uploads directory if it doesn't exist
     const uploadsDir = join(process.cwd(), "uploads", "cases", caseId);
-    await mkdir(uploadsDir, { recursive: true });
 
-    // Save file to filesystem
-    const filePath = join(uploadsDir, uniqueFilename);
-    const bytes = await file.arrayBuffer();
-    await writeFile(filePath, Buffer.from(bytes));
+    const result = await processFileUpload({ file, uploadsDir });
 
-    // Vectorize document
-    let vectorData: VectorizedDocument | null = null;
-    try {
-      const vectorizedDoc = await vectorizeDocument(file);
-      vectorData = {
-        text: vectorizedDoc.text,
-        vectors: vectorizedDoc.vectors,
-        chunks: vectorizedDoc.chunks,
-      };
-    } catch (vectorError) {
-      console.warn("Failed to vectorize document:", vectorError);
-      // Continue without vectorization for now
-    }
-
-    // Save to database
+    // Save to database — linked to the specific case
     const [savedFile] = await createUserDocument({
       userId: session.user.id,
       caseId,
-      filename: uniqueFilename,
-      originalName: file.name,
-      mimeType: file.type,
-      size: file.size,
-      content: `/api/files/${uniqueFilename}`, // Adjust if you have a public URL or similar
-      vectorData: vectorData ?? undefined,
+      filename: result.filename,
+      originalName: result.originalName,
+      mimeType: result.mimeType,
+      size: result.size,
+      content: result.fileUrl,
     });
 
     return NextResponse.json({
@@ -126,6 +85,9 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       file: savedFile,
     });
   } catch (error) {
+    if (error instanceof FileUploadError) {
+      return new NextResponse(error.message, { status: error.status });
+    }
     console.error("Error uploading file:", error);
     return new NextResponse("Internal Server Error", { status: 500 });
   }

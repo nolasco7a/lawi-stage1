@@ -44,7 +44,7 @@ const PureChatItem = ({
           onClick={() => setOpenMobile(false)}
           className="text-sidebar-foreground"
         >
-          <span>{chat.title}</span>
+          <span>{chat.title?.replace(/^#+\s*/, "")}</span>
         </Link>
       </SidebarMenuButton>
       <DropdownMenu>

@@ -384,7 +384,7 @@ export async function createEmptyDocument({
       .values({
         title,
         kind,
-        content: "",
+        content: "# Título del documento\n\nAquí puedes iniciar con tu documento.",
         userId,
         source: "model",
         caseId: null,
