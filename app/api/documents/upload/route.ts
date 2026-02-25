@@ -1,4 +1,3 @@
-import { join } from "node:path";
 import { auth } from "@/app/(auth)/auth";
 import { createUserDocument } from "@/lib/db/queries";
 import { FileUploadError, processFileUpload } from "@/lib/upload";
@@ -19,9 +18,10 @@ export async function POST(request: NextRequest) {
       return new NextResponse("No file provided", { status: 400 });
     }
 
-    const uploadsDir = join(process.cwd(), "uploads", "users", session.user.id);
-
-    const result = await processFileUpload({ file, uploadsDir });
+    const result = await processFileUpload({
+      file,
+      userId: session.user.id,
+    });
 
     // Save to database — global document, not linked to a case
     const [savedFile] = await createUserDocument({

@@ -1,4 +1,3 @@
-import { join } from "node:path";
 import { auth } from "@/app/(auth)/auth";
 import {
   createUserDocument,
@@ -7,6 +6,7 @@ import {
   getDocumentsByCaseId,
 } from "@/lib/db/queries";
 import { FileUploadError, processFileUpload } from "@/lib/upload";
+import { del } from "@vercel/blob";
 import { type NextRequest, NextResponse } from "next/server";
 
 export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -65,9 +65,11 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       return new NextResponse("No file provided", { status: 400 });
     }
 
-    const uploadsDir = join(process.cwd(), "uploads", "cases", caseId);
-
-    const result = await processFileUpload({ file, uploadsDir });
+    const result = await processFileUpload({
+      file,
+      userId: session.user.id,
+      caseId,
+    });
 
     // Save to database — linked to the specific case
     const [savedFile] = await createUserDocument({
@@ -131,9 +133,16 @@ export async function DELETE(
       return new NextResponse("File not found", { status: 404 });
     }
 
-    // TODO: Delete physical file from filesystem
-    // const filePath = join(process.cwd(), 'uploads', 'cases', caseId, deletedFile[0].filename);
-    // await unlink(filePath).catch(() => {}); // Ignore errors if file doesn't exist
+    // Delete the blob from Vercel Blob storage
+    const blobUrl = deletedFile[0].content;
+    if (blobUrl) {
+      try {
+        await del(blobUrl);
+      } catch (blobError) {
+        // Log but don't fail the request if blob deletion fails
+        console.error("Failed to delete blob:", blobError);
+      }
+    }
 
     return NextResponse.json({
       success: true,

@@ -1,32 +1,29 @@
-import { mkdir, writeFile } from "node:fs/promises";
-import { join } from "node:path";
 import { generateUUID } from "@/lib/utils";
 import { validateFileSize, validateFileType } from "@/lib/vectorization";
+import { put } from "@vercel/blob";
 
 export interface FileUploadResult {
   filename: string;
   originalName: string;
   mimeType: string;
   size: number;
-  filePath: string;
   fileUrl: string;
 }
 
 /**
  * Shared file upload processing.
- * Handles: validation, filesystem save.
+ * Handles: validation, upload to Vercel Blob.
  * Does NOT insert a DB record — that's the caller's responsibility
  * (since files/ passes caseId: null and cases/ passes caseId: <uuid>).
- *
- * NOTE: Vectorization is disabled for now (placeholder had fatal bugs).
- * It will be re-implemented as a separate task with a real embeddings provider.
  */
 export async function processFileUpload({
   file,
-  uploadsDir,
+  userId,
+  caseId,
 }: {
   file: File;
-  uploadsDir: string;
+  userId: string;
+  caseId?: string | null;
 }): Promise<FileUploadResult> {
   // Validate file type
   if (!validateFileType(file)) {
@@ -42,21 +39,23 @@ export async function processFileUpload({
   const fileExtension = file.name.split(".").pop() || "";
   const uniqueFilename = `${generateUUID()}.${fileExtension}`;
 
-  // Create uploads directory if it doesn't exist
-  await mkdir(uploadsDir, { recursive: true });
+  // Build path for organization in Blob storage
+  const blobPath = caseId
+    ? `cases/${caseId}/${uniqueFilename}`
+    : `users/${userId}/${uniqueFilename}`;
 
-  // Save file to filesystem
-  const filePath = join(uploadsDir, uniqueFilename);
+  // Upload to Vercel Blob
   const bytes = await file.arrayBuffer();
-  await writeFile(filePath, Buffer.from(bytes));
+  const blob = await put(blobPath, Buffer.from(bytes), {
+    access: "public",
+  });
 
   return {
     filename: uniqueFilename,
     originalName: file.name,
     mimeType: file.type,
     size: file.size,
-    filePath,
-    fileUrl: `/api/files/${uniqueFilename}`,
+    fileUrl: blob.url,
   };
 }
 

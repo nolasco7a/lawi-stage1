@@ -46,12 +46,11 @@ export function DocumentViewer({
   const [localDocument, setLocalDocument] = useState<Document | null>(null);
   const [fetchedContent, setFetchedContent] = useState<string | null>(null);
 
-  // For uploaded files (content is a URL like /api/files/xxx.txt),
+  // For uploaded files (content is a Blob URL),
   // fetch the actual text content for text-based file types
   const isUploadedTextFile =
     document.fileUrl &&
-    (document.fileType === "txt" || document.fileType === "md" || document.fileType === "csv") &&
-    document.content?.startsWith("/api/files/");
+    (document.fileType === "txt" || document.fileType === "md" || document.fileType === "csv");
 
   useEffect(() => {
     if (isUploadedTextFile && document.fileUrl) {
@@ -343,7 +342,8 @@ const DocumentContent = ({
     if (
       document.fileType === "csv" &&
       currentViewContent &&
-      !currentViewContent.startsWith("/api/")
+      !currentViewContent.startsWith("/api/") &&
+      !currentViewContent.startsWith("http")
     ) {
       try {
         const parsed = Papa.parse(currentViewContent, { header: true });
