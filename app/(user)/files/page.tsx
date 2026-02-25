@@ -5,7 +5,11 @@ import { useDocumentStore } from "@/lib/store/documents";
 import { useSettingsStore } from "@/lib/store/settingsStore";
 import { useEffect } from "react";
 
-const NoDocumentSelected = ({ filesSidebarOpen }: { filesSidebarOpen: boolean }) => {
+interface NoDocumentSelectedProps {
+  filesSidebarOpen: boolean;
+}
+
+const NoDocumentSelected = ({ filesSidebarOpen }: NoDocumentSelectedProps): React.ReactNode => {
   return (
     <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
       <div className="text-2xl mb-4">No document selected</div>
@@ -17,6 +21,10 @@ const NoDocumentSelected = ({ filesSidebarOpen }: { filesSidebarOpen: boolean })
   );
 };
 
+interface GetFileTypeProps {
+  kind: string;
+  source?: string;
+}
 /**
  * Maps the document `kind` field to a `DocumentFileType` for the viewer.
  * Artifacts use simple kinds like "text", "code", etc.
