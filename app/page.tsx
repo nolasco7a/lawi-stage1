@@ -11,14 +11,10 @@ import { MainSection } from "@/components/homepage/sections/main-section";
 import { PlansPricesSection } from "@/components/homepage/sections/plans-prices-section";
 import { TestimonialsSection } from "@/components/homepage/sections/testimonials-section";
 import { UserBenefitsSection } from "@/components/homepage/sections/user-benefits-section";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export default function Home() {
   return (
     <div className="min-h-screen w-full">
-      {/* vercel insights */}
-      <SpeedInsights />
-
       <Navbar />
 
       <MainSection />
