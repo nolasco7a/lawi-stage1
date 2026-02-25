@@ -3,10 +3,10 @@ import { writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { auth } from "@/app/(auth)/auth";
 import {
-  createCaseFile,
-  deleteCaseFileById,
+  createUserDocument,
+  deleteDocumentById,
   getCaseById,
-  getCaseFilesByCaseId,
+  getDocumentsByCaseId,
 } from "@/lib/db/queries";
 import { generateUUID } from "@/lib/utils";
 import {
@@ -17,7 +17,7 @@ import {
 } from "@/lib/vectorization";
 import { type NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
 
   if (!session || !session.user) {
@@ -37,7 +37,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       return new NextResponse("Case not found", { status: 404 });
     }
 
-    const files = await getCaseFilesByCaseId({ caseId });
+    const files = await getDocumentsByCaseId({ caseId });
 
     return NextResponse.json({ files });
   } catch (error) {
@@ -110,12 +110,14 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     }
 
     // Save to database
-    const [savedFile] = await createCaseFile({
+    const [savedFile] = await createUserDocument({
+      userId: session.user.id,
       caseId,
       filename: uniqueFilename,
       originalName: file.name,
       mimeType: file.type,
       size: file.size,
+      content: `/api/files/${uniqueFilename}`, // Adjust if you have a public URL or similar
       vectorData: vectorData ?? undefined,
     });
 
@@ -158,9 +160,9 @@ export async function DELETE(
       return new NextResponse("Case not found", { status: 404 });
     }
 
-    const deletedFile = await deleteCaseFileById({
+    const deletedFile = await deleteDocumentById({
       id: fileId,
-      caseId,
+      userId: session.user.id,
     });
 
     if (!deletedFile.length) {

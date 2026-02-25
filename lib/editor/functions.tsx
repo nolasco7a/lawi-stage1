@@ -14,7 +14,7 @@ export const buildDocumentFromContent = (content: string) => {
   const parser = DOMParser.fromSchema(documentSchema);
   const stringFromMarkdown = renderToString(<Markdown>{content}</Markdown>);
   const tempContainer = document.createElement("div");
-  tempContainer.innerHTML = stringFromMarkdown;
+  tempContainer.innerHTML = stringFromMarkdown || "<p></p>";
   return parser.parse(tempContainer);
 };
 

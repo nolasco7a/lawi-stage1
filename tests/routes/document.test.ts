@@ -1,7 +1,7 @@
 import type { Document } from "@/lib/db/schema";
+import { getMessageByErrorCode } from "@/lib/errors";
 import { generateUUID } from "@/lib/utils";
 import { expect, test } from "../fixtures";
-import { getMessageByErrorCode } from "@/lib/errors";
 
 const documentsCreatedByAda: Array<Document> = [];
 
@@ -95,7 +95,7 @@ test.describe
     });
 
     test("Ada cannot delete a document without specifying an id", async ({ adaContext }) => {
-      const response = await adaContext.request.delete(`/api/document`);
+      const response = await adaContext.request.delete("/api/document");
       expect(response.status()).toBe(400);
 
       const { code, message } = await response.json();

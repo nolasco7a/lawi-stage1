@@ -30,15 +30,26 @@ function sortDocuments(docs: Document[], order: string): Document[] {
 }
 
 export function ListFiles() {
-  const { documents, searchQuery, sortOrder, documentsLoading } = useDocumentStore();
+  const { documents, searchQuery, sortOrder, documentsLoading, activeTab } = useDocumentStore();
 
   const filteredAndSorted = useMemo(() => {
+    let filtered = documents;
+
+    // Filter by tab
+    if (activeTab === "artifacts") {
+      filtered = filtered.filter((doc) => doc.source !== "user");
+    } else {
+      filtered = filtered.filter((doc) => doc.source === "user");
+    }
+
+    // Filter by query
     const query = searchQuery.trim().toLowerCase();
-    const filtered = query
-      ? documents.filter((doc) => doc.title.toLowerCase().includes(query))
-      : documents;
+    if (query) {
+      filtered = filtered.filter((doc) => doc.title.toLowerCase().includes(query));
+    }
+
     return sortDocuments(filtered, sortOrder);
-  }, [documents, searchQuery, sortOrder]);
+  }, [documents, searchQuery, sortOrder, activeTab]);
 
   if (documentsLoading) {
     return (

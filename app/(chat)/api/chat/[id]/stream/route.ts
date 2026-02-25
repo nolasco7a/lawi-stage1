@@ -3,9 +3,9 @@ import { getChatById, getMessagesByChatId, getStreamIdsByChatId } from "@/lib/db
 import type { Chat } from "@/lib/db/schema";
 import { ChatSDKError } from "@/lib/errors";
 import type { ChatMessage } from "@/lib/types";
-import { createUIMessageStream, JsonToSseTransformStream } from "ai";
-import { getStreamContext } from "../../route";
+import { JsonToSseTransformStream, createUIMessageStream } from "ai";
 import { differenceInSeconds } from "date-fns";
+import { getStreamContext } from "../../route";
 
 export async function GET(_: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id: chatId } = await params;

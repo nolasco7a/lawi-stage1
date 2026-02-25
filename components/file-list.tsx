@@ -1,32 +1,32 @@
 "use client";
 
-import { useState } from "react";
-import { toast } from "sonner";
 import { formatDistanceToNow } from "date-fns";
 import { es } from "date-fns/locale";
 import {
-  File,
-  FileText,
   Download,
-  Trash2,
-  MoreHorizontal,
-  FileType,
+  File,
   FileSpreadsheet,
+  FileText,
+  FileType,
+  MoreHorizontal,
+  Trash2,
 } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
+import ActionDialog from "@/components/action-dialog";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import ActionDialog from "@/components/action-dialog";
-import type { CaseFile } from "@/lib/db/schema";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import type { Document } from "@/lib/db/schema";
 
 interface FileListProps {
-  files: CaseFile[];
+  files: Document[];
   caseId: string;
   onFileDeleted?: () => void;
   className?: string;
@@ -55,38 +55,36 @@ function formatFileSize(bytes: number): string {
   const sizes = ["Bytes", "KB", "MB", "GB"];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
 
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+  return `${Number.parseFloat((bytes / k ** i).toFixed(2))} ${sizes[i]}`;
 }
 
 function FileItem({
-  file,
-  caseId,
+  document,
   onDelete,
 }: {
-  file: CaseFile;
-  caseId: string;
-  onDelete: (fileId: string) => void;
+  document: Document;
+  onDelete: (documentId: string) => void;
 }) {
   const handleDownload = async () => {
     try {
       // TODO: Implement download functionality
       toast.info("Descarga no implementada aún");
-    } catch (error) {
+    } catch (_error) {
       toast.error("Error al descargar el archivo");
     }
   };
 
   return (
     <div className="flex items-center gap-3 p-3 border rounded-lg hover:bg-muted/50 transition-colors">
-      {getFileIcon(file.mimeType)}
+      {getFileIcon(document.kind)}
 
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium truncate">{file.originalName}</p>
+        <p className="text-sm font-medium truncate">{document.title}</p>
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <span>{formatFileSize(file.size)}</span>
+          <span>{formatFileSize(document.size || 0)}</span>
           <span>•</span>
           <span>
-            {formatDistanceToNow(new Date(file.createdAt), {
+            {formatDistanceToNow(new Date(document.createdAt), {
               addSuffix: true,
               locale: es,
             })}
@@ -106,7 +104,7 @@ function FileItem({
             <span>Descargar</span>
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => onDelete(file.id)}
+            onClick={() => onDelete(document.id)}
             className="cursor-pointer text-destructive focus:bg-destructive/15 focus:text-destructive"
           >
             <Trash2 size={16} />
@@ -164,8 +162,8 @@ export function FileList({ files, caseId, onFileDeleted, className }: FileListPr
       ) : (
         <ScrollArea className="h-[300px]">
           <div className="space-y-3">
-            {files.map((file) => (
-              <FileItem key={file.id} file={file} caseId={caseId} onDelete={openDeleteDialog} />
+            {files.map((document) => (
+              <FileItem key={document.id} document={document} onDelete={openDeleteDialog} />
             ))}
           </div>
         </ScrollArea>

@@ -1,4 +1,4 @@
-import type { Case, CaseFile, Chat } from "@/lib/db/schema";
+import type { Case, Chat, Document } from "@/lib/db/schema";
 import { toast } from "sonner";
 import { create } from "zustand";
 
@@ -12,7 +12,7 @@ interface CasesResponse {
 interface CaseDetailsResponse {
   case: Case;
   chats: Chat[];
-  files: CaseFile[];
+  files: Document[];
 }
 
 interface CaseStore {
@@ -24,7 +24,7 @@ interface CaseStore {
   // Current case details
   currentCase: Case | null;
   currentChats: Chat[];
-  currentFiles: CaseFile[];
+  currentFiles: Document[];
   caseLoading: boolean;
 
   // Actions

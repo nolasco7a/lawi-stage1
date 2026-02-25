@@ -10,6 +10,10 @@ interface ISelectedDocument {
   kind: string;
   content?: string;
   fileUrl?: string;
+  // Nuevos campos
+  source?: "model" | "user";
+  caseId?: string | null;
+  filename?: string | null;
 }
 
 export type SortOrder =
@@ -27,17 +31,21 @@ interface DocumentStore {
   selectedDocument?: ISelectedDocument | null;
   searchQuery: string;
   sortOrder: SortOrder;
+  activeTab: "artifacts" | "files";
 
   //   actions
   setDocumentsLoading: (loading: boolean) => void;
   setDocuments: (documents: Document[]) => void;
-  setSelectedDocument: (data: ISelectedDocument) => void;
+  setSelectedDocument: (data: ISelectedDocument | null) => void;
   setSearchQuery: (query: string) => void;
   setSortOrder: (order: SortOrder) => void;
+  setActiveTab: (tab: "artifacts" | "files") => void;
   renameDocument: (id: string, title: string) => Promise<void>;
   deleteDocument: (id: string) => Promise<void>;
 
   fetchDocuments: () => Promise<void>;
+  createDocument: () => Promise<void>;
+  uploadDocument: (file: File) => Promise<void>;
 }
 
 export const useDocumentStore = create<DocumentStore>((set, _get) => ({
@@ -48,14 +56,16 @@ export const useDocumentStore = create<DocumentStore>((set, _get) => ({
 
   searchQuery: "",
   sortOrder: "asc_name",
+  activeTab: "artifacts",
 
   //   Actions
   setDocumentsLoading: (loading: boolean) => set({ documentsLoading: loading }),
   setDocuments: (documents: Document[]) => set({ documents: documents }),
-  setSelectedDocument: (data: ISelectedDocument) => set({ selectedDocument: data }),
+  setSelectedDocument: (data: ISelectedDocument | null) => set({ selectedDocument: data }),
 
   setSearchQuery: (query: string) => set({ searchQuery: query }),
   setSortOrder: (order: SortOrder) => set({ sortOrder: order }),
+  setActiveTab: (tab: "artifacts" | "files") => set({ activeTab: tab }),
 
   renameDocument: async (id: string, title: string) => {
     if (!title.trim()) {
@@ -120,6 +130,47 @@ export const useDocumentStore = create<DocumentStore>((set, _get) => ({
       set({ documentsLoading: false });
     }
   },
-}));
 
-//haces todos los cambios comentarios
+  createDocument: async () => {
+    try {
+      const response = await fetch("/api/documents", { method: "POST" });
+      if (!response.ok) throw new Error("Failed to create document");
+      const doc = await response.json();
+
+      set((state) => ({
+        documents: [doc, ...state.documents],
+        selectedDocument: doc,
+        activeTab: "artifacts",
+      }));
+      toast.success("Documento creado");
+    } catch (error) {
+      console.error("Error creating document:", error);
+      toast.error("Error al crear el documento");
+    }
+  },
+
+  uploadDocument: async (file: File) => {
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch("/api/documents/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error("Failed to upload document");
+      const { file: doc } = await response.json();
+
+      set((state) => ({
+        documents: [doc, ...state.documents],
+        selectedDocument: doc,
+        activeTab: "files",
+      }));
+      toast.success("Archivo subido con éxito");
+    } catch (error) {
+      console.error("Error uploading document:", error);
+      toast.error("Error al subir el archivo");
+    }
+  },
+}));

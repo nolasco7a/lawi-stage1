@@ -19,7 +19,6 @@ import {
   type PasswordResetToken,
   type Suggestion,
   type User,
-  caseFile,
   caseTable,
   chat,
   cityMunicipality,
@@ -216,7 +215,6 @@ export async function getChatsByUserId({
   try {
     const extendedLimit = limit + 1;
 
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     const query = (whereCondition?: SQL<any>) =>
       db
         .select()
@@ -371,15 +369,52 @@ export async function saveDocument({
   }
 }
 
+export async function createEmptyDocument({
+  title,
+  kind,
+  userId,
+}: {
+  title: string;
+  kind: ArtifactKind;
+  userId: string;
+}) {
+  try {
+    return await db
+      .insert(document)
+      .values({
+        title,
+        kind,
+        content: "",
+        userId,
+        source: "model",
+        caseId: null,
+        createdAt: new Date(),
+      })
+      .returning();
+  } catch (error) {
+    console.error("Failed to create empty document:", error);
+    throw new ChatSDKError("bad_request:database", "Failed to create empty document");
+  }
+}
+
 export async function getDocumentsByUserId({ userId }: { userId: string }) {
   try {
-    const documents = await db
+    const allDocuments = await db
       .select()
       .from(document)
       .where(eq(document.userId, userId))
-      .orderBy(asc(document.createdAt));
+      .orderBy(desc(document.createdAt));
 
-    return documents;
+    const uniqueDocuments = [];
+    const seenIds = new Set();
+    for (const doc of allDocuments) {
+      if (!seenIds.has(doc.id)) {
+        seenIds.add(doc.id);
+        uniqueDocuments.push(doc);
+      }
+    }
+
+    return uniqueDocuments;
   } catch (error) {
     console.error("Failed to get documents by user id:", error);
     throw new ChatSDKError("bad_request:database", "Failed to get documents by user id");
@@ -1093,41 +1128,49 @@ export async function getCasesWithChatCount({
   }
 }
 
-// CaseFile management functions
-export async function createCaseFile({
+// Unified Document management functions for user-uploaded files
+export async function createUserDocument({
+  userId,
   caseId,
+  content,
   filename,
   originalName,
   mimeType,
   size,
   vectorData,
 }: {
-  caseId: string;
+  userId: string;
+  caseId?: string | null;
+  content: string; // Used to store fileUrl / path
   filename: string;
-  originalName: string;
-  mimeType: string;
+  originalName: string; // Stored as title
+  mimeType: string; // Stored as kind
   size: number;
   vectorData?: VectorizedDocument;
 }) {
   try {
     return await db
-      .insert(caseFile)
+      .insert(document)
       .values({
+        userId,
         caseId,
+        source: "user",
+        content,
         filename,
-        originalName,
-        mimeType,
+        title: originalName,
+        kind: mimeType as any,
         size,
         vectorData,
+        createdAt: new Date(),
       })
       .returning();
   } catch (error) {
-    console.error("Failed to create case file:", error);
-    throw new ChatSDKError("bad_request:database", "Failed to create case file");
+    console.error("Failed to create user document:", error);
+    throw new ChatSDKError("bad_request:database", "Failed to create user document");
   }
 }
 
-export async function getCaseFilesByCaseId({
+export async function getDocumentsByCaseId({
   caseId,
 }: {
   caseId: string;
@@ -1135,49 +1178,55 @@ export async function getCaseFilesByCaseId({
   try {
     return await db
       .select()
-      .from(caseFile)
-      .where(eq(caseFile.caseId, caseId))
-      .orderBy(desc(caseFile.createdAt));
+      .from(document)
+      .where(eq(document.caseId, caseId))
+      .orderBy(desc(document.createdAt));
   } catch (error) {
-    console.error("Failed to get case files:", error);
-    throw new ChatSDKError("bad_request:database", "Failed to get case files");
+    console.error("Failed to get documents by case id:", error);
+    throw new ChatSDKError("bad_request:database", "Failed to get documents by case id");
   }
 }
 
-export async function deleteCaseFileById({
-  id,
-  caseId,
+export async function getUserDocuments({
+  userId,
+  caseId = null,
 }: {
-  id: string;
-  caseId: string;
+  userId: string;
+  caseId?: string | null;
 }) {
   try {
-    return await db
-      .delete(caseFile)
-      .where(and(eq(caseFile.id, id), eq(caseFile.caseId, caseId)))
-      .returning();
-  } catch (error) {
-    console.error("Failed to delete case file:", error);
-    throw new ChatSDKError("bad_request:database", "Failed to delete case file");
-  }
-}
+    // If caseId is explicitly null, we fetch personal bank files.
+    // If caseId is undefined, we could fetch all, but the API might just want to fetch based on params.
+    // Let's support filtering by caseId if provided, or filtering by null (personal bank).
+    const conditions = [eq(document.userId, userId), eq(document.source, "user")];
+    if (caseId !== undefined) {
+      if (caseId === null) {
+        // Find documents where caseId IS NULL
+        // Note: eq(document.caseId, null) depends on the ORM. In Drizzle eq with null creates "IS NULL".
+        conditions.push(eq(document.caseId, null as any)); // fallback logic if needed, but Drizzle supports isNull
+      } else {
+        conditions.push(eq(document.caseId, caseId));
+      }
+    }
 
-export async function getCaseFileById({
-  id,
-  caseId,
-}: {
-  id: string;
-  caseId: string;
-}) {
-  try {
-    const [file] = await db
+    const allDocuments = await db
       .select()
-      .from(caseFile)
-      .where(and(eq(caseFile.id, id), eq(caseFile.caseId, caseId)));
+      .from(document)
+      .where(and(...conditions))
+      .orderBy(desc(document.createdAt));
 
-    return file;
+    const uniqueDocuments = [];
+    const seenIds = new Set();
+    for (const doc of allDocuments) {
+      if (!seenIds.has(doc.id)) {
+        seenIds.add(doc.id);
+        uniqueDocuments.push(doc);
+      }
+    }
+
+    return uniqueDocuments;
   } catch (error) {
-    console.error("Failed to get case file by id:", error);
-    throw new ChatSDKError("bad_request:database", "Failed to get case file by id");
+    console.error("Failed to get user documents:", error);
+    throw new ChatSDKError("bad_request:database", "Failed to get user documents");
   }
 }

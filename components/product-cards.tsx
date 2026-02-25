@@ -1,13 +1,13 @@
 "use client";
 
-import React from "react";
-import { useRouter } from "next/navigation";
-import { Check, X, Eye, Brain } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { setToLocalStorage } from "@/lib/utils";
+import { Brain, Check, Eye, X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import type React from "react";
 
 interface ProductFeature {
   name: string;

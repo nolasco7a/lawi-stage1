@@ -1,6 +1,6 @@
-import { generateId, type ModelMessage } from "ai";
-import { TEST_PROMPTS } from "./basic";
 import type { LanguageModelV2StreamPart } from "@ai-sdk/provider";
+import { type ModelMessage, generateId } from "ai";
+import { TEST_PROMPTS } from "./basic";
 
 export function compareMessages(firstMessage: ModelMessage, secondMessage: ModelMessage): boolean {
   if (firstMessage.role !== secondMessage.role) return false;
@@ -79,7 +79,8 @@ export const getResponseChunksByPrompt = (
           usage: { inputTokens: 3, outputTokens: 10, totalTokens: 13 },
         },
       ];
-    } else if (compareMessages(recentMessage, TEST_PROMPTS.USER_GRASS)) {
+    }
+    if (compareMessages(recentMessage, TEST_PROMPTS.USER_GRASS)) {
       return [
         ...reasoningToDeltas("Grass is green because of chlorophyll absorption!"),
         ...textToDeltas("It's just green duh!"),
@@ -101,7 +102,8 @@ export const getResponseChunksByPrompt = (
         usage: { inputTokens: 3, outputTokens: 10, totalTokens: 13 },
       },
     ];
-  } else if (compareMessages(recentMessage, TEST_PROMPTS.USER_GRASS)) {
+  }
+  if (compareMessages(recentMessage, TEST_PROMPTS.USER_GRASS)) {
     return [
       ...textToDeltas("It's just green duh!"),
       {
@@ -110,7 +112,8 @@ export const getResponseChunksByPrompt = (
         usage: { inputTokens: 3, outputTokens: 10, totalTokens: 13 },
       },
     ];
-  } else if (compareMessages(recentMessage, TEST_PROMPTS.USER_SKY)) {
+  }
+  if (compareMessages(recentMessage, TEST_PROMPTS.USER_SKY)) {
     return [
       ...textToDeltas("It's just blue duh!"),
       {
@@ -119,7 +122,8 @@ export const getResponseChunksByPrompt = (
         usage: { inputTokens: 3, outputTokens: 10, totalTokens: 13 },
       },
     ];
-  } else if (compareMessages(recentMessage, TEST_PROMPTS.USER_NEXTJS)) {
+  }
+  if (compareMessages(recentMessage, TEST_PROMPTS.USER_NEXTJS)) {
     return [
       ...textToDeltas("With Next.js, you can ship fast!"),
 
@@ -129,7 +133,8 @@ export const getResponseChunksByPrompt = (
         usage: { inputTokens: 3, outputTokens: 10, totalTokens: 13 },
       },
     ];
-  } else if (compareMessages(recentMessage, TEST_PROMPTS.USER_IMAGE_ATTACHMENT)) {
+  }
+  if (compareMessages(recentMessage, TEST_PROMPTS.USER_IMAGE_ATTACHMENT)) {
     return [
       ...textToDeltas("This painting is by Monet!"),
       {
@@ -138,7 +143,8 @@ export const getResponseChunksByPrompt = (
         usage: { inputTokens: 3, outputTokens: 10, totalTokens: 13 },
       },
     ];
-  } else if (compareMessages(recentMessage, TEST_PROMPTS.USER_TEXT_ARTIFACT)) {
+  }
+  if (compareMessages(recentMessage, TEST_PROMPTS.USER_TEXT_ARTIFACT)) {
     const toolCallId = generateId();
 
     return [
@@ -175,7 +181,8 @@ export const getResponseChunksByPrompt = (
         usage: { inputTokens: 3, outputTokens: 10, totalTokens: 13 },
       },
     ];
-  } else if (compareMessages(recentMessage, TEST_PROMPTS.CREATE_DOCUMENT_TEXT_CALL)) {
+  }
+  if (compareMessages(recentMessage, TEST_PROMPTS.CREATE_DOCUMENT_TEXT_CALL)) {
     return [
       ...textToDeltas(`\n
 # Silicon Valley: The Epicenter of Innovation
@@ -202,7 +209,8 @@ As we move forward, Silicon Valley continues to reinvent itself. While some pred
         usage: { inputTokens: 3, outputTokens: 10, totalTokens: 13 },
       },
     ];
-  } else if (compareMessages(recentMessage, TEST_PROMPTS.CREATE_DOCUMENT_TEXT_RESULT)) {
+  }
+  if (compareMessages(recentMessage, TEST_PROMPTS.CREATE_DOCUMENT_TEXT_RESULT)) {
     return [
       ...textToDeltas("A document was created and is now visible to the user."),
       {
@@ -211,7 +219,8 @@ As we move forward, Silicon Valley continues to reinvent itself. While some pred
         usage: { inputTokens: 3, outputTokens: 10, totalTokens: 13 },
       },
     ];
-  } else if (compareMessages(recentMessage, TEST_PROMPTS.GET_WEATHER_CALL)) {
+  }
+  if (compareMessages(recentMessage, TEST_PROMPTS.GET_WEATHER_CALL)) {
     return [
       {
         type: "tool-call",
@@ -225,7 +234,8 @@ As we move forward, Silicon Valley continues to reinvent itself. While some pred
         usage: { inputTokens: 3, outputTokens: 10, totalTokens: 13 },
       },
     ];
-  } else if (compareMessages(recentMessage, TEST_PROMPTS.GET_WEATHER_RESULT)) {
+  }
+  if (compareMessages(recentMessage, TEST_PROMPTS.GET_WEATHER_RESULT)) {
     return [
       ...textToDeltas("The current temperature in San Francisco is 17°C."),
       {

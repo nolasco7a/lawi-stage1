@@ -58,7 +58,35 @@ export function ListItemFile({ document }: ListItemFileProps) {
   const { selectedDocument, setSelectedDocument, renameDocument, deleteDocument } =
     useDocumentStore();
   const isSelected = selectedDocument?.id === document.id;
-  const config = KIND_CONFIG[document.kind] ?? KIND_CONFIG.text;
+
+  const isUploadedFile = document.source === "user";
+  let icon = KIND_CONFIG.text.icon;
+  let label = "Archivo";
+
+  if (isUploadedFile) {
+    const mimeType = document.kind.toLowerCase();
+    if (mimeType.includes("pdf")) {
+      icon = <FileText size={16} />;
+      label = "PDF";
+    } else if (mimeType.includes("image")) {
+      icon = <FileImage size={16} />;
+      label = "Imagen";
+    } else if (
+      mimeType.includes("csv") ||
+      mimeType.includes("sheet") ||
+      mimeType.includes("excel")
+    ) {
+      icon = <FileSpreadsheet size={16} />;
+      label = "Hoja";
+    } else {
+      icon = <FileText size={16} />;
+      label = "Archivo";
+    }
+  } else {
+    const config = KIND_CONFIG[document.kind] ?? KIND_CONFIG.text;
+    icon = config.icon;
+    label = config.label;
+  }
 
   const [showRenameDialog, setShowRenameDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
@@ -99,7 +127,7 @@ export function ListItemFile({ document }: ListItemFileProps) {
           <div className="flex items-start gap-2 w-full min-w-0">
             {/* Icon — rounded container aligned to first text line */}
             <span className="shrink-0 flex self-start justify-center size-[22px] rounded-md bg-accent/10 text-accent mt-[2px]">
-              {config.icon}
+              {icon}
             </span>
 
             {/* Text content */}
@@ -117,7 +145,7 @@ export function ListItemFile({ document }: ListItemFileProps) {
                 {document.title || "Sin título"}
               </span>
               <div className="flex items-center gap-1.5 mt-0.5 flex-shrink-0">
-                <span className="text-[10px] text-muted-foreground">{config.label}</span>
+                <span className="text-[10px] text-muted-foreground">{label}</span>
                 <span className="text-[10px] text-muted-foreground">·</span>
                 <span className="text-[10px] text-muted-foreground whitespace-nowrap">
                   {formatDate(document.createdAt)}
@@ -142,15 +170,28 @@ export function ListItemFile({ document }: ListItemFileProps) {
                 setShowRenameDialog(true);
               }}
             >
-              <Pencil size={13} />
-              Renombrar
+              <Pencil size={14} className="text-muted-foreground" />
+              <span>Renombrar</span>
             </DropdownMenuItem>
+
+            {isUploadedFile && document.content && (
+              <DropdownMenuItem
+                className="gap-2 text-sm cursor-pointer"
+                onSelect={() => {
+                  window.open(document.content ?? "", "_blank");
+                }}
+              >
+                <FileText size={14} className="text-muted-foreground" />
+                <span>Descargar</span>
+              </DropdownMenuItem>
+            )}
+
             <DropdownMenuItem
               className="gap-2 text-sm text-destructive focus:text-destructive"
               onSelect={() => setShowDeleteDialog(true)}
             >
-              <Trash2 size={13} />
-              Eliminar
+              <Trash2 size={14} />
+              <span>Eliminar</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

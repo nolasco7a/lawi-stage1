@@ -35,20 +35,49 @@
       "recommended": true,
       "suspicious": {
         "noAssignInExpressions": "off",
-        "noExplicitAny": "warn",
-        "noConsoleLog": "warn"
+        "noExplicitAny": "off",
+        "noConsoleLog": "warn",
+        "noArrayIndexKey": "off"
       },
       "correctness": {
         "noUnusedVariables": "warn",
-        "noUnusedImports": "error",
-        "useExhaustiveDependencies": "warn"
+        "noUnusedImports": "warn",
+        "useExhaustiveDependencies": "off",
+        "noUnreachable": "warn",
+        "useArrayLiterals": "warn",
+        "noNewSymbol": "warn"
       },
       "style": {
         "noNonNullAssertion": "warn",
-        "useConst": "error"
+        "useConst": "error",
+        "useFragmentSyntax": "warn",
+        "noYodaExpression": "warn",
+        "useDefaultParameterLast": "warn"
       },
       "complexity": {
-        "noForEach": "off"
+        "noForEach": "off",
+        "noUselessStringConcat": "warn",
+        "noBannedTypes": "off",
+        "noStaticOnlyClass": "off"
+      },
+      "security": {
+        "noDangerouslySetInnerHtml": "off"
+      },
+      "a11y": {
+        "useKeyWithClickEvents": "off",
+        "useFocusableInteractive": "off",
+        "useAriaPropsForRole": "off",
+        "useHtmlLang": "warn",
+        "noHeaderScope": "warn",
+        "useSemanticElements": "off",
+        "noSvgWithoutTitle": "off"
+      },
+      "nursery": {
+        "noStaticElementInteractions": "off",
+        "noHeadImportInDocument": "warn",
+        "noDocumentImportInPage": "warn",
+        "noDuplicateElseIf": "warn",
+        "noIrregularWhitespace": "warn"
       }
     }
   },

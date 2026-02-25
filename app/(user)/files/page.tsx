@@ -29,10 +29,12 @@ export default function FilesPage() {
     <div className="h-full overflow-hidden">
       {selectedDocument ? (
         <DocumentViewer
+          key={selectedDocument.id}
           filesSidebarOpen={filesSidebarOpen}
           document={{
             id: selectedDocument.id,
             title: selectedDocument.title,
+            kind: selectedDocument.kind,
             fileType:
               selectedDocument.kind === "text" ? "md" : (selectedDocument.kind as DocumentFileType),
             content: selectedDocument.content || "",

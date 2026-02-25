@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
-import { toast } from "sonner";
-import { Upload, X, File, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { validateFileType, validateFileSize } from "@/lib/vectorization";
+import { validateFileSize, validateFileType } from "@/lib/vectorization";
+import { File, Loader2, Upload, X } from "lucide-react";
+import { useCallback, useRef, useState } from "react";
+import { toast } from "sonner";
 
 interface FileUploadProps {
   caseId: string;

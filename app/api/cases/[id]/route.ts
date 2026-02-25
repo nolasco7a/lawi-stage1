@@ -2,12 +2,12 @@ import { auth } from "@/app/(auth)/auth";
 import {
   deleteCaseById,
   getCaseById,
-  getCaseFilesByCaseId,
   getChatsByCaseId,
+  getDocumentsByCaseId,
   updateCase,
 } from "@/lib/db/queries";
 import { type NextRequest, NextResponse } from "next/server";
-export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
 
   if (!session || !session.user) {
@@ -20,7 +20,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     const [caseData, chats, files] = await Promise.all([
       getCaseById({ id: caseId, userId: session.user.id }),
       getChatsByCaseId({ caseId: caseId, userId: session.user.id }),
-      getCaseFilesByCaseId({ caseId: caseId }),
+      getDocumentsByCaseId({ caseId: caseId }),
     ]);
 
     if (!caseData) {
@@ -76,7 +76,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 }
 
 export async function DELETE(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const session = await auth();

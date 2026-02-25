@@ -1,18 +1,18 @@
 import type { InferSelectModel } from "drizzle-orm";
 import {
-  pgTable,
-  varchar,
-  timestamp,
-  json,
-  uuid,
-  text,
-  primaryKey,
-  foreignKey,
   boolean,
+  foreignKey,
   index,
-  unique,
   integer,
+  json,
   jsonb,
+  pgTable,
+  primaryKey,
+  text,
+  timestamp,
+  unique,
+  uuid,
+  varchar,
 } from "drizzle-orm/pg-core";
 
 export const user = pgTable(
@@ -113,27 +113,8 @@ export const chat = pgTable(
 
 export type Chat = InferSelectModel<typeof chat>;
 
-export const caseFile = pgTable(
-  "CaseFile",
-  {
-    id: uuid("id").primaryKey().notNull().defaultRandom(),
-    caseId: uuid("caseId")
-      .notNull()
-      .references(() => caseTable.id),
-    filename: varchar("filename", { length: 255 }).notNull(),
-    originalName: varchar("originalName", { length: 255 }).notNull(),
-    mimeType: varchar("mimeType", { length: 100 }).notNull(),
-    size: integer("size").notNull(),
-    vectorData: jsonb("vectorData"),
-    createdAt: timestamp("createdAt").notNull().defaultNow(),
-    updatedAt: timestamp("updatedAt").notNull().defaultNow(),
-  },
-  (table) => ({
-    caseIdIdx: index("case_file_case_id_idx").on(table.caseId),
-  }),
-);
-
-export type CaseFile = InferSelectModel<typeof caseFile>;
+// CaseFile table removed — files are now unified in the Document table.
+// See: source, caseId, filename, size, vectorData fields in Document below.
 
 // DEPRECATED: The following schema is deprecated and will be removed in the future.
 // Read the migration guide at https://chat-sdk.dev/docs/migration-guides/message-parts
@@ -207,6 +188,7 @@ export type Vote = InferSelectModel<typeof vote>;
 export const document = pgTable(
   "Document",
   {
+    // --- Existing fields (unchanged — chat/AI artifacts still work as before) ---
     id: uuid("id").notNull().defaultRandom(),
     createdAt: timestamp("createdAt").notNull(),
     title: text("title").notNull(),
@@ -217,10 +199,26 @@ export const document = pgTable(
     userId: uuid("userId")
       .notNull()
       .references(() => user.id),
+
+    // --- New fields: unified file management ---
+    // 'model' = AI artifact | 'user' = uploaded file. DEFAULT 'model' is retrocompatible.
+    source: varchar("source", { enum: ["model", "user"] })
+      .notNull()
+      .default("model"),
+    // null = personal file bank (no case) | <uuid> = linked to a specific case
+    caseId: uuid("caseId").references(() => caseTable.id),
+    // Technical name as stored in storage/filesystem. null for AI artifacts.
+    filename: varchar("filename", { length: 255 }),
+    // File size in bytes. null for AI artifacts.
+    size: integer("size"),
+    // Vector embeddings for RAG. Applicable to both types.
+    vectorData: jsonb("vectorData"),
   },
   (table) => {
     return {
       pk: primaryKey({ columns: [table.id, table.createdAt] }),
+      sourceIdx: index("document_source_idx").on(table.source),
+      documentCaseIdIdx: index("document_case_id_idx").on(table.caseId),
     };
   },
 );

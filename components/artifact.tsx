@@ -1,26 +1,26 @@
+import { codeArtifact } from "@/artifacts/code/client";
+import { imageArtifact } from "@/artifacts/image/client";
+import { sheetArtifact } from "@/artifacts/sheet/client";
+import { textArtifact } from "@/artifacts/text/client";
+import { useArtifact } from "@/hooks/use-artifact";
+import type { Document, Vote } from "@/lib/db/schema";
+import type { Attachment, ChatMessage } from "@/lib/types";
+import { fetcher } from "@/lib/utils";
+import type { UseChatHelpers } from "@ai-sdk/react";
 import { formatDistance } from "date-fns";
+import equal from "fast-deep-equal";
 import { AnimatePresence, motion } from "framer-motion";
-import { type Dispatch, memo, type SetStateAction, useCallback, useEffect, useState } from "react";
+import { type Dispatch, type SetStateAction, memo, useCallback, useEffect, useState } from "react";
 import useSWR, { useSWRConfig } from "swr";
 import { useDebounceCallback, useWindowSize } from "usehooks-ts";
-import type { Document, Vote } from "@/lib/db/schema";
-import { fetcher } from "@/lib/utils";
-import { MultimodalInput } from "./multimodal-input";
-import { Toolbar } from "./toolbar";
-import { VersionFooter } from "./version-footer";
 import { ArtifactActions } from "./artifact-actions";
 import { ArtifactCloseButton } from "./artifact-close-button";
 import { ArtifactMessages } from "./artifact-messages";
+import { MultimodalInput } from "./multimodal-input";
+import { Toolbar } from "./toolbar";
 import { useSidebar } from "./ui/sidebar";
-import { useArtifact } from "@/hooks/use-artifact";
-import { imageArtifact } from "@/artifacts/image/client";
-import { codeArtifact } from "@/artifacts/code/client";
-import { sheetArtifact } from "@/artifacts/sheet/client";
-import { textArtifact } from "@/artifacts/text/client";
-import equal from "fast-deep-equal";
-import type { UseChatHelpers } from "@ai-sdk/react";
+import { VersionFooter } from "./version-footer";
 import type { VisibilityType } from "./visibility-selector";
-import type { Attachment, ChatMessage } from "@/lib/types";
 
 export const artifactDefinitions = [textArtifact, codeArtifact, imageArtifact, sheetArtifact];
 export type ArtifactKind = (typeof artifactDefinitions)[number]["kind"];
@@ -56,20 +56,20 @@ function PureArtifact({
   isReadonly,
   selectedVisibilityType,
 }: {
-  chatId: string;
-  input: string;
-  setInput: Dispatch<SetStateAction<string>>;
-  status: UseChatHelpers<ChatMessage>["status"];
-  stop: UseChatHelpers<ChatMessage>["stop"];
-  attachments: Attachment[];
-  setAttachments: Dispatch<SetStateAction<Attachment[]>>;
-  messages: ChatMessage[];
-  setMessages: UseChatHelpers<ChatMessage>["setMessages"];
-  votes: Array<Vote> | undefined;
-  sendMessage: UseChatHelpers<ChatMessage>["sendMessage"];
-  regenerate: UseChatHelpers<ChatMessage>["regenerate"];
-  isReadonly: boolean;
-  selectedVisibilityType: VisibilityType;
+  chatId?: string;
+  input?: string;
+  setInput?: Dispatch<SetStateAction<string>>;
+  status?: UseChatHelpers<ChatMessage>["status"];
+  stop?: UseChatHelpers<ChatMessage>["stop"];
+  attachments?: Attachment[];
+  setAttachments?: Dispatch<SetStateAction<Attachment[]>>;
+  messages?: ChatMessage[];
+  setMessages?: UseChatHelpers<ChatMessage>["setMessages"];
+  votes?: Array<Vote> | undefined;
+  sendMessage?: UseChatHelpers<ChatMessage>["sendMessage"];
+  regenerate?: UseChatHelpers<ChatMessage>["regenerate"];
+  isReadonly?: boolean;
+  selectedVisibilityType?: VisibilityType;
 }) {
   const { artifact, setArtifact, metadata, setMetadata } = useArtifact();
 
@@ -107,7 +107,7 @@ function PureArtifact({
 
   useEffect(() => {
     mutateDocuments();
-  }, [artifact.status, mutateDocuments]);
+  }, [mutateDocuments]);
 
   const { mutate } = useSWRConfig();
   const [isContentDirty, setIsContentDirty] = useState(false);
@@ -260,7 +260,7 @@ function PureArtifact({
             />
           )}
 
-          {!isMobile && (
+          {!isMobile && chatId && (
             <motion.div
               className="relative w-[400px] bg-muted dark:bg-background h-dvh shrink-0"
               initial={{ opacity: 0, x: 10, scale: 1 }}
@@ -294,32 +294,42 @@ function PureArtifact({
               </AnimatePresence>
 
               <div className="flex flex-col h-full justify-between items-center">
-                <ArtifactMessages
-                  chatId={chatId}
-                  status={status}
-                  votes={votes}
-                  messages={messages}
-                  setMessages={setMessages}
-                  regenerate={regenerate}
-                  isReadonly={isReadonly}
-                  artifactStatus={artifact.status}
-                />
+                {status && setMessages && regenerate && isReadonly !== undefined && (
+                  <ArtifactMessages
+                    chatId={chatId}
+                    status={status}
+                    votes={votes}
+                    messages={messages || []}
+                    setMessages={setMessages}
+                    regenerate={regenerate}
+                    isReadonly={isReadonly}
+                    artifactStatus={artifact.status}
+                  />
+                )}
 
                 <form className="flex flex-row gap-2 relative items-end w-full px-4 pb-4">
-                  <MultimodalInput
-                    chatId={chatId}
-                    input={input}
-                    setInput={setInput}
-                    status={status}
-                    stop={stop}
-                    attachments={attachments}
-                    setAttachments={setAttachments}
-                    messages={messages}
-                    sendMessage={sendMessage}
-                    className="bg-background dark:bg-muted"
-                    setMessages={setMessages}
-                    selectedVisibilityType={selectedVisibilityType}
-                  />
+                  {setInput &&
+                    status &&
+                    stop &&
+                    setAttachments &&
+                    setMessages &&
+                    sendMessage &&
+                    selectedVisibilityType && (
+                      <MultimodalInput
+                        chatId={chatId}
+                        input={input || ""}
+                        setInput={setInput}
+                        status={status}
+                        stop={stop}
+                        attachments={attachments || []}
+                        setAttachments={setAttachments}
+                        messages={messages || []}
+                        sendMessage={sendMessage}
+                        className="bg-background dark:bg-muted"
+                        setMessages={setMessages}
+                        selectedVisibilityType={selectedVisibilityType}
+                      />
+                    )}
                 </form>
               </div>
             </motion.div>
@@ -442,7 +452,7 @@ function PureArtifact({
               />
 
               <AnimatePresence>
-                {isCurrentVersion && (
+                {isCurrentVersion && sendMessage && status && stop && setMessages && (
                   <Toolbar
                     isToolbarVisible={isToolbarVisible}
                     setIsToolbarVisible={setIsToolbarVisible}
@@ -476,7 +486,12 @@ export const Artifact = memo(PureArtifact, (prevProps, nextProps) => {
   if (prevProps.status !== nextProps.status) return false;
   if (!equal(prevProps.votes, nextProps.votes)) return false;
   if (prevProps.input !== nextProps.input) return false;
-  if (!equal(prevProps.messages, nextProps.messages.length)) return false;
+  if (
+    prevProps.messages &&
+    nextProps.messages &&
+    !equal(prevProps.messages.length, nextProps.messages.length)
+  )
+    return false;
   if (prevProps.selectedVisibilityType !== nextProps.selectedVisibilityType) return false;
 
   return true;

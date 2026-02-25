@@ -6,7 +6,6 @@ export const useCountryStateCitySelection = () => {
   const [deptoStateId, setDeptoStateId] = useState<string>();
   const lookupStore = useLookupStore();
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: only run on mount once, dependencies are not needed
   useEffect(() => {
     lookupStore.fetchCountries();
   }, []);

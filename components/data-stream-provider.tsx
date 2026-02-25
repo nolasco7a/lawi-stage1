@@ -1,8 +1,9 @@
 "use client";
 
-import React, { createContext, useContext, useMemo, useState } from "react";
-import type { DataUIPart } from "ai";
 import type { CustomUIDataTypes } from "@/lib/types";
+import type { DataUIPart } from "ai";
+import type React from "react";
+import { createContext, useContext, useMemo, useState } from "react";
 
 interface DataStreamContextValue {
   dataStream: DataUIPart<CustomUIDataTypes>[];

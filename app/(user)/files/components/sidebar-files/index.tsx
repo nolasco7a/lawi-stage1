@@ -5,7 +5,6 @@ import {
   Sidebar,
   SidebarContent,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarInset,
   SidebarProvider,
   useSidebar,
@@ -15,6 +14,7 @@ import { Footer } from "@/app/(user)/files/components/sidebar-files/footer";
 import { Header } from "@/app/(user)/files/components/sidebar-files/header";
 import { SearchBar } from "@/app/(user)/files/components/sidebar-files/search-bar";
 import { Sort } from "@/app/(user)/files/components/sidebar-files/sort";
+import { SidebarTabs } from "@/app/(user)/files/components/sidebar-files/tabs";
 import type React from "react";
 
 interface SidebarFilesProps {
@@ -51,11 +51,9 @@ export function SidebarFiles({ children }: SidebarFilesProps) {
             </div>
           </SidebarGroupContent>
 
-          {/*content list of files*/}
-          <SidebarGroupLabel className={"mt-4 flex-shrink-0"}>
-            Lista de documentos
-          </SidebarGroupLabel>
-          <div className="flex-1 min-h-0">
+          <SidebarTabs />
+
+          <div className="flex-1 min-h-0 pt-2">
             <ListFiles />
           </div>
         </SidebarContent>

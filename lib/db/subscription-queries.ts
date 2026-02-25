@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { invoice, subscription, user } from "@/lib/db/schema";
+import { invoice, subscription } from "@/lib/db/schema";
 import { and, desc, eq, inArray } from "drizzle-orm";
 
 export interface UserSubscription {
@@ -171,12 +171,8 @@ export async function getSubscriptionByStripeId(
 }
 
 // Update user's customer ID (useful for linking users to Stripe customers)
-export async function updateUserCustomerId(userId: string, customerId: string): Promise<void> {
+export async function updateUserCustomerId(_userId: string, _customerId: string): Promise<void> {
   try {
-    // TODO: checar esta funcion, creo que alguna sfunciones de stripe no sirven para nada por que tengo dos configuraciones, elegir con cual quedarme
-    // You might want to add a customer_id field to the user table
-    // For now, this is a placeholder function
-    console.log(`Would update user ${userId} with customer ID ${customerId}`);
   } catch (error) {
     console.error("Error updating user customer ID:", error);
     throw error;
@@ -186,7 +182,7 @@ export async function updateUserCustomerId(userId: string, customerId: string): 
 // Cancel subscription (set to cancel at period end)
 export async function cancelSubscriptionAtPeriodEnd(subscriptionId: string): Promise<boolean> {
   try {
-    const result = await db
+    const _result = await db
       .update(subscription)
       .set({
         cancel_at_period_end: true,
@@ -204,7 +200,7 @@ export async function cancelSubscriptionAtPeriodEnd(subscriptionId: string): Pro
 // Reactivate subscription (remove cancel at period end)
 export async function reactivateSubscription(subscriptionId: string): Promise<boolean> {
   try {
-    const result = await db
+    const _result = await db
       .update(subscription)
       .set({
         cancel_at_period_end: false,

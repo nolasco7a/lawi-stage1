@@ -1,5 +1,6 @@
 import { auth } from "@/app/(auth)/auth";
 import {
+  createEmptyDocument,
   deleteDocumentById,
   getDocumentsById,
   getDocumentsByUserId,
@@ -19,6 +20,27 @@ export async function GET() {
     return NextResponse.json(response);
   } catch (error) {
     console.error("Error fetching documents:", error);
+    return new NextResponse("Internal Server Error", { status: 500 });
+  }
+}
+
+export async function POST() {
+  const session = await auth();
+
+  if (!session || !session.user) {
+    return new NextResponse("Unauthorized", { status: 401 });
+  }
+
+  try {
+    const [doc] = await createEmptyDocument({
+      title: "Nuevo Documento",
+      kind: "text",
+      userId: session.user.id,
+    });
+
+    return NextResponse.json(doc);
+  } catch (error) {
+    console.error("Error creating empty document:", error);
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }

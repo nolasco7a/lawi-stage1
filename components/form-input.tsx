@@ -1,7 +1,7 @@
 import { PhoneInput } from "@/components/phone-input";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import type { FieldValues, UseFormReturn } from "react-hook-form";
+import type { UseFormReturn } from "react-hook-form";
 import type { Country } from "react-phone-number-input";
 
 import {
@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/select";
 
 type FormInputProps = {
-  // biome-ignore lint/suspicious/noExplicitAny: form is any type
   form: UseFormReturn<any>;
   name: string;
   label: string;
@@ -24,7 +23,6 @@ type FormInputProps = {
 };
 
 type FormInputPhoneProps = {
-  // biome-ignore lint/suspicious/noExplicitAny: form is any type
   form: UseFormReturn<any>;
   name: string;
   label: string;
@@ -36,7 +34,6 @@ type FormInputPhoneProps = {
 };
 
 type FormInputSelectProps = {
-  // biome-ignore lint/suspicious/noExplicitAny: form is any type
   form: UseFormReturn<any>;
   name: string;
   label: string;
