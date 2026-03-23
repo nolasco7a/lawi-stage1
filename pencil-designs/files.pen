@@ -1,0 +1,522 @@
+{
+  "version": "2.8",
+  "children": [
+    {
+      "type": "frame",
+      "id": "cg0wL",
+      "x": 0,
+      "y": 0,
+      "name": "Files Page",
+      "width": 1200,
+      "fill": "#F8FAFC",
+      "layout": "vertical",
+      "gap": 32,
+      "padding": [
+        40,
+        48
+      ],
+      "children": [
+        {
+          "type": "frame",
+          "id": "uQ4R2",
+          "name": "Main Content",
+          "width": "fill_container",
+          "gap": 24,
+          "children": [
+            {
+              "type": "frame",
+              "id": "g1nZm",
+              "name": "Files Sidebar",
+              "width": 320,
+              "height": 600,
+              "fill": "#FFFFFF",
+              "cornerRadius": 8,
+              "stroke": {
+                "align": "inside",
+                "thickness": 1,
+                "fill": "#E2E8F0"
+              },
+              "layout": "vertical",
+              "gap": 16,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "snzLx",
+                  "name": "Sidebar Header",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "rlSvD",
+                      "name": "sidebarTitle",
+                      "fill": "#0F172A",
+                      "content": "Documentos",
+                      "fontFamily": "Space Grotesk",
+                      "fontSize": 16,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "sN947",
+                      "name": "Search Bar",
+                      "width": "fill_container",
+                      "fill": "#F8FAFC",
+                      "cornerRadius": 6,
+                      "gap": 8,
+                      "padding": [
+                        8,
+                        12
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon_font",
+                          "id": "Rptq1",
+                          "name": "searchIcon",
+                          "width": 16,
+                          "height": 16,
+                          "iconFontName": "search",
+                          "iconFontFamily": "lucide",
+                          "fill": "#64748B"
+                        },
+                        {
+                          "type": "text",
+                          "id": "eT8lm",
+                          "name": "searchPlaceholder",
+                          "fill": "#64748B",
+                          "content": "Buscar documentos...",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "seYLO",
+                      "name": "Filter Row",
+                      "gap": 8,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "7rNUY",
+                          "name": "filterLabel",
+                          "fill": "#64748B",
+                          "content": "Ordenar:",
+                          "fontFamily": "Inter",
+                          "fontSize": 12,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "D8DRU",
+                          "name": "Filter Button",
+                          "fill": "#F8FAFC",
+                          "cornerRadius": 6,
+                          "gap": 6,
+                          "padding": [
+                            6,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "a0stv",
+                              "name": "filterText",
+                              "fill": "#0F172A",
+                              "content": "Recientes",
+                              "fontFamily": "Inter",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "icon_font",
+                              "id": "rQeJh",
+                              "name": "filterIcon",
+                              "width": 14,
+                              "height": 14,
+                              "iconFontName": "chevron-down",
+                              "iconFontFamily": "lucide",
+                              "fill": "#64748B"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "a1eJK",
+                  "name": "Divider",
+                  "width": "fill_container",
+                  "height": 1,
+                  "fill": "#E2E8F0"
+                },
+                {
+                  "type": "text",
+                  "id": "fbOlU",
+                  "name": "fileListLabel",
+                  "fill": "#64748B",
+                  "content": "Lista de documentos",
+                  "fontFamily": "Inter",
+                  "fontSize": 12,
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "frame",
+                  "id": "3SVDV",
+                  "name": "File List",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "A9bWg",
+                      "name": "File Item 1",
+                      "width": "fill_container",
+                      "fill": "#E7F6FC",
+                      "cornerRadius": 6,
+                      "layout": "vertical",
+                      "gap": 8,
+                      "padding": 12,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "YSPUE",
+                          "name": "File Header",
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon_font",
+                              "id": "gX0JW",
+                              "name": "fileIcon",
+                              "width": 16,
+                              "height": 16,
+                              "iconFontName": "file-text",
+                              "iconFontFamily": "lucide",
+                              "fill": "#16B1E5"
+                            },
+                            {
+                              "type": "text",
+                              "id": "ed7lw",
+                              "name": "fileName",
+                              "fill": "#0F172A",
+                              "content": "Contrato_Arrendamiento.pdf",
+                              "fontFamily": "Inter",
+                              "fontSize": 13,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "aiYjw",
+                          "name": "fileMeta",
+                          "fill": "#64748B",
+                          "content": "Modificado hace 2 días • 245 KB",
+                          "fontFamily": "Inter",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "XaRUL",
+                      "name": "File Item 2",
+                      "width": "fill_container",
+                      "fill": "#FFFFFF",
+                      "cornerRadius": 6,
+                      "stroke": {
+                        "align": "inside",
+                        "thickness": 1,
+                        "fill": "#E2E8F0"
+                      },
+                      "layout": "vertical",
+                      "gap": 8,
+                      "padding": 12,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "24TNO",
+                          "name": "File Header",
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon_font",
+                              "id": "ER2Rv",
+                              "name": "fileIcon",
+                              "width": 16,
+                              "height": 16,
+                              "iconFontName": "file-text",
+                              "iconFontFamily": "lucide",
+                              "fill": "#64748B"
+                            },
+                            {
+                              "type": "text",
+                              "id": "oIfo8",
+                              "name": "fileName",
+                              "fill": "#0F172A",
+                              "content": "Demanda_Civil.docx",
+                              "fontFamily": "Inter",
+                              "fontSize": 13,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "U1QYq",
+                          "name": "fileMeta",
+                          "fill": "#64748B",
+                          "content": "Modificado hace 5 días • 128 KB",
+                          "fontFamily": "Inter",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "h0XGU",
+                      "name": "File Item 3",
+                      "width": "fill_container",
+                      "fill": "#FFFFFF",
+                      "cornerRadius": 6,
+                      "stroke": {
+                        "align": "inside",
+                        "thickness": 1,
+                        "fill": "#E2E8F0"
+                      },
+                      "layout": "vertical",
+                      "gap": 8,
+                      "padding": 12,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "dsK1P",
+                          "name": "File Header",
+                          "gap": 8,
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon_font",
+                              "id": "mc2X6",
+                              "name": "fileIcon",
+                              "width": 16,
+                              "height": 16,
+                              "iconFontName": "file-text",
+                              "iconFontFamily": "lucide",
+                              "fill": "#64748B"
+                            },
+                            {
+                              "type": "text",
+                              "id": "Qxs5c",
+                              "name": "fileName",
+                              "fill": "#0F172A",
+                              "content": "Evidencias.csv",
+                              "fontFamily": "Inter",
+                              "fontSize": 13,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "vVLLV",
+                          "name": "fileMeta",
+                          "fill": "#64748B",
+                          "content": "Modificado hace 1 semana • 89 KB",
+                          "fontFamily": "Inter",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "i6CDj",
+              "name": "Document Viewer",
+              "width": "fill_container",
+              "height": 600,
+              "fill": "#FFFFFF",
+              "cornerRadius": 8,
+              "stroke": {
+                "align": "inside",
+                "thickness": 1,
+                "fill": "#E2E8F0"
+              },
+              "layout": "vertical",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "D30Mm",
+                  "name": "Viewer Header",
+                  "width": "fill_container",
+                  "fill": "#F8FAFC",
+                  "gap": 12,
+                  "padding": 16,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "btKUk",
+                      "name": "docIcon",
+                      "width": 24,
+                      "height": 24,
+                      "iconFontName": "file-text",
+                      "iconFontFamily": "lucide",
+                      "fill": "#64748B"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "LMPie",
+                      "name": "Doc Info",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 2,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "VqNOA",
+                          "name": "docTitle",
+                          "fill": "#0F172A",
+                          "content": "Contrato_Arrendamiento.pdf",
+                          "fontFamily": "Inter",
+                          "fontSize": 14,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "EfpY8",
+                          "name": "docType",
+                          "fill": "#64748B",
+                          "content": "PDF",
+                          "fontFamily": "Inter",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "ZiFri",
+                  "name": "Viewer Content",
+                  "width": "fill_container",
+                  "height": "fill_container",
+                  "fill": "#FAFAFA",
+                  "padding": 32,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "1fksd",
+                      "name": "Editor Content",
+                      "width": "fill_container",
+                      "fill": "transparent",
+                      "layout": "vertical",
+                      "gap": 20,
+                      "padding": [
+                        64,
+                        56
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "x4znI",
+                          "name": "h1",
+                          "fill": "#0F172A",
+                          "content": "El Bosque de las Estrellas Susurrantes",
+                          "lineHeight": 1.3,
+                          "fontFamily": "Space Grotesk",
+                          "fontSize": 28,
+                          "fontWeight": "700"
+                        },
+                        {
+                          "type": "text",
+                          "id": "N1KAh",
+                          "name": "h2",
+                          "fill": "#0F172A",
+                          "content": "Una Noche Mágica",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Space Grotesk",
+                          "fontSize": 20,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "yZ78Q",
+                          "name": "p1",
+                          "fill": "#2C3844",
+                          "textGrowth": "fixed-width",
+                          "width": 600,
+                          "content": "Érase una vez, en un pueblo entre colinas verdes, una niña llamada Luna. Cada noche, soñaba con explorar el bosque cercano. \"¡Ojalá pudiera ir de noche!\", susurraba.",
+                          "lineHeight": 1.7,
+                          "fontFamily": "Inter",
+                          "fontSize": 16,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "ak6YF",
+                          "name": "p2",
+                          "fill": "#2C3844",
+                          "textGrowth": "fixed-width",
+                          "width": 595,
+                          "content": "Una luna llena, un viento suave le habló al oído: \"Ven al bosque de las estrellas susurrantes\". Su espíritu frío hasta allí.",
+                          "lineHeight": 1.7,
+                          "fontFamily": "Inter",
+                          "fontSize": 16,
+                          "fontWeight": "normal"
+                        },
+                        {
+                          "type": "text",
+                          "id": "n8l5H",
+                          "name": "h3",
+                          "fill": "#0F172A",
+                          "content": "Los Árboles Cantores",
+                          "lineHeight": 1.4,
+                          "fontFamily": "Space Grotesk",
+                          "fontSize": 20,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "ibohS",
+                          "name": "p3",
+                          "fill": "#2C3844",
+                          "textGrowth": "fixed-width",
+                          "width": 609,
+                          "content": "Los árboles brillaban como estrellas. Sus hojas cantaban nanas al rozarlas. Un búho sabio saludó: \"Bienvenida, soñadora. Aquí los sueños se tejen con hilos de plata\".",
+                          "lineHeight": 1.7,
+                          "fontFamily": "Inter",
+                          "fontSize": 16,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

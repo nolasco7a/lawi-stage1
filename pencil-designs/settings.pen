@@ -1,0 +1,2474 @@
+{
+  "version": "2.8",
+  "children": [
+    {
+      "type": "frame",
+      "id": "ai6M6",
+      "x": 0,
+      "y": 0,
+      "name": "Settings - Usuario Regular",
+      "width": 1200,
+      "fill": "$--bg-surface",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "LlRpe",
+          "name": "Header",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 4,
+          "padding": [
+            40,
+            48,
+            0,
+            48
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "OGsBj",
+              "name": "headerTitle",
+              "fill": "$--foreground",
+              "content": "Configuración",
+              "fontFamily": "Space Grotesk",
+              "fontSize": 28,
+              "fontWeight": "600",
+              "letterSpacing": -0.5
+            },
+            {
+              "type": "text",
+              "id": "V2Gyk",
+              "name": "headerDesc",
+              "fill": "$--muted-foreground",
+              "content": "Administra tu cuenta y preferencias personales",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "PojUe",
+          "name": "Body",
+          "width": "fill_container",
+          "gap": 32,
+          "padding": [
+            32,
+            48,
+            40,
+            48
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "7CzZ2",
+              "name": "Sidebar Nav",
+              "width": 220,
+              "layout": "vertical",
+              "gap": 4,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "wdXuX",
+                  "name": "Nav - Perfil",
+                  "width": "fill_container",
+                  "fill": "$--accent-light",
+                  "cornerRadius": 6,
+                  "gap": 10,
+                  "padding": [
+                    10,
+                    14
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "4u4SO",
+                      "name": "nav1Icon",
+                      "width": 18,
+                      "height": 18,
+                      "iconFontName": "user",
+                      "iconFontFamily": "lucide",
+                      "fill": "$--accent"
+                    },
+                    {
+                      "type": "text",
+                      "id": "IQaBH",
+                      "name": "nav1Text",
+                      "fill": "$--accent",
+                      "content": "Perfil",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "0CeMj",
+                  "name": "Nav - Cuenta",
+                  "width": "fill_container",
+                  "cornerRadius": 6,
+                  "gap": 10,
+                  "padding": [
+                    10,
+                    14
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "RFg2G",
+                      "name": "nav2Icon",
+                      "width": 18,
+                      "height": 18,
+                      "iconFontName": "shield",
+                      "iconFontFamily": "lucide",
+                      "fill": "$--muted-foreground"
+                    },
+                    {
+                      "type": "text",
+                      "id": "bC44p",
+                      "name": "nav2Text",
+                      "fill": "$--muted-foreground",
+                      "content": "Cuenta",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "KYObH",
+                  "name": "Nav - Suscripción",
+                  "width": "fill_container",
+                  "cornerRadius": 6,
+                  "gap": 10,
+                  "padding": [
+                    10,
+                    14
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "dGomn",
+                      "name": "nav3Icon",
+                      "width": 18,
+                      "height": 18,
+                      "iconFontName": "credit-card",
+                      "iconFontFamily": "lucide",
+                      "fill": "$--muted-foreground"
+                    },
+                    {
+                      "type": "text",
+                      "id": "Ky3ey",
+                      "name": "nav3Text",
+                      "fill": "$--muted-foreground",
+                      "content": "Suscripción",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "MTsZ1",
+                  "name": "Nav - Preferencias",
+                  "width": "fill_container",
+                  "cornerRadius": 6,
+                  "gap": 10,
+                  "padding": [
+                    10,
+                    14
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "pvGxc",
+                      "name": "nav4Icon",
+                      "width": 18,
+                      "height": 18,
+                      "iconFontName": "sliders-horizontal",
+                      "iconFontFamily": "lucide",
+                      "fill": "$--muted-foreground"
+                    },
+                    {
+                      "type": "text",
+                      "id": "KVMwd",
+                      "name": "nav4Text",
+                      "fill": "$--muted-foreground",
+                      "content": "Preferencias",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "P4Zhs",
+                  "name": "Nav - Notificaciones",
+                  "width": "fill_container",
+                  "cornerRadius": 6,
+                  "gap": 10,
+                  "padding": [
+                    10,
+                    14
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "MAWOn",
+                      "name": "nav5Icon",
+                      "width": 18,
+                      "height": 18,
+                      "iconFontName": "bell",
+                      "iconFontFamily": "lucide",
+                      "fill": "$--muted-foreground"
+                    },
+                    {
+                      "type": "text",
+                      "id": "AtLfR",
+                      "name": "nav5Text",
+                      "fill": "$--muted-foreground",
+                      "content": "Notificaciones",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "teazz",
+              "name": "Content Area",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 24,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "sUZzB",
+                  "name": "Card - Información Personal",
+                  "width": "fill_container",
+                  "fill": "$--card",
+                  "cornerRadius": 8,
+                  "stroke": {
+                    "align": "inside",
+                    "thickness": 1,
+                    "fill": "$--border"
+                  },
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#0000000D",
+                    "offset": {
+                      "x": 0,
+                      "y": 1
+                    },
+                    "blur": 3
+                  },
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "v6dyE",
+                      "name": "Card Header",
+                      "width": "fill_container",
+                      "stroke": {
+                        "align": "inside",
+                        "thickness": {
+                          "bottom": 1
+                        },
+                        "fill": "$--border"
+                      },
+                      "layout": "vertical",
+                      "gap": 4,
+                      "padding": [
+                        24,
+                        24,
+                        16,
+                        24
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "7Jd0F",
+                          "name": "cardTitle",
+                          "fill": "$--foreground",
+                          "content": "Información personal",
+                          "fontFamily": "Space Grotesk",
+                          "fontSize": 18,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "uS5v5",
+                          "name": "cardDesc",
+                          "fill": "$--muted-foreground",
+                          "content": "Actualiza tu información de perfil y datos de contacto",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "jidyr",
+                      "name": "Card Body",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 20,
+                      "padding": 24,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "SGqXK",
+                          "name": "Row - Nombres",
+                          "width": "fill_container",
+                          "gap": 16,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "hlJvT",
+                              "name": "Field - Nombre",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": 6,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "QRhv7",
+                                  "name": "label1",
+                                  "fill": "$--foreground",
+                                  "content": "Nombre",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 13,
+                                  "fontWeight": "500"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "JV2fB",
+                                  "name": "Input",
+                                  "width": "fill_container",
+                                  "height": 40,
+                                  "fill": "$--background",
+                                  "cornerRadius": 6,
+                                  "stroke": {
+                                    "align": "inside",
+                                    "thickness": 1,
+                                    "fill": "$--input"
+                                  },
+                                  "padding": [
+                                    0,
+                                    12
+                                  ],
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "Gxhf5",
+                                      "name": "input1Text",
+                                      "fill": "$--foreground",
+                                      "content": "Fernando",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 14,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "iQlFd",
+                              "name": "Field - Apellido",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": 6,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "BYBve",
+                                  "name": "label2",
+                                  "fill": "$--foreground",
+                                  "content": "Apellido",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 13,
+                                  "fontWeight": "500"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "7Yoz4",
+                                  "name": "Input",
+                                  "width": "fill_container",
+                                  "height": 40,
+                                  "fill": "$--background",
+                                  "cornerRadius": 6,
+                                  "stroke": {
+                                    "align": "inside",
+                                    "thickness": 1,
+                                    "fill": "$--input"
+                                  },
+                                  "padding": [
+                                    0,
+                                    12
+                                  ],
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "ay0fV",
+                                      "name": "input2Text",
+                                      "fill": "$--foreground",
+                                      "content": "Nolasco",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 14,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "HYtCe",
+                          "name": "Field - Email",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 6,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "LCkGz",
+                              "name": "labelEmail",
+                              "fill": "$--foreground",
+                              "content": "Correo electrónico",
+                              "fontFamily": "Inter",
+                              "fontSize": 13,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "2FQcC",
+                              "name": "Input",
+                              "width": "fill_container",
+                              "height": 40,
+                              "fill": "#F8FAFC",
+                              "cornerRadius": 6,
+                              "stroke": {
+                                "align": "inside",
+                                "thickness": 1,
+                                "fill": "$--input"
+                              },
+                              "padding": [
+                                0,
+                                12
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "ltO4M",
+                                  "name": "inputEmailText",
+                                  "fill": "$--text-muted",
+                                  "content": "nolasco7a2@gmail.com",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "text",
+                              "id": "yUc0G",
+                              "name": "emailHint",
+                              "fill": "$--text-muted",
+                              "content": "El correo no puede ser modificado",
+                              "fontFamily": "Inter",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "zFFyx",
+                          "name": "Field - Teléfono",
+                          "width": "fill_container",
+                          "layout": "vertical",
+                          "gap": 6,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "MVzil",
+                              "name": "labelPhone",
+                              "fill": "$--foreground",
+                              "content": "Teléfono",
+                              "fontFamily": "Inter",
+                              "fontSize": 13,
+                              "fontWeight": "500"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "QbSpM",
+                              "name": "Input",
+                              "width": "fill_container",
+                              "height": 40,
+                              "fill": "$--background",
+                              "cornerRadius": 6,
+                              "stroke": {
+                                "align": "inside",
+                                "thickness": 1,
+                                "fill": "$--input"
+                              },
+                              "padding": [
+                                0,
+                                12
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "ytiCv",
+                                  "name": "inputPhoneText",
+                                  "fill": "$--foreground",
+                                  "content": "+502 5555-1234",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 14,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "F3Wim",
+                          "name": "Row - Ubicación",
+                          "width": "fill_container",
+                          "gap": 16,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "JL6SC",
+                              "name": "Field - País",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": 6,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "fydVz",
+                                  "name": "labelCountry",
+                                  "fill": "$--foreground",
+                                  "content": "País",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 13,
+                                  "fontWeight": "500"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "fImsH",
+                                  "name": "Select",
+                                  "width": "fill_container",
+                                  "height": 40,
+                                  "fill": "$--background",
+                                  "cornerRadius": 6,
+                                  "stroke": {
+                                    "align": "inside",
+                                    "thickness": 1,
+                                    "fill": "$--input"
+                                  },
+                                  "padding": [
+                                    0,
+                                    12
+                                  ],
+                                  "justifyContent": "space_between",
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "J44V0",
+                                      "name": "selectCountryText",
+                                      "fill": "$--foreground",
+                                      "content": "Guatemala",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 14,
+                                      "fontWeight": "normal"
+                                    },
+                                    {
+                                      "type": "icon_font",
+                                      "id": "9e6In",
+                                      "name": "selectCountryIcon",
+                                      "width": 16,
+                                      "height": 16,
+                                      "iconFontName": "chevron-down",
+                                      "iconFontFamily": "lucide",
+                                      "fill": "$--muted-foreground"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "4PpqI",
+                              "name": "Field - Departamento",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": 6,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "4gWkt",
+                                  "name": "labelDepto",
+                                  "fill": "$--foreground",
+                                  "content": "Departamento",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 13,
+                                  "fontWeight": "500"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "Y5FPq",
+                                  "name": "Select",
+                                  "width": "fill_container",
+                                  "height": 40,
+                                  "fill": "$--background",
+                                  "cornerRadius": 6,
+                                  "stroke": {
+                                    "align": "inside",
+                                    "thickness": 1,
+                                    "fill": "$--input"
+                                  },
+                                  "padding": [
+                                    0,
+                                    12
+                                  ],
+                                  "justifyContent": "space_between",
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "9RytI",
+                                      "name": "selectDeptoText",
+                                      "fill": "$--foreground",
+                                      "content": "Guatemala",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 14,
+                                      "fontWeight": "normal"
+                                    },
+                                    {
+                                      "type": "icon_font",
+                                      "id": "u4EqR",
+                                      "name": "selectDeptoIcon",
+                                      "width": 16,
+                                      "height": 16,
+                                      "iconFontName": "chevron-down",
+                                      "iconFontFamily": "lucide",
+                                      "fill": "$--muted-foreground"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "8eCCv",
+                      "name": "Card Footer",
+                      "width": "fill_container",
+                      "stroke": {
+                        "align": "inside",
+                        "thickness": {
+                          "top": 1
+                        },
+                        "fill": "$--border"
+                      },
+                      "gap": 12,
+                      "padding": [
+                        16,
+                        24
+                      ],
+                      "justifyContent": "end",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "HY7Bo",
+                          "name": "Btn Cancelar",
+                          "fill": "$--background",
+                          "cornerRadius": 6,
+                          "stroke": {
+                            "align": "inside",
+                            "thickness": 1,
+                            "fill": "$--border"
+                          },
+                          "padding": [
+                            10,
+                            20
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "7CB80",
+                              "name": "btnCancelText",
+                              "fill": "$--foreground",
+                              "content": "Cancelar",
+                              "fontFamily": "Inter",
+                              "fontSize": 13,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "KzHln",
+                          "name": "Btn Guardar",
+                          "fill": "#2563EB",
+                          "cornerRadius": 6,
+                          "padding": [
+                            10,
+                            20
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "LTD0F",
+                              "name": "btnSaveText",
+                              "fill": "$--primary-foreground",
+                              "content": "Guardar cambios",
+                              "fontFamily": "Inter",
+                              "fontSize": 13,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "C8670",
+                  "name": "Card - Seguridad",
+                  "width": "fill_container",
+                  "fill": "$--card",
+                  "cornerRadius": 8,
+                  "stroke": {
+                    "align": "inside",
+                    "thickness": 1,
+                    "fill": "$--border"
+                  },
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#0000000D",
+                    "offset": {
+                      "x": 0,
+                      "y": 1
+                    },
+                    "blur": 3
+                  },
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "81LFL",
+                      "name": "Card Header",
+                      "width": "fill_container",
+                      "stroke": {
+                        "align": "inside",
+                        "thickness": {
+                          "bottom": 1
+                        },
+                        "fill": "$--border"
+                      },
+                      "layout": "vertical",
+                      "gap": 4,
+                      "padding": [
+                        24,
+                        24,
+                        16,
+                        24
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "q6TQu",
+                          "name": "secTitle",
+                          "fill": "$--foreground",
+                          "content": "Seguridad de la cuenta",
+                          "fontFamily": "Space Grotesk",
+                          "fontSize": 18,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "woxaa",
+                          "name": "secDesc",
+                          "fill": "$--muted-foreground",
+                          "content": "Gestiona tu contraseña y seguridad",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "nBSVi",
+                      "name": "Card Body",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 20,
+                      "padding": 24,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "4MPTk",
+                          "name": "Password Row",
+                          "width": "fill_container",
+                          "justifyContent": "space_between",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "zFv9K",
+                              "name": "pwdLeft",
+                              "layout": "vertical",
+                              "gap": 2,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "vvcZh",
+                                  "name": "pwdLabel",
+                                  "fill": "$--foreground",
+                                  "content": "Contraseña",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 14,
+                                  "fontWeight": "500"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "v3CZT",
+                                  "name": "pwdHint",
+                                  "fill": "$--muted-foreground",
+                                  "content": "Última actualización: hace 3 meses",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "C1vOK",
+                              "name": "Btn Cambiar",
+                              "fill": "$--background",
+                              "cornerRadius": 6,
+                              "stroke": {
+                                "align": "inside",
+                                "thickness": 1,
+                                "fill": "$--border"
+                              },
+                              "padding": [
+                                8,
+                                16
+                              ],
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "mLLUx",
+                                  "name": "pwdBtnText",
+                                  "fill": "$--foreground",
+                                  "content": "Cambiar contraseña",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 13,
+                                  "fontWeight": "500"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "PqLGs",
+                          "name": "Divider",
+                          "width": "fill_container",
+                          "height": 1,
+                          "fill": "$--border"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "lUahz",
+                          "name": "Delete Row",
+                          "width": "fill_container",
+                          "justifyContent": "space_between",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "Took0",
+                              "name": "deleteLeft",
+                              "layout": "vertical",
+                              "gap": 2,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "QyOJe",
+                                  "name": "deleteLabel",
+                                  "fill": "$--destructive",
+                                  "content": "Eliminar cuenta",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 14,
+                                  "fontWeight": "500"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "O6mHR",
+                                  "name": "deleteHint",
+                                  "fill": "$--muted-foreground",
+                                  "content": "Esta acción es permanente y no se puede deshacer",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "gWkxZ",
+                              "name": "Btn Eliminar",
+                              "cornerRadius": 6,
+                              "stroke": {
+                                "align": "inside",
+                                "thickness": 1,
+                                "fill": "$--destructive"
+                              },
+                              "padding": [
+                                8,
+                                16
+                              ],
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "TnJv5",
+                                  "name": "deleteBtnText",
+                                  "fill": "$--destructive",
+                                  "content": "Eliminar cuenta",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 13,
+                                  "fontWeight": "500"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "8xiZM",
+                  "name": "Card - Suscripción",
+                  "width": "fill_container",
+                  "fill": "$--card",
+                  "cornerRadius": 8,
+                  "stroke": {
+                    "align": "inside",
+                    "thickness": 1,
+                    "fill": "$--border"
+                  },
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#0000000D",
+                    "offset": {
+                      "x": 0,
+                      "y": 1
+                    },
+                    "blur": 3
+                  },
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "tXv64",
+                      "name": "Card Header",
+                      "width": "fill_container",
+                      "stroke": {
+                        "align": "inside",
+                        "thickness": {
+                          "bottom": 1
+                        },
+                        "fill": "$--border"
+                      },
+                      "padding": [
+                        24,
+                        24,
+                        16,
+                        24
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "QZ6UB",
+                          "name": "subHeaderLeft",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "l8s7H",
+                              "name": "subTitle",
+                              "fill": "$--foreground",
+                              "content": "Suscripción",
+                              "fontFamily": "Space Grotesk",
+                              "fontSize": 18,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "VFrmp",
+                              "name": "subDesc",
+                              "fill": "$--muted-foreground",
+                              "content": "Gestiona tu plan y facturación",
+                              "fontFamily": "Inter",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "HevG3",
+                          "name": "Pro Badge",
+                          "fill": "$--pro-badge-light",
+                          "cornerRadius": 20,
+                          "gap": 6,
+                          "padding": [
+                            6,
+                            14
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon_font",
+                              "id": "X2Wva",
+                              "name": "proBadgeIcon",
+                              "width": 14,
+                              "height": 14,
+                              "iconFontName": "crown",
+                              "iconFontFamily": "lucide",
+                              "fill": "$--pro-badge"
+                            },
+                            {
+                              "type": "text",
+                              "id": "8SfHr",
+                              "name": "proBadgeText",
+                              "fill": "$--pro-badge",
+                              "content": "Plan Pro",
+                              "fontFamily": "Inter",
+                              "fontSize": 12,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "S8Gt5",
+                      "name": "Card Body",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 16,
+                      "padding": 24,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "QDMPC",
+                          "name": "Plan Info",
+                          "width": "fill_container",
+                          "gap": 24,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "PTtuJ",
+                              "name": "planDetail1",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": 4,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "yxz2v",
+                                  "name": "planLabel1",
+                                  "fill": "$--muted-foreground",
+                                  "content": "Plan actual",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "gHkoI",
+                                  "name": "planValue1",
+                                  "fill": "$--foreground",
+                                  "content": "Pro - $19.99/mes",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 14,
+                                  "fontWeight": "600"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "PV8M3",
+                              "name": "planDetail2",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": 4,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "SHCGg",
+                                  "name": "planLabel2",
+                                  "fill": "$--muted-foreground",
+                                  "content": "Próxima facturación",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "Paqsk",
+                                  "name": "planValue2",
+                                  "fill": "$--foreground",
+                                  "content": "15 de marzo, 2026",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 14,
+                                  "fontWeight": "600"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "qtYyA",
+                              "name": "planDetail3",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": 4,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "4oAq9",
+                                  "name": "planLabel3",
+                                  "fill": "$--muted-foreground",
+                                  "content": "Estado",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "fzFsz",
+                                  "name": "statusBadge",
+                                  "fill": "$--success-light",
+                                  "cornerRadius": 12,
+                                  "gap": 4,
+                                  "padding": [
+                                    4,
+                                    10
+                                  ],
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "ellipse",
+                                      "id": "u7z5p",
+                                      "name": "statusDot",
+                                      "fill": "$--success",
+                                      "width": 6,
+                                      "height": 6
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "xA9YR",
+                                      "name": "statusText",
+                                      "fill": "$--success",
+                                      "content": "Activa",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 12,
+                                      "fontWeight": "500"
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "ahzro",
+                      "name": "Card Footer",
+                      "width": "fill_container",
+                      "stroke": {
+                        "align": "inside",
+                        "thickness": {
+                          "top": 1
+                        },
+                        "fill": "$--border"
+                      },
+                      "padding": [
+                        16,
+                        24
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "NTdil",
+                          "name": "subFooterLeft",
+                          "gap": 12,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "B9fUr",
+                              "name": "Btn Historial",
+                              "fill": "$--background",
+                              "cornerRadius": 6,
+                              "stroke": {
+                                "align": "inside",
+                                "thickness": 1,
+                                "fill": "$--border"
+                              },
+                              "gap": 6,
+                              "padding": [
+                                8,
+                                16
+                              ],
+                              "justifyContent": "center",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon_font",
+                                  "id": "jT1hm",
+                                  "name": "btnHistIcon",
+                                  "width": 14,
+                                  "height": 14,
+                                  "iconFontName": "receipt",
+                                  "iconFontFamily": "lucide",
+                                  "fill": "$--muted-foreground"
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "EKjzW",
+                                  "name": "btnHistText",
+                                  "fill": "$--foreground",
+                                  "content": "Ver facturas",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 13,
+                                  "fontWeight": "500"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "SB6NG",
+                          "name": "Btn Cancelar Sub",
+                          "cornerRadius": 6,
+                          "padding": [
+                            8,
+                            16
+                          ],
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "OsIYQ",
+                              "name": "btnCancelSubText",
+                              "fill": "$--destructive",
+                              "content": "Cancelar suscripción",
+                              "fontFamily": "Inter",
+                              "fontSize": 13,
+                              "fontWeight": "500"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Jp35T",
+                  "name": "Card - Preferencias",
+                  "width": "fill_container",
+                  "fill": "$--card",
+                  "cornerRadius": 8,
+                  "stroke": {
+                    "align": "inside",
+                    "thickness": 1,
+                    "fill": "$--border"
+                  },
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#0000000D",
+                    "offset": {
+                      "x": 0,
+                      "y": 1
+                    },
+                    "blur": 3
+                  },
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "m6Drw",
+                      "name": "Card Header",
+                      "width": "fill_container",
+                      "stroke": {
+                        "align": "inside",
+                        "thickness": {
+                          "bottom": 1
+                        },
+                        "fill": "$--border"
+                      },
+                      "layout": "vertical",
+                      "gap": 4,
+                      "padding": [
+                        24,
+                        24,
+                        16,
+                        24
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "yvKPb",
+                          "name": "prefTitle",
+                          "fill": "$--foreground",
+                          "content": "Preferencias",
+                          "fontFamily": "Space Grotesk",
+                          "fontSize": 18,
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "text",
+                          "id": "K9Xsl",
+                          "name": "prefDesc",
+                          "fill": "$--muted-foreground",
+                          "content": "Personaliza la apariencia y notificaciones",
+                          "fontFamily": "Inter",
+                          "fontSize": 13,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "bF5Jp",
+                      "name": "Card Body",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 20,
+                      "padding": 24,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "owmTK",
+                          "name": "Theme Row",
+                          "width": "fill_container",
+                          "justifyContent": "space_between",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "8XFpJ",
+                              "name": "themeLeft",
+                              "gap": 12,
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon_font",
+                                  "id": "5zf4O",
+                                  "name": "themeIcon",
+                                  "width": 20,
+                                  "height": 20,
+                                  "iconFontName": "sun",
+                                  "iconFontFamily": "lucide",
+                                  "fill": "$--muted-foreground"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "guoah",
+                                  "name": "themeTextWrap",
+                                  "layout": "vertical",
+                                  "gap": 2,
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "zTXiH",
+                                      "name": "themeLabel",
+                                      "fill": "$--foreground",
+                                      "content": "Tema de la aplicación",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 14,
+                                      "fontWeight": "500"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "J1XLC",
+                                      "name": "themeHint",
+                                      "fill": "$--muted-foreground",
+                                      "content": "Selecciona el tema visual de tu preferencia",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 12,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "ACvEV",
+                              "name": "Select",
+                              "width": 160,
+                              "height": 36,
+                              "fill": "$--background",
+                              "cornerRadius": 6,
+                              "stroke": {
+                                "align": "inside",
+                                "thickness": 1,
+                                "fill": "$--input"
+                              },
+                              "padding": [
+                                0,
+                                12
+                              ],
+                              "justifyContent": "space_between",
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "5yO3z",
+                                  "name": "themeSelectText",
+                                  "fill": "$--foreground",
+                                  "content": "Claro",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 13,
+                                  "fontWeight": "normal"
+                                },
+                                {
+                                  "type": "icon_font",
+                                  "id": "6wgeS",
+                                  "name": "themeSelectIcon",
+                                  "width": 14,
+                                  "height": 14,
+                                  "iconFontName": "chevron-down",
+                                  "iconFontFamily": "lucide",
+                                  "fill": "$--muted-foreground"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "I7yho",
+                          "name": "Divider",
+                          "width": "fill_container",
+                          "height": 1,
+                          "fill": "$--border"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "j8pAO",
+                          "name": "Notification Row",
+                          "width": "fill_container",
+                          "justifyContent": "space_between",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "0rboR",
+                              "name": "notifLeft",
+                              "gap": 12,
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon_font",
+                                  "id": "H5b5O",
+                                  "name": "notifIcon",
+                                  "width": 20,
+                                  "height": 20,
+                                  "iconFontName": "mail",
+                                  "iconFontFamily": "lucide",
+                                  "fill": "$--muted-foreground"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "U0yD0",
+                                  "name": "notifTextWrap",
+                                  "layout": "vertical",
+                                  "gap": 2,
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "i1Miq",
+                                      "name": "notifLabel",
+                                      "fill": "$--foreground",
+                                      "content": "Notificaciones por correo",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 14,
+                                      "fontWeight": "500"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "OK8RJ",
+                                      "name": "notifHint",
+                                      "fill": "$--muted-foreground",
+                                      "content": "Recibe actualizaciones sobre tu cuenta por email",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 12,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "KPYOH",
+                              "name": "Toggle On",
+                              "width": 44,
+                              "height": 24,
+                              "fill": "#2563EB",
+                              "cornerRadius": 12,
+                              "layout": "none",
+                              "children": [
+                                {
+                                  "type": "ellipse",
+                                  "id": "p6J4P",
+                                  "x": 22,
+                                  "y": 2,
+                                  "name": "toggleKnob1",
+                                  "fill": "$--primary-foreground",
+                                  "width": 20,
+                                  "height": 20
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "JHMDU",
+                          "name": "Divider",
+                          "width": "fill_container",
+                          "height": 1,
+                          "fill": "$--border"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "dDoSv",
+                          "name": "Sidebar Pref Row",
+                          "width": "fill_container",
+                          "justifyContent": "space_between",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "iJZo0",
+                              "name": "sidebarLeft",
+                              "gap": 12,
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon_font",
+                                  "id": "VCdj4",
+                                  "name": "sidebarIcon",
+                                  "width": 20,
+                                  "height": 20,
+                                  "iconFontName": "panel-left",
+                                  "iconFontFamily": "lucide",
+                                  "fill": "$--muted-foreground"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "gUXhX",
+                                  "name": "sidebarTextWrap",
+                                  "layout": "vertical",
+                                  "gap": 2,
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "Vy8as",
+                                      "name": "sidebarLabel",
+                                      "fill": "$--foreground",
+                                      "content": "Sidebar abierto por defecto",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 14,
+                                      "fontWeight": "500"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "q2cIU",
+                                      "name": "sidebarHintText",
+                                      "fill": "$--muted-foreground",
+                                      "content": "Abre el sidebar automáticamente al iniciar sesión",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 12,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "0DjH0",
+                              "name": "Toggle Off",
+                              "width": 44,
+                              "height": 24,
+                              "fill": "$--muted",
+                              "cornerRadius": 12,
+                              "layout": "none",
+                              "children": [
+                                {
+                                  "type": "ellipse",
+                                  "id": "T0BtG",
+                                  "x": 2,
+                                  "y": 2,
+                                  "name": "toggleKnob2",
+                                  "fill": "$--primary-foreground",
+                                  "width": 20,
+                                  "height": 20
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "0a7OS",
+      "x": 1400,
+      "y": 0,
+      "name": "Settings - Abogado",
+      "width": 1200,
+      "fill": "$--bg-surface",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "j5Lj9",
+          "name": "Header",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 4,
+          "padding": [
+            40,
+            48,
+            0,
+            48
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "C9Qa5",
+              "name": "lHeaderTitle",
+              "fill": "$--foreground",
+              "content": "Configuración",
+              "fontFamily": "Space Grotesk",
+              "fontSize": 28,
+              "fontWeight": "600",
+              "letterSpacing": -0.5
+            },
+            {
+              "type": "text",
+              "id": "XHDaY",
+              "name": "lHeaderDesc",
+              "fill": "$--muted-foreground",
+              "content": "Administra tu cuenta, perfil profesional y preferencias",
+              "fontFamily": "Inter",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "02RH0",
+          "name": "Body",
+          "width": "fill_container",
+          "gap": 32,
+          "padding": [
+            32,
+            48,
+            40,
+            48
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "Zk62j",
+              "name": "Sidebar Nav",
+              "width": 220,
+              "layout": "vertical",
+              "gap": 4,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "8PHbS",
+                  "name": "Nav - Perfil",
+                  "width": "fill_container",
+                  "cornerRadius": 6,
+                  "gap": 10,
+                  "padding": [
+                    10,
+                    14
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "GXIQG",
+                      "name": "lNav1Icon",
+                      "width": 18,
+                      "height": 18,
+                      "iconFontName": "user",
+                      "iconFontFamily": "lucide",
+                      "fill": "$--muted-foreground"
+                    },
+                    {
+                      "type": "text",
+                      "id": "MvEnT",
+                      "name": "lNav1Text",
+                      "fill": "$--muted-foreground",
+                      "content": "Perfil",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "JDFNp",
+                  "name": "Nav - Profesional",
+                  "width": "fill_container",
+                  "fill": "$--accent-light",
+                  "cornerRadius": 6,
+                  "gap": 10,
+                  "padding": [
+                    10,
+                    14
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "vuHiN",
+                      "name": "lNav2Icon",
+                      "width": 18,
+                      "height": 18,
+                      "iconFontName": "briefcase",
+                      "iconFontFamily": "lucide",
+                      "fill": "$--accent"
+                    },
+                    {
+                      "type": "text",
+                      "id": "ONqIO",
+                      "name": "lNav2Text",
+                      "fill": "$--accent",
+                      "content": "Profesional",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "76Zwc",
+                  "name": "Nav - Cuenta",
+                  "width": "fill_container",
+                  "cornerRadius": 6,
+                  "gap": 10,
+                  "padding": [
+                    10,
+                    14
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "Qu2Cn",
+                      "name": "lNav3Icon",
+                      "width": 18,
+                      "height": 18,
+                      "iconFontName": "shield",
+                      "iconFontFamily": "lucide",
+                      "fill": "$--muted-foreground"
+                    },
+                    {
+                      "type": "text",
+                      "id": "RPnBD",
+                      "name": "lNav3Text",
+                      "fill": "$--muted-foreground",
+                      "content": "Cuenta",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "oOZd3",
+                  "name": "Nav - Suscripción",
+                  "width": "fill_container",
+                  "cornerRadius": 6,
+                  "gap": 10,
+                  "padding": [
+                    10,
+                    14
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "9nbgO",
+                      "name": "lNav4Icon",
+                      "width": 18,
+                      "height": 18,
+                      "iconFontName": "credit-card",
+                      "iconFontFamily": "lucide",
+                      "fill": "$--muted-foreground"
+                    },
+                    {
+                      "type": "text",
+                      "id": "ndPxA",
+                      "name": "lNav4Text",
+                      "fill": "$--muted-foreground",
+                      "content": "Suscripción",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "tJ1l2",
+                  "name": "Nav - Preferencias",
+                  "width": "fill_container",
+                  "cornerRadius": 6,
+                  "gap": 10,
+                  "padding": [
+                    10,
+                    14
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "4GAZC",
+                      "name": "lNav5Icon",
+                      "width": 18,
+                      "height": 18,
+                      "iconFontName": "sliders-horizontal",
+                      "iconFontFamily": "lucide",
+                      "fill": "$--muted-foreground"
+                    },
+                    {
+                      "type": "text",
+                      "id": "z8cdg",
+                      "name": "lNav5Text",
+                      "fill": "$--muted-foreground",
+                      "content": "Preferencias",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "45SO9",
+                  "name": "Nav - Notificaciones",
+                  "width": "fill_container",
+                  "cornerRadius": 6,
+                  "gap": 10,
+                  "padding": [
+                    10,
+                    14
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon_font",
+                      "id": "QNDqJ",
+                      "name": "lNav6Icon",
+                      "width": 18,
+                      "height": 18,
+                      "iconFontName": "bell",
+                      "iconFontFamily": "lucide",
+                      "fill": "$--muted-foreground"
+                    },
+                    {
+                      "type": "text",
+                      "id": "S86Rb",
+                      "name": "lNav6Text",
+                      "fill": "$--muted-foreground",
+                      "content": "Notificaciones",
+                      "fontFamily": "Inter",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "xRmr5",
+              "name": "Content Area",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 24,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "v6Aqh",
+                  "name": "Card - Perfil Profesional",
+                  "width": "fill_container",
+                  "fill": "$--card",
+                  "cornerRadius": 8,
+                  "stroke": {
+                    "align": "inside",
+                    "thickness": 1,
+                    "fill": "$--border"
+                  },
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "#0000000D",
+                    "offset": {
+                      "x": 0,
+                      "y": 1
+                    },
+                    "blur": 3
+                  },
+                  "layout": "vertical",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "CGYup",
+                      "name": "Card Header",
+                      "width": "fill_container",
+                      "stroke": {
+                        "align": "inside",
+                        "thickness": {
+                          "bottom": 1
+                        },
+                        "fill": "$--border"
+                      },
+                      "padding": [
+                        24,
+                        24,
+                        16,
+                        24
+                      ],
+                      "justifyContent": "space_between",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "HosZA",
+                          "name": "proHeaderLeft",
+                          "layout": "vertical",
+                          "gap": 4,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "yfJS2",
+                              "name": "proTitle",
+                              "fill": "$--foreground",
+                              "content": "Perfil profesional",
+                              "fontFamily": "Space Grotesk",
+                              "fontSize": 18,
+                              "fontWeight": "600"
+                            },
+                            {
+                              "type": "text",
+                              "id": "jw2Eq",
+                              "name": "proDesc",
+                              "fill": "$--muted-foreground",
+                              "content": "Información de tu credencial y práctica legal",
+                              "fontFamily": "Inter",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "SROHV",
+                          "name": "Verified Badge",
+                          "fill": "$--success-light",
+                          "cornerRadius": 20,
+                          "gap": 6,
+                          "padding": [
+                            6,
+                            14
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon_font",
+                              "id": "nqcJE",
+                              "name": "verifiedIcon",
+                              "width": 14,
+                              "height": 14,
+                              "iconFontName": "circle-check",
+                              "iconFontFamily": "lucide",
+                              "fill": "$--success"
+                            },
+                            {
+                              "type": "text",
+                              "id": "pUdZa",
+                              "name": "verifiedText",
+                              "fill": "$--success",
+                              "content": "Verificado",
+                              "fontFamily": "Inter",
+                              "fontSize": 12,
+                              "fontWeight": "600"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "wkWJy",
+                      "name": "Card Body",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 20,
+                      "padding": 24,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "DS8Qw",
+                          "name": "Row - Credenciales",
+                          "width": "fill_container",
+                          "gap": 16,
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "QZ6Ee",
+                              "name": "Field - No. Colegiado",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": 6,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "bHmgG",
+                                  "name": "labelCred",
+                                  "fill": "$--foreground",
+                                  "content": "No. de colegiado",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 13,
+                                  "fontWeight": "500"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "5cuej",
+                                  "name": "Input",
+                                  "width": "fill_container",
+                                  "height": 40,
+                                  "fill": "#F8FAFC",
+                                  "cornerRadius": 6,
+                                  "stroke": {
+                                    "align": "inside",
+                                    "thickness": 1,
+                                    "fill": "$--input"
+                                  },
+                                  "padding": [
+                                    0,
+                                    12
+                                  ],
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "WMIdh",
+                                      "name": "inputCredText",
+                                      "fill": "$--text-muted",
+                                      "content": "COL-2024-15832",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 14,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "WlHUN",
+                                  "name": "credHint",
+                                  "fill": "$--text-muted",
+                                  "content": "Este campo es de solo lectura",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "5wk91",
+                              "name": "Field - DPI",
+                              "width": "fill_container",
+                              "layout": "vertical",
+                              "gap": 6,
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "Zpdma",
+                                  "name": "labelDPI",
+                                  "fill": "$--foreground",
+                                  "content": "DPI / Identificación nacional",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 13,
+                                  "fontWeight": "500"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "yz41Q",
+                                  "name": "Input",
+                                  "width": "fill_container",
+                                  "height": 40,
+                                  "fill": "#F8FAFC",
+                                  "cornerRadius": 6,
+                                  "stroke": {
+                                    "align": "inside",
+                                    "thickness": 1,
+                                    "fill": "$--input"
+                                  },
+                                  "padding": [
+                                    0,
+                                    12
+                                  ],
+                                  "alignItems": "center",
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "XIYVh",
+                                      "name": "inputDPIText",
+                                      "fill": "$--text-muted",
+                                      "content": "1234 56789 0101",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 14,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "880I1",
+                                  "name": "dpiHint",
+                                  "fill": "$--text-muted",
+                                  "content": "Este campo es de solo lectura",
+                                  "fontFamily": "Inter",
+                                  "fontSize": 12,
+                                  "fontWeight": "normal"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "9Npj2",
+                          "name": "Divider",
+                          "width": "fill_container",
+                          "height": 1,
+                          "fill": "$--border"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "PhJLV",
+                          "name": "Directory Row",
+                          "width": "fill_container",
+                          "justifyContent": "space_between",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "Ukbse",
+                              "name": "dirLeft",
+                              "gap": 12,
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "icon_font",
+                                  "id": "Scogp",
+                                  "name": "dirIcon",
+                                  "width": 20,
+                                  "height": 20,
+                                  "iconFontName": "globe",
+                                  "iconFontFamily": "lucide",
+                                  "fill": "$--muted-foreground"
+                                },
+                                {
+                                  "type": "frame",
+                                  "id": "PVgNS",
+                                  "name": "dirTextWrap",
+                                  "layout": "vertical",
+                                  "gap": 2,
+                                  "children": [
+                                    {
+                                      "type": "text",
+                                      "id": "hqdsb",
+                                      "name": "dirLabel",
+                                      "fill": "$--foreground",
+                                      "content": "Visible en directorio público",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 14,
+                                      "fontWeight": "500"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "id": "MkTMf",
+                                      "name": "dirHint",
+                                      "fill": "$--muted-foreground",
+                                      "content": "Permite que clientes potenciales te encuentren en el directorio",
+                                      "fontFamily": "Inter",
+                                      "fontSize": 12,
+                                      "fontWeight": "normal"
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "9gdVe",
+                              "name": "Toggle On",
+                              "width": 44,
+                              "height": 24,
+                              "fill": "#2563EB",
+                              "cornerRadius": 12,
+                              "layout": "none",
+                              "children": [
+                                {
+                                  "type": "ellipse",
+                                  "id": "EBaBt",
+                                  "x": 22,
+                                  "y": 2,
+                                  "name": "dirKnob",
+                                  "fill": "$--primary-foreground",
+                                  "width": 20,
+                                  "height": 20
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variables": {
+    "--accent": {
+      "type": "color",
+      "value": "#16B1E5"
+    },
+    "--accent-foreground": {
+      "type": "color",
+      "value": "#FFFFFF"
+    },
+    "--accent-light": {
+      "type": "color",
+      "value": "#E7F6FC"
+    },
+    "--background": {
+      "type": "color",
+      "value": "#FFFFFF"
+    },
+    "--bg-surface": {
+      "type": "color",
+      "value": "#F8FAFC"
+    },
+    "--border": {
+      "type": "color",
+      "value": "#E2E8F0"
+    },
+    "--card": {
+      "type": "color",
+      "value": "#FFFFFF"
+    },
+    "--card-foreground": {
+      "type": "color",
+      "value": "#21242C"
+    },
+    "--destructive": {
+      "type": "color",
+      "value": "#E0332A"
+    },
+    "--destructive-foreground": {
+      "type": "color",
+      "value": "#FFFFFF"
+    },
+    "--font-body": {
+      "type": "string",
+      "value": "Inter"
+    },
+    "--font-display": {
+      "type": "string",
+      "value": "Space Grotesk"
+    },
+    "--foreground": {
+      "type": "color",
+      "value": "#0F172A"
+    },
+    "--free-badge": {
+      "type": "color",
+      "value": "#5E636E"
+    },
+    "--free-badge-light": {
+      "type": "color",
+      "value": "#E9EAEC"
+    },
+    "--input": {
+      "type": "color",
+      "value": "#DDDEE2"
+    },
+    "--muted": {
+      "type": "color",
+      "value": "#E9EAEC"
+    },
+    "--muted-foreground": {
+      "type": "color",
+      "value": "#64748B"
+    },
+    "--primary": {
+      "type": "color",
+      "value": "#2C3844"
+    },
+    "--primary-foreground": {
+      "type": "color",
+      "value": "#FFFFFF"
+    },
+    "--pro-badge": {
+      "type": "color",
+      "value": "#16B1E5"
+    },
+    "--pro-badge-light": {
+      "type": "color",
+      "value": "#E7F6FC"
+    },
+    "--ring": {
+      "type": "color",
+      "value": "#2C3844"
+    },
+    "--secondary": {
+      "type": "color",
+      "value": "#E9EAEC"
+    },
+    "--secondary-foreground": {
+      "type": "color",
+      "value": "#21242C"
+    },
+    "--success": {
+      "type": "color",
+      "value": "#2A9E86"
+    },
+    "--success-light": {
+      "type": "color",
+      "value": "#E8F5F1"
+    },
+    "--text-muted": {
+      "type": "color",
+      "value": "#9499A1"
+    },
+    "--text-primary": {
+      "type": "color",
+      "value": "#21242C"
+    },
+    "--text-secondary": {
+      "type": "color",
+      "value": "#5E636E"
+    },
+    "--upgrade-accent": {
+      "type": "color",
+      "value": "#E86030"
+    },
+    "--upgrade-bg": {
+      "type": "color",
+      "value": "#FDF1EA"
+    },
+    "--warning": {
+      "type": "color",
+      "value": "#DFBA24"
+    },
+    "--warning-light": {
+      "type": "color",
+      "value": "#FBF7E5"
+    }
+  }
+}
